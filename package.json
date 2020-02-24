@@ -18,6 +18,9 @@
   "homepage": "https://github.com/Michael-Beukman/3KleinGroup#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^7.0.1"
-  }
+    "coveralls": "^3.0.9",
+    "mocha": "^7.0.1",
+    "mocha-lcov-reporter": "^1.3.0"
+  },
+  "dependencies": {}
 }

@@ -1,4 +1,7 @@
 # 3KleinGroup
 
 # Test Status:
-[![CircleCI](https://circleci.com/gh/Michael-Beukman/3KleinGroup.svg?style=svg&circle-token=96a2adab8a54d69e8989e07ac1b762f772ac1bc8)](https://circleci.com/gh/Michael-Beukman/3KleinGroup)
+[![CircleCI](https://circleci.com/gh/Michael-Beukman/3KleinGroup.svg?style=svg)](https://circleci.com/gh/Michael-Beukman/3KleinGroup)
+
+# Coverage Status
+[![Coverage Status](https://coveralls.io/repos/github/Michael-Beukman/3KleinGroup/badge.svg?branch=master)](https://coveralls.io/github/Michael-Beukman/3KleinGroup?branch=master)
