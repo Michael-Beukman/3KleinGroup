@@ -1,5 +1,6 @@
 package com.sd.a3kleingroup
 
+import com.sd.a3kleingroup.SayHello.*
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -13,5 +14,10 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
+    }
+
+    @Test
+    fun greeting_isCorrect(){
+        assertEquals("Hello guy :)", hello("guy"));
     }
 }
