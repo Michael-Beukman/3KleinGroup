@@ -16,10 +16,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'com.github.kt3k.coveralls' version '2.10.1'
-}
-
 buildscript {
   repositories {
     maven {
@@ -29,6 +25,10 @@ buildscript {
   dependencies {
     classpath "net.saliman:gradle-cobertura-plugin:3.0.0"
   }
+}
+
+plugins {
+    id 'com.github.kt3k.coveralls' version '2.10.1'
 }
 
 apply plugin: "net.saliman.cobertura"
