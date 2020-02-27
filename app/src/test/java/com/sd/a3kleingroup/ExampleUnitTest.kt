@@ -18,6 +18,6 @@ class ExampleUnitTest {
 
     @Test
     fun greeting_isCorrect(){
-        assertEquals("hello guy :)", hello("guy"));
+        assertEquals("Hello guy :)", hello("guy"));
     }
 }
