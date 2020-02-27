@@ -16,12 +16,18 @@ buildscript {
     }
 }
 
-plugins {
-    id 'net.saliman.cobertura' version '2.3.1'
-    id 'com.github.kt3k.coveralls' version '2.10.1'
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "net.saliman:gradle-cobertura-plugin:3.0.0"
+  }
 }
 
-cobertura.coverageFormats = ['html', 'xml']
+apply plugin: "net.saliman.cobertura"
 
 allprojects {
     repositories {
