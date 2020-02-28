@@ -8,6 +8,7 @@ jacoco {
     toolVersion = "0.8.3"
     //reportsDir = file("../app/build//reports/rep") // file for reports (xml, html)
     reportsDir = file("../app/build/reports/jacoco/test") // file for reports (xml, html)
+    //ReportPath = file("../app/build/reports/jacoco/test/jacocoTestReport.xml")
 }
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
 
