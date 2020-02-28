@@ -6,7 +6,7 @@ ext {
 
 jacoco {
     toolVersion = "0.8.3"
-    reportsDir = file("../app/build//reports/rep") // file for reports (xml, html)
+//    reportsDir = file("../app/build//reports/rep") // file for reports (xml, html)
 }
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
 
