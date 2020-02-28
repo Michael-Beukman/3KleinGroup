@@ -30,7 +30,7 @@ jobs:
           command: ./gradlew lint test  coveralls
       - run:
           name: Run Coverage
-          command ./gradlew jacocoTestReport coveralls
+          command: ./gradlew jacocoTestReport coveralls
       - run:
           name: Save test results
           command: |
