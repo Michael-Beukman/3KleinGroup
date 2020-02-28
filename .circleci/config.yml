@@ -54,8 +54,11 @@ jobs:
           name: Run Coverage
           command: ./gradlew jacocoTestReport coveralls
       - run:
+          name: Run Coveralls things
+          command: ./gradlew coveralls
+      - run:
           name: list stuff
-          command: ls /home/circleci/code/app/build/reports/jacoco/test/ || ls /home/circleci/code/app/build || ls /home/circleci/code/app/build/reports
+          command: ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
       - run:
           name: Save test results
           command: |
