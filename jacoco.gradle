@@ -14,7 +14,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 
     reports {
         xml.enabled = true
-        html.enabled = true
+        html.enabled = false
+        xml.destination = file("../app/build/reports/jacoco/test/jacocoTestReport.xml")
     }
 
     // The lines below make sure we can report against Kotlin and exclude some Android Stuff
