@@ -27,14 +27,6 @@ buildscript {
   }
 }
 
-plugins {
-    id 'com.github.kt3k.coveralls' version '2.10.1'
-}
-
-apply plugin: "net.saliman.cobertura"
-
-cobertura.coverageFormats = ['html', 'xml']
-cobertura.coverageSourceDirs = ['app/src/main/java/']
 
 allprojects {
     repositories {

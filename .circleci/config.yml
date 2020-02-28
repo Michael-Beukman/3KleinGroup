@@ -27,7 +27,10 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew lint test cobertura coveralls
+          command: ./gradlew lint test  coveralls
+      - run:
+          name: Run Coverage
+          command ./gradlew jacocoTestReport coveralls
       - run:
           name: Save test results
           command: |

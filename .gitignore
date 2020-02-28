@@ -17,3 +17,5 @@
 .cxx
 Icon*
 **/Icon*
+.idea
+.project
