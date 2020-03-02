@@ -1,6 +1,3 @@
-.vscode
-**/*Icon*
-*Icon*
 *.iml
 .gradle
 /local.properties
@@ -15,10 +12,3 @@
 /captures
 .externalNativeBuild
 .cxx
-Icon*
-**/Icon*
-.idea
-.project
-*.ini
-*~
-.settings
