@@ -19,3 +19,6 @@ Icon*
 **/Icon*
 .idea
 .project
+*.ini
+*~
+.settings
