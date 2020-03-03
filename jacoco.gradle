@@ -36,10 +36,10 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
     def debugTree3 = fileTree(dir: "$project.buildDir/instrumented_classes", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
 
-    sourceDirectories = files([mainSrc])
-    classDirectories = files([debugTree, debugTree0, debugTree1, debugTree2, debugTree3])
+    sourceDirectories.from = files([mainSrc])
+    classDirectories.from = files([debugTree, debugTree0, debugTree1, debugTree2, debugTree3])
     //classDirectories = files([debugTree])
-    executionData = fileTree(dir: project.buildDir, includes: [
+    executionData.from = fileTree(dir: project.buildDir, includes: [
             'jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'
     ])
 }

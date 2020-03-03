@@ -32,4 +32,12 @@ public class MyFile {
     public void uploadToFirebase(String userIDSent, String userIDReceive){
         throw new NotImplementedError();
     }
+
+    /**
+     * Returns the file matching the filepath
+     * @return
+     */
+    public File getFile(){
+        return new File(filepath);
+    }
 }
