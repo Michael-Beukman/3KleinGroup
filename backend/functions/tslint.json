@@ -56,7 +56,7 @@
     // deployed.
     "no-implicit-dependencies": true,
 
-    // The 'this' keyword can only be used inside of classes.
+    // The 'this' keyword can only be used inside of com.sd.a3kleingroup.classes.
     "no-invalid-this": true,
 
     // Do not allow strings to be thrown because they will not include stack traces. Throw Errors instead.

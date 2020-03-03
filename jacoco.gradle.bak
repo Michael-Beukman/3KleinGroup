@@ -31,19 +31,19 @@ task jacocoTestReport(type: JacocoReport) {
                     'android/**/*.*']
 
     def debugTree = fileTree(
-            dir: "build/intermediates/javac/debug/classes/com/sd/a3kleingroup",
+            dir: "build/intermediates/javac/debug/com.sd.a3kleingroup.classes/com/sd/a3kleingroup",
             excludes: excludes)
     def kotlinDebugTree = fileTree(
-            dir: "build/tmp/kotlin-classes/debug/com/sd/a3kleingroup",
+            dir: "build/tmp/kotlin-com.sd.a3kleingroup.classes/debug/com/sd/a3kleingroup",
             excludes: excludes)
     def mainSrc = "../app/src/main/java"
 
     def debugTreeMyLib = fileTree(
-            dir: "../app/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes" +
+            dir: "../app/build/intermediates/javac/debug/compileDebugJavaWithJavac/com.sd.a3kleingroup.classes" +
                     "/de/logerbyte/app/javaClasses",
             excludes: excludes)
     def kotlinDebugTreeMyLib = fileTree(
-            dir: "../app/build/tmp/kotlin-classes/debug/de/logerbyte/app",
+            dir: "../app/build/tmp/kotlin-com.sd.a3kleingroup.classes/debug/de/logerbyte/app",
             excludes: excludes)
     def mainSrcMyLib = "../app/src/main/java"
 

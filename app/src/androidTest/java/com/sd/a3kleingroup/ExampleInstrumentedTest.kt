@@ -21,6 +21,7 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.sd.a3kleingroup", appContext.packageName)
     }
+    @Test
     fun testtemp(){
         var m = MainActivity();
         assertEquals("goodybye", m.sayGoodbye());

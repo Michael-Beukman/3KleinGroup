@@ -29,8 +29,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
             '**/*Test*.*', 'android/**/*.*'
     ]
-    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
-    def debugTree0 = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debugAndroidTest", excludes: fileFilter)
+    def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-com.sd.a3kleingroup.classes/debug", excludes: fileFilter)
+    def debugTree0 = fileTree(dir: "$project.buildDir/tmp/kotlin-com.sd.a3kleingroup.classes/debugAndroidTest", excludes: fileFilter)
     def debugTree1 = fileTree(dir: "$project.buildDir/intermediates/javac/debug", excludes: fileFilter)
     def debugTree2 = fileTree(dir: "$project.buildDir/intermediates/javac/debugAndroidTest", excludes: fileFilter)
     def debugTree3 = fileTree(dir: "$project.buildDir/instrumented_classes", excludes: fileFilter)
