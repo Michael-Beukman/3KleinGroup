@@ -22,3 +22,4 @@ Icon*
 *.ini
 *~
 .settings
+app/google-services.json
