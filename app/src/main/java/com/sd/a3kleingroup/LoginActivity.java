@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,7 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         btnSignOut = findViewById(R.id.sign_out_button);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("lol")
                 .requestEmail()
                 .build();
 
@@ -91,12 +94,13 @@ public class LoginActivity extends AppCompatActivity {
             FirebaseGoogleAuth(acc);
         }
         catch (ApiException e){
-            Toast.makeText(LoginActivity.this,"Sign In Failed",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"Sign In Failed (" + e.getMessage() + ")",Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(null);
         }
     }
 
     private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
+
         //check if the account is null
         if (acct != null) {
             AuthCredential authCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -107,6 +111,9 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
+                        // todo: This is a hack to go to sendfile after login
+                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
+                        startActivity(intent);;
                     } else {
                         Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
