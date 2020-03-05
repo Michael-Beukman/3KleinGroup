@@ -7,6 +7,7 @@ import android.content.ContentProvider;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,7 +70,10 @@ public class SendFileActivity extends AppCompatActivity {
     private Button btnSend;
     private EditText txtEmail;
     private EditText txtFilename;
+    private TextView lblFilename;
     private ProgressBar progressBar;
+
+
 
     private MyFile file; // the file that will be sent.
 
@@ -99,7 +104,7 @@ public class SendFileActivity extends AppCompatActivity {
                 throw new NotImplementedError();
             }
             String filename = txtFilename.getText().toString();
-            String filePathFirebase = user.getUid() + "/" + filename;
+            String filePathFirebase = user.getUid() + "/" + filename.replace('/', '_');
             StorageReference fileRef = storageRef.child(filePathFirebase);
 
             // now upload
@@ -139,7 +144,11 @@ public class SendFileActivity extends AppCompatActivity {
                 // =========== \\
                 // now we need to update DB
                 // =========== \\
-                Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
+                Datastore datastore = DatastoreOptions.newBuilder()
+                        .setProjectId(getString(R.string.project_id))
+                        .build()
+                        .getService();
+//                 = DatastoreOptions.getDefaultInstance().getService();
 
                 // get user's entity
                 Query<Entity> query = Query.newEntityQueryBuilder()
@@ -150,8 +159,8 @@ public class SendFileActivity extends AppCompatActivity {
                         .build();
 
 //                Entity userThatSent = datastore.get();
-                QueryResults<Entity> users = datastore.run(query);
-                Entity userThatSent = users.next();
+//                QueryResults<Entity> users = datastore.run(query);
+//                Entity userThatSent = users.next();
 
 
                 // create a file entity
@@ -168,23 +177,37 @@ public class SendFileActivity extends AppCompatActivity {
                         .build();
 
                 // upsert, i.e. insert if not exists else update
-                Entity fileKey = datastore.put(task);
-                String fileID = fileKey.getKey().getName();
-                Log.d(LOG_TAG, "FILE ID: " + fileID);
-                // update agreements
-                // todo fix. This is ust a hack, need to actually get the userID
-                String otherUserID = "vDMdClPofyU2SIWXn6BCJx5qZxh2";
 
-                Key task2Key = datastore.newKeyFactory()
-                        .setKind("Agreement")
-                        .newKey("temp");
+                Thread thread = new Thread(new Runnable() {
 
-                Entity agreement = Entity.newBuilder(task2Key)
+                    @Override
+                    public void run() {
+                        try  {
+                            Entity fileKey = datastore.put(task);
+                            String fileID = fileKey.getKey().getName();
+                            Log.d(LOG_TAG, "FILE ID: " + fileID);
+                            // update agreements
+                            // todo fix. This is ust a hack, need to actually get the userID
+                            String otherUserID = "vDMdClPofyU2SIWXn6BCJx5qZxh2";
+
+                            Key task2Key = datastore.newKeyFactory()
+                                    .setKind("Agreement")
+                                    .newKey("temp");
+
+                            Entity agreement = Entity.newBuilder(task2Key)
                                     .set("FileID", fileID)
                                     .set("UserID", otherUserID)
                                     .build();
 
-                datastore.put(agreement);
+                            datastore.put(agreement);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
+
 
 
             }).addOnProgressListener(taskSnapshot -> {
@@ -230,6 +253,7 @@ public class SendFileActivity extends AppCompatActivity {
 
                 // make filename text visible.
                 txtFilename.setVisibility(View.VISIBLE);
+                lblFilename.setVisibility(View.VISIBLE);
                 txtFilename.setText(filePath);
                 // + " " + new File(getPath(fileUri)).exists()
                 Log.d(LOG_TAG, "User chose File: " + filePath + " get path " + getPath(fileUri));
@@ -267,10 +291,13 @@ public class SendFileActivity extends AppCompatActivity {
         btnSend = findViewById(R.id.sf_btnSend);
         txtEmail = findViewById(R.id.sf_txtRecipientEmail);
         txtFilename = findViewById(R.id.sf_txtFilename);
+        lblFilename = findViewById(R.id.sf_lblFilename);
         progressBar = findViewById(R.id.sf_prgbProgress);
+
 
         // change default visibility
         txtFilename.setVisibility(View.INVISIBLE);
+        lblFilename.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
 
         // change min and max

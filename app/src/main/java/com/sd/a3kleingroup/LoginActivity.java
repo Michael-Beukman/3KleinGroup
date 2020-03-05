@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         btnSignOut = findViewById(R.id.sign_out_button);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestIdToken("lol")
+                .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestIdToken("lol")
                 .requestEmail()
                 .build();
 
