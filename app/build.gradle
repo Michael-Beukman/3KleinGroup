@@ -45,6 +45,11 @@ android {
         debug {
             testCoverageEnabled true
         }
+      android {
+          lintOptions {
+              disable "AccidentalOctal", "AnnotationProcessorOnCompilePath", "UseOfBundledGooglePlayServices", "GradleCompatible", "DataBindingWithoutKapt", "GradleDependency", "GradleDeprecated", "GradleDeprecatedConfiguration", "OutdatedLibrary", "DevModeObsolete", "DuplicatePlatformClasses", "ExpiredTargetSdkVersion", "ExpiringTargetSdkVersion", "GradleGetter", "GradlePluginVersion", "HighAppVersionCode", "GradleIdeError", "LifecycleAnnotationProcessorWithJava8", "MinSdkTooLow", "NotInterpolated", "GradlePath", "GradleDynamicVersion", "NewerVersionAvailable", "RiskyLibrary", "StringShouldBeInt", "InvalidPackage"
+          }
+      }
     }
 
 // To inline the bytecode built with JVM target 1.8 into
