@@ -27,8 +27,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.net.URI;
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
     private SignInButton signInButton;
@@ -111,6 +114,15 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        // add user to db if not exists
+                        db.collection("Users").document(user.getUid())
+                                .set(new HashMap<String, Object>(){{
+                                    put("name", user.getDisplayName());
+                                    put("email", user.getEmail());
+                                }}, SetOptions.merge());
+
                         // todo: This is a hack to go to sendfile after login
                         Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
                         startActivity(intent);;
