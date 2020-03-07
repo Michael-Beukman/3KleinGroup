@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -118,10 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         // add user to db if not exists
                         db.collection("Users").document(user.getUid())
-                                .set(new HashMap<String, Object>(){{
-                                    put("name", user.getDisplayName());
-                                    put("email", user.getEmail());
-                                }}, SetOptions.merge());
+                                .set(new dbUser(user.getEmail(), user.getDisplayName()).getHashmap(), SetOptions.merge());
 
                         // todo: This is a hack to go to sendfile after login
                         Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);

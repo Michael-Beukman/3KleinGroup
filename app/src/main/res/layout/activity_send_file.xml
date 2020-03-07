@@ -22,25 +22,24 @@
         android:id="@+id/sf_txtHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello"
+        android:text="Choose a File and user to send it to"
         app:layout_constraintBottom_toTopOf="@+id/sf_btnChooseFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.214" />
 
     <EditText
         android:id="@+id/sf_txtRecipientEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:text="Email"
-        app:layout_constraintBottom_toTopOf="@+id/sf_btnChooseFile"
+        app:layout_constraintBottom_toTopOf="@+id/sf_txtFilename"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.934"
-        app:layout_constraintStart_toEndOf="@+id/sf_lblEmail"
-        app:layout_constraintTop_toBottomOf="@+id/sf_txtHeader"
-        app:layout_constraintVertical_bias="0.175" />
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toEndOf="@+id/sf_lblEmail" />
 
     <EditText
         android:id="@+id/sf_txtFilename"

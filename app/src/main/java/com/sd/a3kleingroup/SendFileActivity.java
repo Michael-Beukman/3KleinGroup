@@ -41,6 +41,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.MyFile;
@@ -64,7 +65,7 @@ import java.util.Objects;
 import kotlin.NotImplementedError;
 
 
-public class SendFileActivity extends AppCompatActivity {
+public class SendFileActivity extends BaseActivity {
     private final int FILE_RESULT_SUCCESS = -1;
     private final int FILE_REQUEST_CODE = 1;
     private final String LOG_TAG = "SEND_FILE_ACTIVITY";
@@ -122,7 +123,6 @@ public class SendFileActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String error, MyError.ErrorCode errorCode) {
-                    // todo error
                     afterFailGetEmail(error, errorCode);
                 }
             };
@@ -148,8 +148,9 @@ public class SendFileActivity extends AppCompatActivity {
             // currently logged in user
             user = auth.getCurrentUser();
             if (user == null) {
-                // todo
-                throw new NotImplementedError();
+                // if the user is null, we need to go to the login activity first.
+                goToLogin();
+                return;
             }
 
             // pretty name
@@ -166,9 +167,9 @@ public class SendFileActivity extends AppCompatActivity {
             try {
                 stream = getContentResolver().openInputStream(file.getUri());
                 totalSize = stream.available();
-            } catch (IOException e) {
-                // todo
-                throw new NotImplementedError();
+            } catch (Exception e) {
+                errorHandler.displayError("Reading the file failed with message (" + e.getMessage() + ")");
+                return;
             }
 
             UploadTask uploadTask = fileRef.putStream(stream);
@@ -209,11 +210,10 @@ public class SendFileActivity extends AppCompatActivity {
                     new dbFile(filePathFirebase,filename, userToReceiveID)
             );
 
+            // This means we didn't upload successfully
             fileDocRef.addOnCompleteListener(task -> {
-                // todo
                 DocumentReference ref = task.getResult();
                 if (task.isSuccessful() && ref != null) {
-
                     String fileID = ref.getId();
                     Task<DocumentReference> agreementDocRef = db.collection("Agreements").add(
                             new dbAgreement(fileID, userToReceiveID).getHashmap()
@@ -225,9 +225,7 @@ public class SendFileActivity extends AppCompatActivity {
                 } else {
                     afterFailUpdateDB(Objects.requireNonNull(task.getException()));
                 }
-            }).addOnFailureListener(task -> {
-                // todo
-            });
+            }).addOnFailureListener(this::afterFailUpdateDB); // if it failed
         }
 
         /**
@@ -323,18 +321,14 @@ public class SendFileActivity extends AppCompatActivity {
 
                 Log.d(LOG_TAG, "User chose File: " + filePath + " get path " + getPath(fileUri));
             } else {
-                // todo
+
+                errorHandler.displayError("Choosing file failed with code (" + resultCode + ")");
                 // Failure. Handle Error
                 Log.e(LOG_TAG, "File Error with code " + resultCode);
-                // todo
-                throw new NotImplementedError();
             }
-
             // set enabled again, since we're done
             btnChooseFile.setEnabled(true);
         }
-
-
     }
 
     @Override
