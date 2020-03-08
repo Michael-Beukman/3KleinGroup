@@ -1,18 +1,10 @@
 package com.sd.a3kleingroup;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentProvider;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,46 +15,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.ServerTimestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
+import com.sd.a3kleingroup.classes.Messaging.MyFirebaseMessagingService;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.MyFile;
 import com.sd.a3kleingroup.classes.Utils;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
-
-import kotlin.NotImplementedError;
 
 
 public class SendFileActivity extends BaseActivity {
@@ -339,6 +313,8 @@ public class SendFileActivity extends BaseActivity {
         setEvents();
         file = new MyFile();
         errorHandler = new MyError(getApplication());
+        MyFirebaseMessagingService x = new MyFirebaseMessagingService();
+        x.getToken();
     }
 
     /**
