@@ -11,12 +11,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main);
 
         // test login
-        val intent2 = Intent(this, LoginActivity::class.java)
-        startActivity(intent2);
-        return;
+//        val intent2 = Intent(this, LoginActivity::class.java)
+//        startActivity(intent2);
+//        return;
         // just go to the sendFile act
         // todo remove
-        val intent = Intent(this, SendFileActivity::class.java)
+//        val intent = Intent(this, SendFileActivity::class.java)
+//        startActivity(intent);
+
+        val intent = Intent(this, ReceiveFilesActivity::class.java)
         startActivity(intent);
     }
     public fun sayGoodbye(): String{
