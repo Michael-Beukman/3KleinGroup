@@ -55,7 +55,10 @@ jobs:
 
       - run:
           name: Run Coverage
-          command: ./gradlew jacocoTestReport coveralls
+          command: ./gradlew jacocoTestReport 
+      - run:
+          name: Coveralls Running
+          command: ./gradlew  coveralls
       - run:
           name: Run Coveralls things
           command: ./gradlew coveralls
