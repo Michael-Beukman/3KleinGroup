@@ -1,5 +1,7 @@
 package com.sd.a3kleingroup.classes;
 
+import android.net.Uri;
+
 import java.io.File;
 
 import kotlin.NotImplementedError;
@@ -10,6 +12,7 @@ import kotlin.NotImplementedError;
 public class MyFile {
     private String filepath = "";
     private String filename = "" ;
+    private Uri fileUri;
 
     // actual File contents and everything
     private File file;
@@ -39,5 +42,13 @@ public class MyFile {
      */
     public File getFile(){
         return new File(filepath);
+    }
+
+    public void setUri(Uri fileUri) {
+        this.fileUri = fileUri;
+    }
+
+    public Uri getUri() {
+        return fileUri;
     }
 }

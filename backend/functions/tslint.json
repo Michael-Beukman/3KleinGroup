@@ -54,7 +54,7 @@
 
     // Do not allow any imports for modules that are not in package.json. These will almost certainly fail when
     // deployed.
-    "no-implicit-dependencies": true,
+    "no-implicit-dependencies": false,
 
     // The 'this' keyword can only be used inside of com.sd.a3kleingroup.classes.
     "no-invalid-this": true,

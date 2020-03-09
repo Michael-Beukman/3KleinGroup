@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,8 +27,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.net.URI;
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
     private SignInButton signInButton;
@@ -47,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
+//                .requestIdToken("lol")
                 .requestEmail()
                 .build();
 
@@ -91,12 +98,13 @@ public class LoginActivity extends AppCompatActivity {
             FirebaseGoogleAuth(acc);
         }
         catch (ApiException e){
-            Toast.makeText(LoginActivity.this,"Sign In Failed",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,"Sign In Failed (" + e.getMessage() + ")",Toast.LENGTH_SHORT).show();
             FirebaseGoogleAuth(null);
         }
     }
 
     private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
+
         //check if the account is null
         if (acct != null) {
             AuthCredential authCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -107,6 +115,15 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Successful", Toast.LENGTH_SHORT).show();
                         FirebaseUser user = mAuth.getCurrentUser();
                         updateUI(user);
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        // add user to db if not exists
+                        db.collection("Users").document(user.getUid())
+                                .set(new dbUser(user.getEmail(), user.getDisplayName()).getHashmap(), SetOptions.merge());
+
+                        // todo: This is a hack to go to sendfile after login
+                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
+                        startActivity(intent);;
                     } else {
                         Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);

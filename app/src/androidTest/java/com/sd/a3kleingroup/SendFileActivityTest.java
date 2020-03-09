@@ -32,14 +32,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 public class SendFileActivityTest {
-//    @Rule public ActivityScenarioRule<SendFileActivity> activityScenarioRule
-//            = new ActivityScenarioRule<>(SendFileActivity.class);
-//    @Test
-//    public void onCreate() {
-//        assertEquals(1,1);
-//    }
-//    @Test
-//    public void testClickBtn(){
-//        onView(withId(R.id.sf_btnChooseFile)).perform(ViewActions.click());
-//    }
+    @Rule public ActivityScenarioRule<SendFileActivity> activityScenarioRule
+            = new ActivityScenarioRule<>(SendFileActivity.class);
+    @Test
+    public void onCreate() {
+        assertEquals(1,1);
+    }
+    @Test
+    public void testClickBtn(){
+        onView(withId(R.id.sf_btnChooseFile)).perform(ViewActions.click());
+    }
 }
