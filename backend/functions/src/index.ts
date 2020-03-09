@@ -31,7 +31,7 @@ exports.createAgreement = functions.firestore
       .doc(userID)
       .get()
       .then((snapshot) => {
-          console.log("got snapshot from users ", {snapshot});
+          console.log("got snapshot from users ", {snapshot}, {data: snapshot.data()});
         const notifToken = snapshot.data().notificationToken;
         // Notification details.
         console.log("got snapshot from users notiftoekn ", {notifToken});

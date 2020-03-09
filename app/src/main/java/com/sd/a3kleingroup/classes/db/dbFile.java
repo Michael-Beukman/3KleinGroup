@@ -6,17 +6,20 @@ public class dbFile implements dbObject{
     private String filepath;
     private String name;
     private String userID;
+    private String storageURL;
 
     /**
      *
      * @param filepath The path that the file is stored on, in firebase
      * @param name The 'pretty' name of the file
      * @param userID UserID of the file owner
+     * @param storageURL The url that the file can be downloaded from.
      */
-    public dbFile(String filepath, String name, String userID) {
+    public dbFile(String filepath, String name, String userID, String storageURL) {
         this.filepath = filepath;
         this.name = name;
         this.userID = userID;
+        this.storageURL = storageURL;
     }
 
 
@@ -26,6 +29,7 @@ public class dbFile implements dbObject{
             put("filepath", filepath);
             put("filename", name);
             put("userID", userID);
+            put("storageURL", storageURL);
         }};
     }
 }

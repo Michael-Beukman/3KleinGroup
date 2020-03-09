@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sd.a3kleingroup">
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,8 +28,10 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <service
-            android:name=".classes.Messaging.MyFirebaseMessagingService"
-            android:exported="false">
+            android:name=".classes.messaging.MyFirebaseMessagingService"
+            android:exported="false"
+            android:enabled="true"
+            >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

@@ -15,6 +15,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,7 +30,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
-import com.sd.a3kleingroup.classes.Messaging.MyFirebaseMessagingService;
+import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.MyFile;
 import com.sd.a3kleingroup.classes.Utils;
@@ -63,8 +67,7 @@ public class SendFileActivity extends BaseActivity {
     //what happens when the file is chosen
     private class chooseFile implements View.OnClickListener {
         @Override
-        public void onClick(View view)
-        {
+        public void onClick(View view) {
             // set btn disabled, so it doesn't double click
             view.setEnabled(false);
             Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
@@ -80,8 +83,9 @@ public class SendFileActivity extends BaseActivity {
 
         private String filePathFirebase;
         private String filename;
-        private FirebaseUser  user;
+        private FirebaseUser user;
         private String userToReceiveID;
+        private StorageReference fileRef; // the fileRef from firebase
 
         @Override
         public void onClick(View view) {
@@ -107,12 +111,13 @@ public class SendFileActivity extends BaseActivity {
 
         /**
          * This gets called after we successfully get the email. Then we can continue with the process.
-         * @param data The data from Utils.GetEmail. userID: <userID>
+         *
+         * @param data     The data from Utils.GetEmail. userID: <userID>
          * @param message: Extra info/message
          */
-        private void afterGetEmail(HashMap<String, Object> data, String message){
+        private void afterGetEmail(HashMap<String, Object> data, String message) {
             // can now actually send, since we got a proper email.
-            userToReceiveID = data.containsKey("userID") ? (String)data.get("userID") : "-1";
+            userToReceiveID = data.containsKey("userID") ? (String) data.get("userID") : "-1";
             Log.d(LOG_TAG, "Found userID from email: " + userToReceiveID);
 
             // I now need to save the file to storage
@@ -132,7 +137,7 @@ public class SendFileActivity extends BaseActivity {
 
             // the path that should be stored on the firebase file system
             filePathFirebase = user.getUid() + "/" + filename.replace('/', '_');
-            StorageReference fileRef = storageRef.child(filePathFirebase);
+            fileRef = storageRef.child(filePathFirebase);
 
 
             InputStream stream;
@@ -154,59 +159,72 @@ public class SendFileActivity extends BaseActivity {
             int finalTotalSize = totalSize;
 
             uploadTask
-                .addOnFailureListener(this::afterFailUploadFile)
-                .addOnSuccessListener(this::afterUploadFile)
-                .addOnProgressListener(taskSnapshot -> {
-                    // progress update
-                    // just set the progress to be transferred/total
-                    Log.d(LOG_TAG, "PROGRESS " + taskSnapshot.getBytesTransferred() + " / " + finalTotalSize + " = " + (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize)));
-                    progressBar.setProgress(
-                            (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize))
-                    );
-                });
+                    .addOnFailureListener(this::afterFailUploadFile)
+                    .addOnSuccessListener(this::afterUploadFile)
+                    .addOnProgressListener(taskSnapshot -> {
+                        // progress update
+                        // just set the progress to be transferred/total
+                        Log.d(LOG_TAG, "PROGRESS " + taskSnapshot.getBytesTransferred() + " / " + finalTotalSize + " = " + (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize)));
+                        progressBar.setProgress(
+                                (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize))
+                        );
+                    });
         }
 
         /**
          * This gets called after the file is successfully uploaded. It updates the Database
          */
-        private void afterUploadFile(UploadTask.TaskSnapshot taskSnapshot){
+        private void afterUploadFile(UploadTask.TaskSnapshot taskSnapshot) {
             Toast.makeText(getApplicationContext(), "Successfully uploaded file", Toast.LENGTH_LONG).show();
             Log.d(LOG_TAG, "Success on upload");
             progressBar.setVisibility(View.INVISIBLE);
 
-            // If file is successfully uploaded, I should update the file DB collection and the agreements collection
+            // reference this, because we need to use this class instance inside a nested class.
+            sendFile self = this;
+            //first get the file URL. This is async, so need to add oncomplete listener.
+            fileRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> uriTask) {
+                    if (!uriTask.isSuccessful()) {
+                        errorHandler.displayError("Could not successfully obtain the file URL. Error: (" + uriTask.getException().getMessage() + ")");
+                        return;
+                    }
+                    // If file is successfully uploaded, I should update the file DB collection and the agreements collection
 
-            // Get DB instance
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            // first add a record to the File collection TODO Make better
+                    // Get DB instance
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    // first add a record to the File collection TODO Make better
 
-            Task<DocumentReference> fileDocRef = db.collection("Files").add(
-                    new dbFile(filePathFirebase,filename, userToReceiveID)
-            );
-
-            // This means we didn't upload successfully
-            fileDocRef.addOnCompleteListener(task -> {
-                DocumentReference ref = task.getResult();
-                if (task.isSuccessful() && ref != null) {
-                    String fileID = ref.getId();
-                    Task<DocumentReference> agreementDocRef = db.collection("Agreements").add(
-                            new dbAgreement(fileID, userToReceiveID).getHashmap()
+                    Task<DocumentReference> fileDocRef = db.collection("Files").add(
+                            new dbFile(filePathFirebase, filename, userToReceiveID, uriTask.getResult().toString())
                     );
-                    agreementDocRef.addOnSuccessListener(aTask -> {
-                        afterUpdateDB();
-                    }).addOnFailureListener(this::afterFailUpdateDB);
 
-                } else {
-                    afterFailUpdateDB(Objects.requireNonNull(task.getException()));
+                    // This means we didn't upload successfully
+                    fileDocRef.addOnCompleteListener(task -> {
+                        DocumentReference ref = task.getResult();
+                        if (task.isSuccessful() && ref != null) {
+                            String fileID = ref.getId();
+                            Task<DocumentReference> agreementDocRef = db.collection("Agreements").add(
+                                    new dbAgreement(fileID, userToReceiveID).getHashmap()
+                            );
+                            agreementDocRef.addOnSuccessListener(aTask -> {
+                                afterUpdateDB();
+                            }).addOnFailureListener(self::afterFailUpdateDB);
+
+                        } else {
+                            afterFailUpdateDB(Objects.requireNonNull(task.getException()));
+                        }
+                    }).addOnFailureListener(self::afterFailUpdateDB); // if it failed
                 }
-            }).addOnFailureListener(this::afterFailUpdateDB); // if it failed
+            });
+
         }
 
         /**
          * This gets called after the database is successfully updated.
          * It displays info to the user and cleans up
          */
-        private void afterUpdateDB(){
+        private void afterUpdateDB() {
 
             errorHandler.displaySuccess("Database updated successfully");
             Log.d(LOG_TAG, "Database updated successfully");
@@ -216,14 +234,14 @@ public class SendFileActivity extends BaseActivity {
         }
         /* Failure handlers, i.e. what happens when stuff fails */
 
-        private void afterFailGetEmail(String error, MyError.ErrorCode errorCode){
-            Log.d(LOG_TAG, "User Email failed with message (" + error + ") and code + (" + errorCode+")");
+        private void afterFailGetEmail(String error, MyError.ErrorCode errorCode) {
+            Log.d(LOG_TAG, "User Email failed with message (" + error + ") and code + (" + errorCode + ")");
 
             errorHandler.displayError("That user does not exist. Please ask them to sign up first.");
             cleanUp();
         }
 
-        private void afterFailUploadFile(Exception exception){
+        private void afterFailUploadFile(Exception exception) {
             // Handle unsuccessful uploads
             progressBar.setVisibility(View.INVISIBLE);
             errorHandler.displayError("An Error occured (" + exception.getMessage() + ")");
@@ -231,7 +249,7 @@ public class SendFileActivity extends BaseActivity {
             cleanUp();
         }
 
-        private void afterFailUpdateDB(Exception e){
+        private void afterFailUpdateDB(Exception e) {
             progressBar.setVisibility(View.INVISIBLE);
             errorHandler.displayError("An Error occurred while updating database (" + e.getMessage() + ")");
             Log.d(LOG_TAG, "Failed to update Database (" + e.getMessage() + ")");
@@ -241,7 +259,7 @@ public class SendFileActivity extends BaseActivity {
         /**
          * Cleans up, after success or failure.
          */
-        private void cleanUp(){
+        private void cleanUp() {
 
             //enable btn again
             btnSend.setEnabled(true);
@@ -315,6 +333,7 @@ public class SendFileActivity extends BaseActivity {
         errorHandler = new MyError(getApplication());
         MyFirebaseMessagingService x = new MyFirebaseMessagingService();
         x.getToken();
+        new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
     }
 
     /**

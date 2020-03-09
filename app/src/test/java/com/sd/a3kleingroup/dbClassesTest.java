@@ -36,12 +36,13 @@ public class dbClassesTest {
         String userID = "tstUser";
         String filepath = userID + "/" + "tmpFilename";
         String name = "filename";
-
-        dbFile f = new dbFile(filepath, name, userID);
+        String url = "url";
+        dbFile f = new dbFile(filepath, name, userID, url);
         Assert.assertEquals(new HashMap<String, Object>(){{
             put("userID", userID);
             put("filepath", filepath);
             put("filename", name);
+            put("storageURL", url);
         }},  f.getHashmap());
     }
 
