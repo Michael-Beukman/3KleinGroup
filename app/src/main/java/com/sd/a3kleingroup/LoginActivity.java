@@ -122,8 +122,11 @@ public class LoginActivity extends AppCompatActivity {
                                 .set(new dbUser(user.getEmail(), user.getDisplayName()).getHashmap(), SetOptions.merge());
 
                         // todo: This is a hack to go to sendfile after login
-                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
-                        startActivity(intent);;
+//                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
+//                        startActivity(intent);
+                        // todo: This is a hack to go to receivefile after login
+                        Intent intent = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
+                        startActivity(intent);
                     } else {
                         Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
