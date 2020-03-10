@@ -22,17 +22,17 @@ import org.junit.runner.RunWith
  */
 //@RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
-    @get:Rule  public val activityScenarioRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java);
-    @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.sd.a3kleingroup", appContext.packageName)
-    }
-    @Test
-    fun testtemp(){
-        val scenario = activityScenarioRule.scenario
-        scenario.onActivity { activity ->
-            assertEquals("Goodbye", activity.sayGoodbye()) }
-    }
+//    @get:Rule  public val activityScenarioRule = ActivityScenarioRule<MainActivity>(MainActivity::class.java);
+//    @Test
+//    fun useAppContext() {
+//        // Context of the app under test.
+//        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+//        assertEquals("com.sd.a3kleingroup", appContext.packageName)
+//    }
+//    @Test
+//    fun testtemp(){
+//        val scenario = activityScenarioRule.scenario
+//        scenario.onActivity { activity ->
+//            assertEquals("Goodbye", activity.sayGoodbye()) }
+//    }
 }

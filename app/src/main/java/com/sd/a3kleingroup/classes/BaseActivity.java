@@ -28,4 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(i);
     }
+
+
 }
