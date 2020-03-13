@@ -37,9 +37,9 @@ exports.createAgreement = functions.firestore
         console.log("got snapshot from users notiftoekn ", {notifToken});
         const payload = {
           notification: {
-            title: "New File :)",
-            body: `file id is: ${newValue.fileID}`
-          }
+            title: "New File received!",
+            body: `File id is: ${newValue.fileID}`
+          } 
         };
         console.log("payload ", {payload});
 
