@@ -8,7 +8,7 @@ jobs:
       - image: circleci/android:api-28-alpha
     environment:
       JVM_OPTS: -Xmx2048m -Xms512m
-      #GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
+      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
     steps:
       - checkout
       - restore_cache:
@@ -56,7 +56,7 @@ jobs:
 
       - run:
           name: Run Coverage
-          command: ./gradlew jacocoTestReport  --stacktrace --debug --info --scan
+          command: ./gradlew jacocoTestReport --no-daemon  --stacktrace --debug --info --scan
       - run:
           name: Coveralls Running
           command: ./gradlew  coveralls
