@@ -1,6 +1,7 @@
 package com.sd.a3kleingroup.classes.db;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class dbFile implements dbObject{
     private String filepath;
@@ -24,7 +25,7 @@ public class dbFile implements dbObject{
 
 
     @Override
-    public HashMap<String, Object> getHashmap() {
+    public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{
             put("filepath", filepath);
             put("filename", name);

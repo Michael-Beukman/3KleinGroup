@@ -196,7 +196,7 @@ public class SendFileActivity extends BaseActivity {
                     // first add a record to the File collection TODO Make better
 
                     Task<DocumentReference> fileDocRef = db.collection("Files").add(
-                            new dbFile(filePathFirebase, filename, userToReceiveID, uriTask.getResult().toString())
+                            new dbFile(filePathFirebase, filename, userToReceiveID, uriTask.getResult().toString()).getHashmap()
                     );
 
                     // This means we didn't upload successfully
@@ -205,7 +205,7 @@ public class SendFileActivity extends BaseActivity {
                         if (task.isSuccessful() && ref != null) {
                             String fileID = ref.getId();
                             Task<DocumentReference> agreementDocRef = db.collection("Agreements").add(
-                                    new dbAgreement(fileID, userToReceiveID).getHashmap()
+                                    new dbAgreement(fileID, userToReceiveID, user.getUid()).getHashmap()
                             );
                             agreementDocRef.addOnSuccessListener(aTask -> {
                                 afterUpdateDB();
