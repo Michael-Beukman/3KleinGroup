@@ -40,21 +40,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
 
-        holder.mFileName.setText(fileModels.get(position).getFileName());
+        holder.mDownload.setText(fileModels.get(position).getFileName());
 
-        //Make sure
         holder.mDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FileModel file = fileModels.get(position);
-                downloadFile(holder.mFileName.getContext(),file.getFileName(),file.getFormat(),DIRECTORY_DOWNLOADS,file.getUri());
+                downloadFile(holder.mDownload.getContext(),file.getFileName(),file.getFormat(),DIRECTORY_DOWNLOADS,file.getUrl());
             }
         });
     }
 
-    public void downloadFile(Context context, String fileName, String fileExtension, String destinationDirectory, Uri uri) {
+    public void downloadFile(Context context, String fileName, String fileExtension, String destinationDirectory, String url) {
 
         DownloadManager downloadmanager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(url);
         DownloadManager.Request request = new DownloadManager.Request(uri);
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

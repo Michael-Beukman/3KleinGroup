@@ -6,20 +6,20 @@ public class FileModel {
 
     String fileName;
     String format;
-    Uri uri;
+    String url;
 
-    public FileModel(String fileName, String format, Uri uri) {
+    public FileModel(String fileName, String format, String url) {
         this.fileName = fileName;
         this.format=format;
-        this.uri = uri;
+        this.url = url;
     }
 
-    public Uri getUri() {
-        return uri;
+    public String getUrl() {
+        return url;
     }
 
-    public void setUri(Uri url) {
-        this.uri = url;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 

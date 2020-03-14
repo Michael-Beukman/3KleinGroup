@@ -17,7 +17,6 @@ public class RecyclerHolder extends RecyclerView.ViewHolder {
     public RecyclerHolder(@NonNull View itemView) {
         super(itemView);
 
-        mFileName = itemView.findViewById(R.id.txt_filename);
         mDownload = itemView.findViewById(R.id.btn_download);
 
     }
