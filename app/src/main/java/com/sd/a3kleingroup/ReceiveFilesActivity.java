@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,9 +21,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.FileModel;
 import com.sd.a3kleingroup.classes.RecyclerAdapter;
+import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class ReceiveFilesActivity extends AppCompatActivity {
     FirebaseFirestore db;
@@ -83,7 +90,7 @@ public class ReceiveFilesActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                                     if(fileIDs.contains(document.getId())){
-                                                        HashMap<String, String> map = (HashMap<String, String>) document.getData().get("hashmap");
+                                                        HashMap<String, Object> map = (HashMap<String, Object>) document.getData();
                                                         FileModel file = new FileModel((String) map.get("filename"),"",(String) map.get("storageURL"));
                                                         fileModelArrayList.add(file);
                                                     }
@@ -103,76 +110,38 @@ public class ReceiveFilesActivity extends AppCompatActivity {
                 });
         // [END get_multiple
 
-        // [START storage_list_all]
-//        StorageReference listRef = storage.getReference().child("test/");
-//
-//        listRef.listAll()
-//                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-//                    @Override
-//                    public void onSuccess(ListResult listResult) {
-////                        for (StorageReference prefix : listResult.getPrefixes()) {
-////                            // All the prefixes under listRef.
-////                            // You may call listAll() recursively on them.
-////                        }
-//
-////
-////                        final Uri[] fileUri = new Uri[1];
-////                        final String[] fileName = new String[1];
-////                        final String[] fileType = new String[1];
-//
-//                        for (StorageReference item : listResult.getItems()) {
-////                            // All the items under listRef.
-//
-//                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                                @Override
-//                                public void onSuccess(Uri uri) {
-//
-//                                    item.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-//                                        @Override
-//                                        public void onSuccess(StorageMetadata storageMetadata) {
-//
-//                                            String fileName = storageMetadata.getName();
-//                                            String fileType = storageMetadata.getContentType();
-//                                            if(fileName.contains(fileType)){ fileType=""; }
-//                                            Log.e("MY_LOG", uri.toString());
-//                                            FileModel file = new FileModel(fileName,fileType, uri);
-//                                            fileModelArrayList.add(file);
-//                                            setUpRV();
-//
-//                                        }
-//                                    }).addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Toast.makeText(ReceiveFilesActivity.this, "Error getting file Metadata", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    });
-//                                }
-//                            });
-//                        }
-//
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(ReceiveFilesActivity.this, "Error listing files", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
-        // [END storage_list_all]
-
     }
 
     private void setUpFireStore(){
         db = FirebaseFirestore.getInstance();
     }
 
+
+    public void downloadFile(String fileName, String fileExtension, String destinationDirectory, String url) {
+
+        DownloadManager downloadmanager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri uri = Uri.parse(url);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalFilesDir(this, destinationDirectory, fileName + fileExtension);
+
+        downloadmanager.enqueue(request);
+    }
+
+
     private void setUpRV(){
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);
-        //Log.e("MY_L", fileModelArrayList.get(0).getUrl());
-        myAdapter = new RecyclerAdapter(ReceiveFilesActivity.this, fileModelArrayList);
-        mRecyclerView.setAdapter(myAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerViewClickListener listener = new RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Log.e(LOG_TAG, ""+fileModelArrayList.get(position).getUrl());
+                FileModel file = fileModelArrayList.get(position);
+            }
+        };
+        myAdapter = new RecyclerAdapter(ReceiveFilesActivity.this, fileModelArrayList, listener);
+        mRecyclerView.setAdapter(myAdapter);
     }
 }

@@ -19,10 +19,12 @@ import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
 
+    RecyclerViewClickListener mListener;
     ReceiveFilesActivity receiveFilesActivity;
     ArrayList<FileModel> fileModels;
 
-    public RecyclerAdapter(ReceiveFilesActivity receiveFilesActivity, ArrayList<FileModel> fileModels) {
+    public RecyclerAdapter(ReceiveFilesActivity receiveFilesActivity, ArrayList<FileModel> fileModels, RecyclerViewClickListener listener) {
+        mListener=listener;
         this.receiveFilesActivity = receiveFilesActivity;
         this.fileModels = fileModels;
     }
@@ -33,34 +35,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
 
         LayoutInflater layoutInflater = LayoutInflater.from(receiveFilesActivity.getBaseContext());
         View view = layoutInflater.inflate(R.layout.view_recycler, null, false);
-        return new RecyclerHolder(view);
+        return new RecyclerHolder(view, mListener);
     }
 
     //Provides a means to handle each view holder in the list
     @Override
     public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
 
-        holder.mDownload.setText(fileModels.get(position).getFileName());
-
-        holder.mDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FileModel file = fileModels.get(position);
-                downloadFile(holder.mDownload.getContext(),file.getFileName(),file.getFormat(),DIRECTORY_DOWNLOADS,file.getUrl());
-            }
-        });
-    }
-
-    public void downloadFile(Context context, String fileName, String fileExtension, String destinationDirectory, String url) {
-
-        DownloadManager downloadmanager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse(url);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalFilesDir(context, destinationDirectory, fileName + fileExtension);
-
-        downloadmanager.enqueue(request);
+        if (holder instanceof RecyclerHolder) {
+            RecyclerHolder rowHolder = (RecyclerHolder) holder;
+            //set values of data here
+            rowHolder.mDownload.setText(fileModels.get(position).getFileName());
+        }
     }
 
     @Override
