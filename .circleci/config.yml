@@ -62,7 +62,7 @@ jobs:
           command: echo 'abc' #./gradlew coveralls
       - run:
           name: list stuff
-          command: ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
+          command: echo "hey"  #ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
       - run:
           name: Save test results
           command: |
