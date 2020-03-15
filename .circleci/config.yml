@@ -56,10 +56,10 @@ jobs:
 
       - run:
           name: Run Coverage
-          command: ./gradlew jacocoTestReport --no-daemon  --stacktrace --debug --info --scan
+          command: echo 'lol' #./gradlew jacocoTestReport --no-daemon  --stacktrace --debug --info --scan
       - run:
           name: Coveralls Running
-          command: ./gradlew  coveralls
+          command: ./gradlew echo 'lol2'  #coveralls
       - run:
           name: list stuff
           command: ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
