@@ -25,25 +25,25 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/msf_btnAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="All" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/msf_btnApproved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Approved" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/msfBtnPending"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Pending" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -40,6 +40,7 @@ import com.sd.a3kleingroup.classes.db.dbFile;
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -95,7 +96,7 @@ public class SendFileActivity extends BaseActivity {
             // first find user that the User wants to send to
             Callback myUserCallback = new Callback() {
                 @Override
-                public void onSuccess(HashMap<String, Object> data, String message) {
+                public void onSuccess(Map<String, Object> data, String message) {
                     afterGetEmail(data, message);
                 }
 
@@ -115,7 +116,7 @@ public class SendFileActivity extends BaseActivity {
          * @param data     The data from Utils.GetEmail. userID: <userID>
          * @param message: Extra info/message
          */
-        private void afterGetEmail(HashMap<String, Object> data, String message) {
+        private void afterGetEmail(Map<String, Object> data, String message) {
             // can now actually send, since we got a proper email.
             userToReceiveID = data.containsKey("userID") ? (String) data.get("userID") : "-1";
             Log.d(LOG_TAG, "Found userID from email: " + userToReceiveID);

@@ -76,8 +76,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
 
-    implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
-    implementation 'com.firebaseui:firebase-ui-firestore:6.0.2'
+    implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.1.0'
     //implementation 'com.android.support:multidex:1.0.3'
     testImplementation 'junit:junit:4.12'
 

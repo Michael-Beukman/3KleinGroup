@@ -13,7 +13,7 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/msf_li_imgBtn"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/msf_li_txtUserName"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
@@ -22,4 +22,15 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_hamburger_24px" />
+
+    <TextView
+        android:id="@+id/msf_li_txtUserName"
+        android:layout_width="174dp"
+        android:layout_height="0dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
