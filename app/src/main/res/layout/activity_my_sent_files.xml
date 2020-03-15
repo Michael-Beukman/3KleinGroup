@@ -39,7 +39,7 @@
                 android:text="Approved" />
 
             <Button
-                android:id="@+id/msfBtnPending"
+                android:id="@+id/msf_btnPending"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

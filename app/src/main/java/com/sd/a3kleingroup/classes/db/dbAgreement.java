@@ -12,6 +12,38 @@ public class dbAgreement implements dbObject{
     private String userSentID;
 
     /**
+     * Returns a date 20 years in future
+     * @return
+     */
+    public static Date getDate20YearsInfuture(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.YEAR, 20);
+        return c.getTime();
+    }
+
+    /**
+     * Returns a date 1 year in the past
+     * @return
+     */
+    public static Date getDateInPast(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.YEAR, -1);
+        return c.getTime();
+    }
+
+    /**
+     * Returns a date tomorrow
+     * @return
+     */
+    public static Date getDateTomorrow(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.HOUR, 24);
+        return c.getTime();
+    }
+    /**
      *
      * @param fileID The ID of the File in the DB
      * @param userID The user that should receive the File
@@ -34,10 +66,8 @@ public class dbAgreement implements dbObject{
         this.userID = userID;
         this.userSentID = userSentID;
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.YEAR, 20);
-        ValidUntil = c.getTime();
+
+        ValidUntil = dbAgreement.getDate20YearsInfuture();
     }
 
 

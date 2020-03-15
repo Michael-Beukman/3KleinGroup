@@ -1,12 +1,17 @@
 package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.telecom.Call;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,18 +26,25 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
+import com.sd.a3kleingroup.classes.Filter;
+import com.sd.a3kleingroup.classes.Holder;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.SingleSentFile;
 import com.sd.a3kleingroup.classes.StringCallback;
+import com.sd.a3kleingroup.classes.db.dbAgreement;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +52,22 @@ import java.util.Map;
 public class MySentFiles extends BaseActivity {
     private final String USER_COLLECTION_NAME = "Users";
     private final String FILE_COLLECTION_NAME = "Files";
+
     private String LOG_TAG = "LOG_MySentFiles";
+    // The file we have currently selected, and are looking at the options for
+    private SingleSentFile currentFileSelected = null;
+    private MyError errorHandler;
+
+    // Our filtering buttons
+    Button btnApproved;
+    Button btnAll;
+    Button btnPending;
+
     // the adapter for the recyclerview
-    FirestoreRecyclerAdapter adapter;
-    /** [
+    MyRecyclerViewAdapter adapter;
+    /**
+     * This caches the data we grab from the DB, so it's faster.
+     * [
      * 'Files' => ['fileID1' => {[file_data]}, 'fileID2' => {[file_data]}]
      * 'Users' => ['userID' => {[user_data]}]
      * ]
@@ -53,56 +77,95 @@ public class MySentFiles extends BaseActivity {
         put(FILE_COLLECTION_NAME, new HashMap<String, Map<String, Object>>());
     }};
 
+    /**
+     * Adapter for recyclerview. A Custom adapter is needed, since we have to do filtering
+     */
+    public class MyRecyclerViewAdapter extends RecyclerView.Adapter<Holder> {
+        private static final String LOG_TAG = "LOG_MyRecyclerViewAdap";
+        private ArrayList<SingleSentFile> mDataset; // main, i.e. base copy
+        private ArrayList<SingleSentFile> filtered; // the copy of the data with the filter applied
+        private Filter<SingleSentFile> currentFilter = null;
 
-    // This is a single item in our list
-    class Holder extends RecyclerView.ViewHolder {
-        TextView main;
-        ImageButton imgButton;
-        TextView userName;
-        Callback cbUser;
-        Callback cbFile;
-        Holder(View itemView) {
-            super(itemView);
-            main = itemView.findViewById(R.id.msf_li_txtTitle);
-            imgButton = itemView.findViewById(R.id.msf_li_imgBtn);
-            userName = itemView.findViewById(R.id.msf_li_txtUserName);
-            setCallbacks();
+        /**
+         * Creates with a query snapshot.
+         * @param data
+         */
+        public MyRecyclerViewAdapter(QuerySnapshot data) {
+            // make data
+            mDataset = new ArrayList<>();
+            for (DocumentSnapshot d: data.getDocuments()){
+                mDataset.add(
+                        new SingleSentFile((String)d.get("fileID"), (String)d.get("userID"), ((Timestamp)d.get("validUntil")).toDate(), (String)d.get("ownerID"), d.getId())
+                );
+            }
+            filtered = (ArrayList<SingleSentFile>) mDataset.clone();
         }
 
-        private void setCallbacks() {
-            cbUser = new Callback() {
-                @Override
-                public void onSuccess(Map<String, Object> data, String message) {
-                    userName.setText((String)data.get("name"));
-                }
-
-                @Override
-                public void onFailure(String error, MyError.ErrorCode errorCode) {
-                    userName.setText(error);
-
-                }
-            };
-
-            cbFile = new Callback() {
-                @Override
-                public void onSuccess(Map<String, Object> data, String message) {
-                    main.setText((String)data.get("filename"));
-                }
-
-                @Override
-                public void onFailure(String error, MyError.ErrorCode errorCode) {
-                    main.setText(error);
-
-                }
-            };
+        // Create new views (invoked by the layout manager)
+        @Override
+        public Holder onCreateViewHolder(ViewGroup group, int i) {
+            View view = LayoutInflater.from(group.getContext())
+                    .inflate(R.layout.msf_list_item, group, false);
+            return new Holder(view);
         }
 
         /**
-         * Makes as if it is loading
+         * Bind The view and the element.
+         * @param holder
+         * @param position
          */
-        public void setLoading() {
-            main.setText("Loading...");
-            userName.setText("Loading...");
+        @Override
+        public void onBindViewHolder(Holder holder, int position) {
+            SingleSentFile model = filtered.get(position);
+
+            Log.d(LOG_TAG, "Binding " + position + model.getUserID());
+            holder.main.setText(model.getUserID());
+
+            // before we query, make text 'loading...' on holder
+            holder.setLoading();
+
+            // get Username
+            getAsync(USER_COLLECTION_NAME, model.getUserID(), holder.cbUser);
+            // get filename
+            getAsync(FILE_COLLECTION_NAME, model.getFileID(), holder.cbFile);
+
+            // When clicking the hamburger,we need to show a popup and set the current selected file.
+            holder.imgButton.setOnClickListener(view -> {
+                Log.d(LOG_TAG, "Clicked " + position  + " " + model.getUserID());
+
+                // set the current item we are viewing, and showing options for.
+                currentFileSelected = model;
+
+                // show popup
+                showPopup(view);
+            });
+        }
+
+        // Return the size of your dataset (invoked by the layout manager)
+        @Override
+        public int getItemCount() {
+            return filtered.size();
+        }
+
+        /**
+         * Filters The dataset.
+         * @param filter
+         */
+        public void filter(Filter<SingleSentFile> filter){
+            currentFilter = filter;
+            filtered = (ArrayList<SingleSentFile>) mDataset.clone();
+            filter.filter(filtered);
+            notifyDataSetChanged();
+        }
+
+        /**
+         * Filters the dataset again with the last set filter.
+         */
+        public void filterWithCurrentFilter(){
+            if (currentFilter == null){
+                return;
+            }
+            this.filter(currentFilter);
         }
     }
 
@@ -138,9 +201,9 @@ public class MySentFiles extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_sent_files);
-        recyclerViewStuff();
+        errorHandler = new MyError(this.getApplicationContext());
         doButtons();
-
+        recyclerViewStuff();
     }
 
     /**
@@ -154,100 +217,183 @@ public class MySentFiles extends BaseActivity {
         // All the agreements that are mine
         Query query = db.collection("Agreements").whereEqualTo("ownerID", user.getUid());
 
-        FirestoreRecyclerOptions<SingleSentFile> response = new FirestoreRecyclerOptions.Builder<SingleSentFile>()
-                .setQuery(query, SingleSentFile.class)
-                .build();
-
-
-        adapter = new FirestoreRecyclerAdapter<SingleSentFile, Holder>(response) {
-            @Override
-            public void onBindViewHolder(Holder holder, int position, SingleSentFile model) {
-                Log.d(LOG_TAG, "Binding " + position + model.getUserID());
-                holder.main.setText(model.getUserID());
-                // now we query for results
-
-                // before we query, say loading per holder
-                holder.setLoading();
-
-                // get Username
-                getAsync(USER_COLLECTION_NAME, model.getUserID(), holder.cbUser);
-                // get filename
-                getAsync(FILE_COLLECTION_NAME, model.getFileID(), holder.cbFile);
-
-                holder.imgButton.setOnClickListener(view -> {
-                    Log.d(LOG_TAG, "Clicked " + position  + " " + model.getUserID());
-                    showPopup(view);
-                });
-            }
-            @Override
-            public Holder onCreateViewHolder(ViewGroup group, int i) {
-                View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.msf_list_item, group, false);
-                return new Holder(view);
-            }
-            @Override
-            public void onError(FirebaseFirestoreException e) {
-                Log.e(LOG_TAG, e.getMessage());
-            }
-        };
-
         RecyclerView mine = findViewById(R.id.msf_recAll);
-        mine.setAdapter(adapter);
-        adapter.startListening();
-        RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this);
-        mine.setLayoutManager(viewManager);
 
+        RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this);
+
+        // Add a snapshot listener, so that it updates live
+        query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e == null){
+                // good
+                adapter = new MyRecyclerViewAdapter(queryDocumentSnapshots);
+                mine.setAdapter(adapter);
+
+                mine.setLayoutManager(viewManager);
+            }else{
+                // todo error
+                errorHandler.displayError("An error occurred when trying to load data (" + e.getMessage() + ")");
+                Log.d(LOG_TAG, "Error at query snapshotlistener "+ e.getMessage());
+            }
+        });
     }
 
+    /**
+     * Creates popup menu
+     * @param v
+     */
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.actions, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.new_game:
-                        Log.d(LOG_TAG, "Clicked item 00");
-
-                        return true;
-                    case R.id.help:
-                        Log.d(LOG_TAG, "Clicked item 11");
-
-                        return true;
-                    default:
-                        return false;
-            }
-        }});
+        popup.setOnMenuItemClickListener(item -> {
+            String stuff =  currentFileSelected.getDocID() + " "+ currentFileSelected.getOwnerID() + " " + currentFileSelected.getValidUntil().toString();
+            switch (item.getItemId()) {
+                case R.id.Revoke:
+                    Log.d(LOG_TAG, "Revoking " + stuff);
+                    revoke(currentFileSelected);
+                    return true;
+                case R.id.ApproveTomo:
+                    Log.d(LOG_TAG, "Approving Til tomo " + stuff);
+                    approveTilTomorrow(currentFileSelected);
+                    return true;
+                case R.id.ApproveAlways:
+                    Log.d(LOG_TAG, "Approving Always " + stuff);
+                    approveIndefinitely(currentFileSelected);
+                    return true;
+                default:
+                    return false;
+        }
+    });
         popup.show();
     }
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.new_game:
-                Log.d(LOG_TAG, "Clicked item 0");
 
-                return true;
-            case R.id.help:
-                Log.d(LOG_TAG, "Clicked item 1");
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    /**
+     * Colours all buttons default, except for clicked one
+     * @param clicked
+     */
+    void colourButtons(Button clicked){
+        Resources.Theme theme = getApplicationContext().getTheme();
+        TypedValue typedValue = new TypedValue();
+        theme.resolveAttribute(R.attr.colorButtonNormal, typedValue, true);
+        for (Button btn: new Button[]{btnAll, btnApproved, btnPending}) {
+                btn.getBackground().clearColorFilter();
         }
+        clicked.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
+    }
+
+    /**
+     * Sets all button onClicks and such.
+     */
+    void doButtons(){
+        abstract class Base extends Filter<SingleSentFile>{
+            public abstract boolean shouldBeIn(SingleSentFile f);
+            @Override
+            public void filter(ArrayList<SingleSentFile> arr) {
+                int N = arr.size();
+                for (int i= N -1 ; i>=0; i--){
+                    SingleSentFile f = arr.get(i);
+                    if (!shouldBeIn(f)){
+                        arr.remove(i);
+                    }
+                }
+            }
+        }
+        btnApproved = findViewById(R.id.msf_btnApproved);
+        btnAll = findViewById(R.id.msf_btnAll);
+        btnPending = findViewById(R.id.msf_btnPending);
+
+        btnApproved.setOnClickListener(view -> {
+            colourButtons(btnApproved);
+            adapter.filter(new Base() {
+                @Override
+                public boolean shouldBeIn(SingleSentFile f) {
+                    return f.getValidUntil().after(new Date());
+                }
+            });
+        });
+
+        // all of them
+        btnAll.setOnClickListener(view -> {
+            colourButtons(btnAll);
+            adapter.filter(new Base() {
+                @Override
+                public boolean shouldBeIn(SingleSentFile f) {
+                    return true;
+                }
+            });
+        });
+
+        // only pending, i.e. not approved
+        btnPending.setOnClickListener(view -> {
+            colourButtons(btnPending);
+            adapter.filter(new Base() {
+                @Override
+                public boolean shouldBeIn(SingleSentFile f) {
+                    return f.getValidUntil().before(new Date());
+
+                }
+            });
+        });
     }
 
 
-    void doButtons(){
-        Button btnApproved = findViewById(R.id.msf_btnApproved);
-        btnApproved.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                );
-            }
+    /**
+     * Arbitrary function to change the date of a file in firebase. Handles UI updates and firebase stuff.
+     */
+    void changePermissions(Date d, SingleSentFile file){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Date tmp = file.getValidUntil();
+
+        // set date
+        file.setValidUntil(d);
+
+        // filter again, so that this gets hidden if only approved
+        adapter.filterWithCurrentFilter();
+        // do query
+        db.collection("Agreements").document(file.getDocID()).update(
+                "validUntil", d
+        ).addOnFailureListener(e -> {
+            // it failed, so roll back changes
+            // set date back
+            file.setValidUntil(tmp);
+
+            // filter again
+            adapter.filterWithCurrentFilter();
+
+            // show error
+            errorHandler.displayError("Could not update Database (" + e.getMessage()  + ")");
+        }).addOnSuccessListener(aVoid -> {
+            // success
+            errorHandler.displaySuccess("Successfully changed permissions");
         });
+
+
+    }
+
+    /**
+     * Revokes the permissions for this agreement by setting validUntil in the past.
+     * @param file
+     */
+    void revoke(SingleSentFile file){
+        changePermissions(dbAgreement.getDateInPast(), file);
+    }
+
+    /**
+     * Approves until tomorrow
+     * @param file
+     */
+    void approveTilTomorrow(SingleSentFile file){
+        changePermissions(dbAgreement.getDateTomorrow(), file);
+    }
+
+    /**
+     * Approves indefinitely
+     * @param file
+     */
+    void approveIndefinitely(SingleSentFile file){
+        changePermissions(dbAgreement.getDate20YearsInfuture(), file);
     }
 
 

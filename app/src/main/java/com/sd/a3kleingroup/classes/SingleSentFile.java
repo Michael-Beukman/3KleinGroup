@@ -3,6 +3,7 @@ package com.sd.a3kleingroup.classes;
 import java.util.Date;
 
 public class SingleSentFile {
+    private String docID;
     private String fileID;
     private String userID;
     private Date validUntil;
@@ -41,4 +42,16 @@ public class SingleSentFile {
     }
 
     public SingleSentFile(){}
+
+    public SingleSentFile(String fileID, String userID, Date validUntil, String ownerID, String docID) {
+        this.fileID = fileID;
+        this.userID = userID;
+        this.validUntil = validUntil;
+        this.ownerID = ownerID;
+        this.docID = docID;
+    }
+
+    public String getDocID() {
+        return docID;
+    }
 }
