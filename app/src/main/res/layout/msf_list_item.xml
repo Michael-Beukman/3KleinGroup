@@ -9,6 +9,7 @@
         android:id="@+id/msf_li_txtTitle"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
         android:text="Yeet"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,13 +21,17 @@
         android:id="@+id/msf_li_imgBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/msf_li_txtTitle"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_hamburger_24px" />
 
     <TextView
         android:id="@+id/msf_li_txtUserName"
         android:layout_width="174dp"
         android:layout_height="0dp"
+        android:gravity="center_vertical"
         android:text="TextView"
         android:textAlignment="center"
         android:textAllCaps="false"
