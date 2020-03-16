@@ -333,6 +333,7 @@ public class SendFileActivity extends BaseActivity {
         file = new MyFile();
         errorHandler = new MyError(getApplication());
         MyFirebaseMessagingService x = new MyFirebaseMessagingService();
+        Log.d(LOG_TAG, String.valueOf(x));
         x.getToken();
         new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
     }

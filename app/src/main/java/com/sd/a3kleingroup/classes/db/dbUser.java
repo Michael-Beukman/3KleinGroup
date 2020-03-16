@@ -23,7 +23,7 @@ public class dbUser implements dbObject{
         return new HashMap<String, Object>(){{
             put("name", name);
             put("email", email);
-//            put("notificationToken", notificationToken);
+            put("notificationToken", notificationToken);
         }};
     }
 }

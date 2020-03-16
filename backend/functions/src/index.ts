@@ -22,46 +22,128 @@ exports.createAgreement = functions.firestore
     // Get an object representing the document
     // e.g. {'fileID': '..', 'userID': '...', validUntil: ...}
     const newValue = snap.data();
-    console.log("got data from snap ", {newValue});
+    console.log("got data from snap ", { newValue });
     // the user that should get the notification
     const userID = newValue.userID;
-    console.log("got user id ", {userID});
+    console.log("got user id ", { userID });
     const db = admin.firestore();
     db.collection("Users")
       .doc(userID)
       .get()
       .then((snapshot) => {
-          console.log("got snapshot from users ", {snapshot}, {data: snapshot.data()});
+        console.log(
+          "got snapshot from users ",
+          { snapshot },
+          { data: snapshot.data() }
+        );
         const notifToken = snapshot.data().notificationToken;
         // Notification details.
-        console.log("got snapshot from users notiftoekn ", {notifToken});
+        console.log("got snapshot from users notiftoekn ", { notifToken });
         const payload = {
           notification: {
             title: "New File received!",
             body: `File id is: ${newValue.fileID}`
-          } 
+          }
         };
-        console.log("payload ", {payload});
+        console.log("payload ", { payload });
 
         // Listing all tokens as an array.
         // tokens = Object.keys(tokensSnapshot.val());
         // Send notifications to all tokens.
-        admin.messaging().sendToDevice(notifToken, payload).then(
-            
-            r => {console.log('error1', r)
-            console.log("sent message")}
-        ).catch(xx => {
-            console.log('error4', xx)
-        });
-      }).catch(e => {
-          console.log('error2', e);
+        admin
+          .messaging()
+          .sendToDevice(notifToken, payload)
+          .then((r) => {
+            console.log("error1", r);
+            console.log("sent message");
+          })
+          .catch((xx) => {
+            console.log("error4", xx);
+          });
+      })
+      .catch((e) => {
+        console.log("error2", e);
       })
       .catch((x) => {
         // todo
-        console.log('error3', x);
+        console.log("error3", x);
       });
 
     // perform desired operations ...
 
     console.log("done");
+  });
+
+exports.changeAgreement = functions.firestore
+  .document("Agreements/{agreementID}")
+  .onUpdate((change, ctx) => {
+    function addDays(date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+    const data = change.after.data();
+    console.log(data, "change data");
+    const timestamp: Date = data.validUntil.toDate();
+    const now = new Date();
+    // need to get file and user;
+    const fileID = data.fileID;
+    const userID = data.userID;
+    const ownerID = data.ownerID;
+
+    const db = admin.firestore();
+    const docUser1 = db.collection("Users").doc(userID);
+    const docUserOwner = db.collection("Users").doc(ownerID);
+    const docFile = db.collection("Files").doc(fileID);
+    admin
+      .firestore()
+      .getAll(docUser1, docUserOwner, docFile)
+      .then((docs) => {
+        const userDoc = docs[0];
+        const ownerDoc = docs[1];
+        const fileDoc = docs[2];
+        const userNotif = userDoc.data().notificationToken;
+        const ownerName = ownerDoc.data().name;
+        const fileName = fileDoc.data().filename;
+        console.log(
+          "Obtained from firebase ",
+          { docs },
+          { userNotif, ownerName, fileName }
+        );
+
+        // now we proceed to send the message
+        let message;
+
+        if (timestamp < now) {
+          // then we have been revoked
+          message = `You have been revoked by ${ownerName} for the file ${fileName}`;
+        } else if (timestamp < addDays(now, 2)) {
+          // less than in two days, i.e. til tomorrow
+          message = `You have been given access until tomorrow by ${ownerName} for the file ${fileName}`;
+        } else {
+          // indefinitely
+          message = `You have been given access by ${ownerName} for the file ${fileName}`;
+        }
+        const payload = {
+            notification: {
+              title: message,
+              body: message
+            }
+          };
+        // send
+        admin
+          .messaging()
+          .sendToDevice(userNotif, payload)
+          .then((r) => {
+            console.log("sent message change", r);
+            console.log("sent message");
+          })
+          .catch((xx) => {
+            console.log("error4", xx);
+          });
+      }).catch(e => {
+          console.log("error here", e);
+      }).catch((e) => {
+        console.log("Error at getAll", e);
+      });
   });

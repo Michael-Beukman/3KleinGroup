@@ -27,7 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "1";
     private String TAG = "LOG_MyFirebaseMessagingService";
     public void getToken(){
-        Log.w(TAG, "Im getting a token");
+        Log.d(TAG, "Im getting a token");
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -60,10 +60,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // sendRegistrationToServer(token);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            Log.d(TAG, "User Is null on new token, aborting");
+            return;
+        }
         dbUser myuser = new dbUser(user.getEmail(), user.getDisplayName(), token);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Users").document(user.getUid()).update(myuser.getHashmap());
+        db.collection("Users").document(user.getUid()).update(myuser.getHashmap()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG,"Here at task " + task.isSuccessful() + " " + task.getException() + " " + user.getUid());
+            }
+        });
 
     }
 
