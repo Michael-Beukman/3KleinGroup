@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sd.a3kleingroup.R;
 
+import java.io.IOException;
+
 public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private RecyclerViewClickListener mListener;
@@ -25,6 +27,7 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        mListener.onClick(view, getAdapterPosition());
+            mListener.onClick(view, getAdapterPosition());
+
     }
 }

@@ -13,16 +13,23 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sd.a3kleingroup.classes.FileModel;
 import com.sd.a3kleingroup.classes.RecyclerAdapter;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -91,7 +98,7 @@ public class ReceiveFilesActivity extends AppCompatActivity {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                                     if(fileIDs.contains(document.getId())){
                                                         HashMap<String, Object> map = (HashMap<String, Object>) document.getData();
-                                                        FileModel file = new FileModel((String) map.get("filename"),"",(String) map.get("storageURL"));
+                                                        FileModel file = new FileModel((String) map.get("filename"),"",(String) map.get("filepath"), (String) map.get("storageURL"));
                                                         fileModelArrayList.add(file);
                                                     }
                                                 }
@@ -117,16 +124,45 @@ public class ReceiveFilesActivity extends AppCompatActivity {
     }
 
 
-    public void downloadFile(String fileName, String fileExtension, String destinationDirectory, String url) {
+    public void downloadFile(FileModel file) {
 
-        DownloadManager downloadmanager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
-        Uri uri = Uri.parse(url);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference fileRef = storageRef.child(file.getPath());
 
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalFilesDir(this, destinationDirectory, fileName + fileExtension);
+        File localFile = null;
+        try {
+            //TODO check that filename is valid
+            localFile = File.createTempFile("temp", null,null);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        }
 
-        downloadmanager.enqueue(request);
+
+        fileRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                // Local temp file has been created
+                Log.e(LOG_TAG, taskSnapshot.getBytesTransferred()+"");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Log.e(LOG_TAG, exception.getMessage());
+            }
+        });
+        Log.e(LOG_TAG, localFile.getAbsolutePath());
+
+        //Google download manager
+//        DownloadManager downloadmanager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+//        Uri uri = Uri.parse(url);
+//        DownloadManager.Request request = new DownloadManager.Request(uri);
+//
+//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+//        request.setDestinationInExternalFilesDir(this, destinationDirectory, fileName + fileExtension);
+//
+//        downloadmanager.enqueue(request);
     }
 
 
@@ -137,8 +173,8 @@ public class ReceiveFilesActivity extends AppCompatActivity {
         RecyclerViewClickListener listener = new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Log.e(LOG_TAG, ""+fileModelArrayList.get(position).getUrl());
                 FileModel file = fileModelArrayList.get(position);
+                downloadFile(file);
             }
         };
         myAdapter = new RecyclerAdapter(ReceiveFilesActivity.this, fileModelArrayList, listener);

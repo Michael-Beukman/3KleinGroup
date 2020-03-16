@@ -6,12 +6,22 @@ public class FileModel {
 
     String fileName;
     String format;
+    String path;
     String url;
 
-    public FileModel(String fileName, String format, String url) {
+    public FileModel(String fileName, String format,  String path, String url) {
         this.fileName = fileName;
         this.format=format;
+        this.path = path;
         this.url = url;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getUrl() {
