@@ -64,6 +64,12 @@ jobs:
           name: list stuff
           command: echo "hey"  #ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
       - run:
+          name: gradle testDebug
+          command: echo "hey" ./gradlew testDebugUnitTest 
+      - run:
+          name: gradle coverage
+          command: echo "hey" ./gradlew createDebugCoverageReport 
+      - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
