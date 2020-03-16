@@ -7,7 +7,8 @@ jobs:
     docker:
       - image: circleci/android:api-28-alpha
     environment:
-      JVM_OPTS: -Xmx2048m -Xms512m
+      JVM_OPTS: -Xmx2048m -Xms512m -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap
+      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
     steps:
       - checkout
       - restore_cache:
@@ -30,7 +31,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Tests
-          command: ./gradlew lint test  coveralls
+          command: ./gradlew  test 
           
 
       - run:
@@ -55,13 +56,19 @@ jobs:
 
       - run:
           name: Run Coverage
-          command: ./gradlew jacocoTestReport coveralls
+          command: echo 'lol' #./gradlew jacocoTestReport --no-daemon  --stacktrace --debug --info --scan
       - run:
-          name: Run Coveralls things
-          command: ./gradlew coveralls
+          name: Coveralls Running
+          command: echo 'abc' #./gradlew coveralls
       - run:
           name: list stuff
-          command: ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
+          command: echo "hey"  #ls /home/circleci/code/app/build/reports/jacoco/test/ ; ls /home/circleci/code/app/build ; ls /home/circleci/code/app/build/reports
+      - run:
+          name: gradle testDebug
+          command: ./gradlew testDebugUnitTest 
+      - run:
+          name: gradle coverage
+          command: ./gradlew createDebugCoverageReport --no-daemon --stacktrace --debug --info
       - run:
           name: Save test results
           command: |

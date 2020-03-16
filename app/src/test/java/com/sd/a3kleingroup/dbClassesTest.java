@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert.*;
 public class dbClassesTest {
@@ -17,17 +18,17 @@ public class dbClassesTest {
     public void testDBAgreement(){
         String fileID = "testFileID";
         String userID = "testUserID";
+        String owner="owner";
         Date ValidUntil = new Date();
         dbAgreement ag = new dbAgreement(
-                fileID, userID, ValidUntil
+                fileID, userID, ValidUntil, owner
         );
-
-        Assert.assertEquals(
-                new HashMap<String,Object>(){{
-                    put("fileID", fileID);
-                    put("userID", userID);
-                    put("validUntil", ValidUntil);
-                }}
+        Map<String, Object>x =                 new HashMap<String,Object>();
+        x.put("fileID", fileID);
+        x.put("userID", userID);
+        x.put("validUntil", ValidUntil);
+        x.put("ownerID", owner);
+        Assert.assertEquals(x
                 ,ag.getHashmap());
     }
 
@@ -36,12 +37,13 @@ public class dbClassesTest {
         String userID = "tstUser";
         String filepath = userID + "/" + "tmpFilename";
         String name = "filename";
-
-        dbFile f = new dbFile(filepath, name, userID);
+        String url = "url";
+        dbFile f = new dbFile(filepath, name, userID, url);
         Assert.assertEquals(new HashMap<String, Object>(){{
             put("userID", userID);
             put("filepath", filepath);
             put("filename", name);
+            put("storageURL", url);
         }},  f.getHashmap());
     }
 

@@ -2,6 +2,7 @@ package com.sd.a3kleingroup.classes.db;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class dbUser implements dbObject{
     private String email, name, notificationToken;
@@ -18,11 +19,11 @@ public class dbUser implements dbObject{
     }
 
     @Override
-    public HashMap<String, Object> getHashmap() {
+    public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{
             put("name", name);
             put("email", email);
-            put("notificationToken", notificationToken);
+//            put("notificationToken", notificationToken);
         }};
     }
 }

@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
+import java.util.Map;
 
 //@RunWith(AndroidJUnit4.class)
 public class UtilsTest {
@@ -25,7 +26,7 @@ public class UtilsTest {
         // first test for an email that is there.
         Callback tstCallBackSuccess = new Callback() {
             @Override
-            public void onSuccess(HashMap<String, Object> data, String message) {
+            public void onSuccess(Map<String, Object> data, String message) {
                 Assert.assertEquals(data.get("userID"), "En8fRBqxPiZ13HvOabUx7uOXN2T2");
             }
 
@@ -42,7 +43,7 @@ public class UtilsTest {
         // now test email that is not in
         Callback tstCallBackFailure = new Callback() {
             @Override
-            public void onSuccess(HashMap<String, Object> data, String message) {
+            public void onSuccess(Map<String, Object> data, String message) {
                 // this shouldnt happen
                 Assert.assertEquals(1,0);
             }

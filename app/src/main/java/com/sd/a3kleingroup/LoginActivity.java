@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestIdToken("lol")
                 .requestEmail()
                 .build();
 
@@ -74,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                 btnSignOut.setVisibility(View.INVISIBLE);
             }
         });
+        // sign in initially
+        signIn();
     }
 
     private void signIn(){
@@ -121,6 +122,11 @@ public class LoginActivity extends AppCompatActivity {
                         db.collection("Users").document(user.getUid())
                                 .set(new dbUser(user.getEmail(), user.getDisplayName()).getHashmap(), SetOptions.merge());
 
+
+                        Intent intent2 = new Intent(getApplicationContext(), MySentFiles.class);
+                        startActivity(intent2);
+                        return;
+                        /*
                         // todo: This is a hack to go to sendfile after login
 //                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
 //                        startActivity(intent);
