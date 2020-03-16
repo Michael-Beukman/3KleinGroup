@@ -68,7 +68,7 @@ jobs:
           command: ./gradlew testDebugUnitTest 
       - run:
           name: gradle coverage
-          command: ./gradlew createDebugCoverageReport --no-daemon
+          command: ./gradlew createDebugCoverageReport --no-daemon --stacktrace --debug --info
       - run:
           name: Save test results
           command: |
