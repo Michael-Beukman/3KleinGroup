@@ -22,9 +22,9 @@ import java.util.Map;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 
-@RunWith(RobolectricTestRunner.class)
-//@RunWith(JUnit4.class)
-@Config(sdk = 27)
+//@RunWith(RobolectricTestRunner.class)
+////@RunWith(JUnit4.class)
+//@Config(sdk = 27)
 public class RoboElectricTest {
 //    ActivityController<MySentFiles> controller;
 //    MySentFiles act;
