@@ -55,6 +55,7 @@ public class dbClassesTest {
         Assert.assertEquals(new HashMap<String, Object>(){{
             put("email", email);
             put("name", name);
+            put("notificationToken",null);
         }}, user.getHashmap());
     }
 }

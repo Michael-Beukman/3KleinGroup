@@ -183,7 +183,6 @@ public class MySentFiles extends BaseActivity {
         else{
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             System.out.println("REEE " + db);
-
             db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
                 Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
                 if (documentSnapshot.getData() == null){
