@@ -21,7 +21,7 @@ public class UtilsTest {
     public ActivityScenarioRule<MainActivity>  activityScenarioRule = new ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     @Test
-    public void testGetEmailFromUser(){
+    public void testGetEmailFromUser() throws InterruptedException {
 
         // first test for an email that is there.
         Callback tstCallBackSuccess = new Callback() {
@@ -56,5 +56,8 @@ public class UtilsTest {
         };
 
         utils.getUserFromEmail("badEmail@lol.com", tstCallBackFailure);
+
+
+        Thread.sleep(2000);
     }
 }

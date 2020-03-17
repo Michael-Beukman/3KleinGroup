@@ -51,6 +51,7 @@ import static junit.framework.TestCase.assertTrue;
 
 @RunWith(JUnit4.class)
 public class MySentFilesTest {
+    final int TIME_TO_SLEEP=2000;
     @Rule
     public ActivityScenarioRule<MySentFiles> activityScenarioRule
             = new ActivityScenarioRule<>(MySentFiles.class);
@@ -78,7 +79,6 @@ public class MySentFilesTest {
 
     @Test
     public void testGetAsync() throws InterruptedException {
-        Log.d("REEEE", "In test async");
         // Correct, test twice
         activityScenarioRule.getScenario().onActivity(activity -> {
             activity.getAsync(activity.USER_COLLECTION_NAME, "25MsMCqDk0TxwoQB5IjwExZnJHf2", new Callback() {
@@ -124,11 +124,11 @@ public class MySentFilesTest {
             }
         }));
 
-        Thread.sleep(5000);
+        Thread.sleep(TIME_TO_SLEEP);
     }
-    /*
+
     @Test
-    public void changePermissionsIndef(){
+    public void changePermissionsIndef() throws InterruptedException {
         String docID = "k7XccP4XYnAHkD638sT6";
         Date d = dbAgreement.getDate20YearsInfuture();
         SingleSentFile testFile = new SingleSentFile("ZLCxcsanWFqIqYxnaeoD",
@@ -136,25 +136,28 @@ public class MySentFilesTest {
                     "MxTtBm9zkTaesi86UH5uaqGKvlA2",docID);
         activityScenarioRule.getScenario().onActivity(activity -> {
 
+            // now change permissions
+            activity.approveIndefinitely(testFile);
+            try {
+                Thread.sleep(TIME_TO_SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             final boolean[] first = {true};
             db.collection("Agreements").document(docID).addSnapshotListener((documentSnapshot, e) -> {
-                if (first[0])
-                    first[0] = false;
-                else{
-                    // this is the second change, i.e. after changing
-                    assertTrue(((Timestamp)documentSnapshot.getData().get("validUntil")).toDate().after(d));
-                }
+                assertTrue(((Timestamp)documentSnapshot.getData().get("validUntil")).toDate().after(d));
             });
 
-            // now change permissions
-            activity.approveIndefinitely(testFile);
         });
+
+        Thread.sleep(TIME_TO_SLEEP);
+
     }
-    */
-    /*
+
     @Test
-    public void changePermissionsTomorrow(){
+    public void changePermissionsTomorrow() throws InterruptedException {
         String docID = "k7XccP4XYnAHkD638sT6";
         Date d = dbAgreement.getDateTomorrow();
         SingleSentFile testFile = new SingleSentFile("ZLCxcsanWFqIqYxnaeoD",
@@ -162,6 +165,14 @@ public class MySentFilesTest {
                 "MxTtBm9zkTaesi86UH5uaqGKvlA2",docID);
         activityScenarioRule.getScenario().onActivity(activity -> {
 
+            // now change permissions
+            activity.approveTilTomorrow(testFile);
+            try {
+                Thread.sleep(TIME_TO_SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             final boolean[] first = {true};
             db.collection("Agreements").document(docID).addSnapshotListener((documentSnapshot, e) -> {
@@ -173,34 +184,40 @@ public class MySentFilesTest {
                 }
             });
 
-            // now change permissions
-            activity.approveTilTomorrow(testFile);
+
         });
+
+        Thread.sleep(TIME_TO_SLEEP);
+
     }
 
     @Test
-    public void changePermissionsRevoke(){
-        String docID = "k7XccP4XYnAHkD638sT6";
+    public void changePermissionsRevoke() throws InterruptedException {
+        String docID = "JNHLV5eQ9nCYEfvonBQ9";
         Date d = dbAgreement.getDateInPast();
-        SingleSentFile testFile = new SingleSentFile("ZLCxcsanWFqIqYxnaeoD",
-                "MxTtBm9zkTaesi86UH5uaqGKvlA2", d,
+        SingleSentFile testFile = new SingleSentFile("lgOW6jYP1hXPmHJKE4i2",
+                "En8fRBqxPiZ13HvOabUx7uOXN2T2", d,
                 "MxTtBm9zkTaesi86UH5uaqGKvlA2",docID);
         activityScenarioRule.getScenario().onActivity(activity -> {
 
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            final boolean[] first = {true};
-            db.collection("Agreements").document(docID).addSnapshotListener((documentSnapshot, e) -> {
-                if (first[0])
-                    first[0] = false;
-                else{
-                    // this is the second change, i.e. after changing
-                    assertTrue(((Timestamp)documentSnapshot.getData().get("validUntil")).toDate().before(new Date()));
-                }
-            });
 
             // now change permissions
             activity.revoke(testFile);
+            try {
+                Thread.sleep(TIME_TO_SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Agreements").document(docID).addSnapshotListener((documentSnapshot, e) -> {
+                Log.d("LOG_MY_TEST_LOG", e!=null ? e.getMessage(): " no exceptions ");
+                Log.d("LOG_MY_TEST_LOG", String.valueOf(((Timestamp)documentSnapshot.getData().get("validUntil")).toDate()));
+                assertTrue(((Timestamp)documentSnapshot.getData().get("validUntil")).toDate().before(new Date()));
+            });
         });
+
+
+        Thread.sleep(TIME_TO_SLEEP);
+
     }
-*/
 }
