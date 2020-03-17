@@ -12,7 +12,7 @@
      - name: checkout
        uses: actions/checkout@v2
      - name: make google.json
-       run: $GOOGLE_JSON_BASE64 | base64 -d > app/google-services.json
+       run: echo $GOOGLE_JSON_BASE64 | base64 -d > app/google-services.json
        env: 
          GOOGLE_JSON_BASE64: ${{ secrets.GOOGLE_JSON_BASE64  }}
      - name: run tests
