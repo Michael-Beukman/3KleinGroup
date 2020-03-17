@@ -21,4 +21,6 @@
        uses: reactivecircus/android-emulator-runner@v2
        with:
          api-level: 29
-         script:  ./gradlew jacocoTestReport coveralls
+         script:  ./gradlew jacocoTestReport &&  ./gradlew coveralls
+     - name: list things
+       run: tree app/build
