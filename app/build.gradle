@@ -53,7 +53,14 @@ android {
             lintOptions {
                 disable "AccidentalOctal", "AnnotationProcessorOnCompilePath", "UseOfBundledGooglePlayServices", "GradleCompatible", "DataBindingWithoutKapt", "GradleDependency", "GradleDeprecated", "GradleDeprecatedConfiguration", "OutdatedLibrary", "DevModeObsolete", "DuplicatePlatformClasses", "ExpiredTargetSdkVersion", "ExpiringTargetSdkVersion", "GradleGetter", "GradlePluginVersion", "HighAppVersionCode", "GradleIdeError", "LifecycleAnnotationProcessorWithJava8", "MinSdkTooLow", "NotInterpolated", "GradlePath", "GradleDynamicVersion", "NewerVersionAvailable", "RiskyLibrary", "StringShouldBeInt", "InvalidPackage"
             }
+            testOptions {
+                unitTests {
+                    includeAndroidResources = true
+                    returnDefaultValues = true
+                }
+            }
         }
+
     }
 
 // To inline the bytecode built with JVM target 1.8 into
@@ -79,6 +86,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:6.1.0'
 //    implementation 'com.android.support:multidex:2.0.1'
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:4.3.1"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

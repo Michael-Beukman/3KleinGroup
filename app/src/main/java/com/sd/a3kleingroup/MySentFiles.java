@@ -177,19 +177,30 @@ public class MySentFiles extends BaseActivity {
      * @param cb
      */
     protected void getAsync(String collectionName, String docID, Callback cb){
+        System.out.println("REEE " + details.get(collectionName).containsKey(docID));
+
         if (details.get(collectionName).containsKey(docID)) cb.onSuccess((details.get(collectionName).get(docID)), "");
         else{
             FirebaseFirestore db = FirebaseFirestore.getInstance();
+            System.out.println("REEE " + db);
+
             db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
                 Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
                 if (documentSnapshot.getData() == null){
                     cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
+                    System.out.println("NEEE");
+
                 }
-                else cb.onSuccess(documentSnapshot.getData(), "");
+                else {
+                    cb.onSuccess(documentSnapshot.getData(), "");
+                    System.out.println("NEEE");
+
+                }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     cb.onFailure(e.getMessage(), MyError.ErrorCode.TASK_FAILED);
+                    System.out.println("NEEE");
                 }
             });
         }
