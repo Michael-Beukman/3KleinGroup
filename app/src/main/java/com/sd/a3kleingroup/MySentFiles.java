@@ -2,9 +2,13 @@ package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -26,6 +30,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -206,15 +211,17 @@ public class MySentFiles extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_my_sent_files);
+        super.onCreate(savedInstanceState);
         errorHandler = new MyError(this.getApplicationContext());
-        MyFirebaseMessagingService x = new MyFirebaseMessagingService();
-        Log.d(LOG_TAG, String.valueOf(x));
-        x.getToken();
+//        MyFirebaseMessagingService x = new MyFirebaseMessagingService();
+//        Log.d(LOG_TAG, String.valueOf(x));
+//        x.getToken();
         doButtons();
         recyclerViewStuff();
+        nav.getMenu().getItem(4).setChecked(true);
+
     }
 
     /**
@@ -337,7 +344,6 @@ public class MySentFiles extends BaseActivity {
                 }
             });
         });
-
         // only pending, i.e. not approved
         btnPending.setOnClickListener(view -> {
             colourButtons(btnPending);
@@ -349,6 +355,8 @@ public class MySentFiles extends BaseActivity {
                 }
             });
         });
+        colourButtons(btnAll);
+
     }
 
     /**

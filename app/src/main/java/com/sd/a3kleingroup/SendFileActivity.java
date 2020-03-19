@@ -294,6 +294,7 @@ public class SendFileActivity extends BaseActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FILE_REQUEST_CODE) {
             // then we know that this was the file choosing result.
             if (resultCode == FILE_RESULT_SUCCESS) {
@@ -325,9 +326,10 @@ public class SendFileActivity extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_send_file);
+        super.onCreate(savedInstanceState);
+
         setElements();
         setEvents();
         file = new MyFile();
@@ -336,6 +338,9 @@ public class SendFileActivity extends BaseActivity {
         Log.d(LOG_TAG, String.valueOf(x));
         x.getToken();
         new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
+
+        nav.getMenu().getItem(1).setChecked(true);
+
     }
 
     /**

@@ -4,18 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MySentFiles">
+    tools:context=".MySentFiles"
+    android:id="@+id/msf_constraintLayout"
+    >
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <TextView
             android:id="@+id/msf_txtHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ree"
+            android:text="My Sent Files"
             android:textAlignment="center"
             android:textSize="24sp" />
 
@@ -49,7 +55,21 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/msf_recAll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="594dp">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/fui_bgGitHub"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/navigation"
+        tools:layout_editor_absoluteX="0dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

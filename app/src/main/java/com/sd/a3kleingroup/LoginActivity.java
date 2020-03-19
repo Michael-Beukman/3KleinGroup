@@ -126,11 +126,9 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent2 = new Intent(getApplicationContext(), MySentFiles.class);
                         startActivity(intent2);
                         return;
-                        /*
-                        // todo: This is a hack to go to sendfile after login
-                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
-                        startActivity(intent);;
-                         */
+//                         todo: This is a hack to go to sendfile after login
+//                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
+//                        startActivity(intent);;
                     } else {
                         Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
