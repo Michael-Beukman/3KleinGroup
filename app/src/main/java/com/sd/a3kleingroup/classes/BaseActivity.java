@@ -93,4 +93,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void goToHome() {
         //todo
     }
+
+    /**
+     * Sets nav item i checked if nav is not null.
+     * @param item
+     */
+    protected void setChecked(int item){
+        if (nav != null)
+            nav.getMenu().getItem(item).setChecked(true);
+    }
 }

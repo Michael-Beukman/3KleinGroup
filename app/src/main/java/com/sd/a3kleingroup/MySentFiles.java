@@ -220,7 +220,8 @@ public class MySentFiles extends BaseActivity {
 //        x.getToken();
         doButtons();
         recyclerViewStuff();
-        nav.getMenu().getItem(4).setChecked(true);
+        setChecked(4);
+
 
     }
 

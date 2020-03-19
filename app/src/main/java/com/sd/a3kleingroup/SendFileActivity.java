@@ -339,7 +339,7 @@ public class SendFileActivity extends BaseActivity {
         x.getToken();
         new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
 
-        nav.getMenu().getItem(1).setChecked(true);
+        setChecked(1);
 
     }
 
