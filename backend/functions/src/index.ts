@@ -27,6 +27,65 @@ exports.createAgreement = functions.firestore
     const userID = newValue.userID;
     console.log("got user id ", { userID });
     const db = admin.firestore();
+
+    // the user that receives the file
+    const docUser = db.collection("Users").doc(userID);
+    // the file itself
+    const docFile = db.collection("Files").doc(newValue.fileID);
+    const docOwner = db.collection("Users").doc(newValue.ownerID);
+
+    admin
+      .firestore()
+      .getAll(docUser, docFile, docOwner)
+      .then((docs) => {
+        const userData = docs[0].data();
+        const fileData = docs[1].data();
+        const ownerData = docs[2].data();
+        console.log("Got data from user, file and owner ", {
+          userData,
+          fileData,
+          ownerData
+        });
+
+        const userNotifToken = userData.notificationToken;
+        const ownerName = ownerData.name;
+        const fileName = fileData.filename;
+
+        const notifToken = userNotifToken
+        
+        // Notification details.
+        console.log("got snapshot from users notifToken ", { notifToken });
+        const payload = {
+          notification: {
+            title: "New File received!",
+            body: `You received ${fileName} from ${ownerName}`
+          }
+        };
+        console.log("payload ", { payload });
+
+        // Listing all tokens as an array.
+        // tokens = Object.keys(tokensSnapshot.val());
+        // Send notifications to all tokens.
+        admin
+          .messaging()
+          .sendToDevice(notifToken, payload)
+          .then((r) => {
+            console.log("error1", r);
+            console.log("sent message");
+          })
+          .catch((xx) => {
+            console.log("error4", xx);
+          });
+      })
+      .catch((error) => {
+        console.log(
+          "We got an error at getAll in the createAgreement function. ",
+          { error }
+        );
+      });
+
+    // Below is the old code, where the notification was a little bit ugly.
+    /*
     db.collection("Users")
       .doc(userID)
       .get()
@@ -70,7 +129,7 @@ exports.createAgreement = functions.firestore
       });
 
     // perform desired operations ...
-
+  */
     console.log("done");
   });
 
@@ -125,11 +184,11 @@ exports.changeAgreement = functions.firestore
           message = `You have been given access by ${ownerName} for the file ${fileName}`;
         }
         const payload = {
-            notification: {
-              title: message,
-              body: message
-            }
-          };
+          notification: {
+            title: message,
+            body: message
+          }
+        };
         // send
         admin
           .messaging()
@@ -141,9 +200,11 @@ exports.changeAgreement = functions.firestore
           .catch((xx) => {
             console.log("error4", xx);
           });
-      }).catch(e => {
-          console.log("error here", e);
-      }).catch((e) => {
+      })
+      .catch((e) => {
+        console.log("error here", e);
+      })
+      .catch((e) => {
         console.log("Error at getAll", e);
       });
   });

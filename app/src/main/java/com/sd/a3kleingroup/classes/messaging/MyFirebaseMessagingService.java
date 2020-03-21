@@ -26,6 +26,7 @@ import com.sd.a3kleingroup.classes.db.dbUser;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CHANNEL_ID = "1";
     private String TAG = "LOG_MyFirebaseMessagingService";
+    private static int NOTIF_ID = 2;
     public void getToken(){
         Log.d(TAG, "Im getting a token");
 
@@ -83,7 +84,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "RECEIVED MESSAGE " + remoteMessage.toString());
 
         createNotificationChannel();
+        String title = "New message";
+        String body = "You received a new messsage";
+        try {
+            title = remoteMessage.getNotification().getTitle();
+        }catch (NullPointerException ignored){}
 
+        try {
+            body = remoteMessage.getNotification().getBody();
+        }catch (Exception ignored){}
+
+        displayNotification(title, body);
+        return ;
+        /*
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.common_full_open_on_phone)
                 .setContentTitle(remoteMessage.getNotification().getTitle())
@@ -95,14 +108,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1590, builder.build());
-
-//        Notification notification = new NotificationCompat.Builder(this)
-//                .setContentTitle(remoteMessage.getNotification().getTitle())
-//                .setContentText(remoteMessage.getNotification().getBody())
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .build();
-//        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
-//        manager.notify(123, notification);
+         */
     }
 
     @Override
@@ -125,5 +131,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+
+
+    //Notification builder
+    private void displayNotification(String title, String body){
+        /* ic notification is guys dino
+        Priority refers to the notification's priority itself, currently left on default in case we want to have varying priorities */
+        NotificationCompat.Builder noteBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_guydino)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        //This completes the basic notification builder
+
+        //Now to manage this notification system
+        NotificationManagerCompat noteM = NotificationManagerCompat.from(this);
+        /*requires the notification ID and this ID is used to update and delete the notifications but currently left this as one assuming we just want a basic notification
+        Only have one notification at current(a basic one, we could have other ones should we want)*/
+        noteM.notify(NOTIF_ID++, noteBuilder.build());
     }
 }
