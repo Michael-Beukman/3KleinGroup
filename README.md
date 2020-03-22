@@ -2,7 +2,7 @@
 
 # Test Status:
 
-[![CircleCI](https://circleci.com/gh/Michael-Beukman/3KleinGroup.svg?style=svg)](https://circleci.com/gh/Michael-Beukman/3KleinGroup)
+![3KleinGroup](https://github.com/Michael-Beukman/3KleinGroup/workflows/3KleinGroup/badge.svg)
 
 # Coverage Status
-[![Coverage Status](https://coveralls.io/repos/github/Michael-Beukman/3KleinGroup/badge.svg?branch=master)](https://coveralls.io/github/Michael-Beukman/3KleinGroup?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/Michael-Beukman/3KleinGroup/badge.svg?branch=mikeDevGithubActions)](https://coveralls.io/github/Michael-Beukman/3KleinGroup?branch=mikeDevGithubActions)

@@ -1,0 +1,24 @@
+ name: 3KleinGroup
+
+ on:
+   push:
+     branches: 
+     - '*'
+
+ jobs:
+   test:
+     runs-on: macos-latest
+     steps:
+     - name: checkout
+       uses: actions/checkout@v2
+     - name: make google.json
+       run: echo $GOOGLE_JSON_BASE64 | base64 -d > app/google-services.json
+       env: 
+         GOOGLE_JSON_BASE64: ${{ secrets.GOOGLE_JSON_BASE64  }}
+     - name: run tests
+       env:
+         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+       uses: reactivecircus/android-emulator-runner@v2
+       with:
+         api-level: 29
+         script:  ./gradlew test && ./gradlew jacocoTestReport &&  ./gradlew coveralls

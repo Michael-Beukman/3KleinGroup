@@ -56,10 +56,12 @@ public class dbAgreement implements dbObject{
         ValidUntil = validUntil;
         this.userSentID = userSentID;
     }
+
     /**
-     * Creates a valid until for 20 years in the future.
+     * Creates a valid until for until Tomorrow.
      * @param fileID The ID of the File in the DB
      * @param userID The user that should receive the File
+     * @param userSentID The user that sent it
      */
     public dbAgreement(String fileID, String userID, String userSentID) {
         this.fileID = fileID;
@@ -67,7 +69,7 @@ public class dbAgreement implements dbObject{
         this.userSentID = userSentID;
 
 
-        ValidUntil = dbAgreement.getDate20YearsInfuture();
+        ValidUntil = dbAgreement.getDateTomorrow();
     }
 
     public String getFileID() {

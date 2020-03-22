@@ -2,9 +2,13 @@ package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -24,6 +28,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +46,7 @@ import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.SingleSentFile;
 import com.sd.a3kleingroup.classes.StringCallback;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
+import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,8 +54,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MySentFiles extends BaseActivity {
-    private final String USER_COLLECTION_NAME = "Users";
-    private final String FILE_COLLECTION_NAME = "Files";
+    final String USER_COLLECTION_NAME = "Users";
+    final String FILE_COLLECTION_NAME = "Files";
 
     private String LOG_TAG = "LOG_MySentFiles";
     // The file we have currently selected, and are looking at the options for
@@ -173,35 +179,48 @@ public class MySentFiles extends BaseActivity {
      * @param docID
      * @param cb
      */
-    private void getAsync(String collectionName, String docID, Callback cb){
+    protected void getAsync(String collectionName, String docID, Callback cb){
+        System.out.println("REEE " + details.get(collectionName).containsKey(docID));
+
         if (details.get(collectionName).containsKey(docID)) cb.onSuccess((details.get(collectionName).get(docID)), "");
         else{
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection(collectionName).document(docID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
-                    if (documentSnapshot.getData() == null){
-                        cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
-                    }
-                    else cb.onSuccess(documentSnapshot.getData(), "");
+            System.out.println("REEE " + db);
+            db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
+                Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
+                if (documentSnapshot.getData() == null){
+                    cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
+                    System.out.println("NEEE");
+
+                }
+                else {
+                    cb.onSuccess(documentSnapshot.getData(), "");
+                    System.out.println("NEEE");
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     cb.onFailure(e.getMessage(), MyError.ErrorCode.TASK_FAILED);
+                    System.out.println("NEEE");
                 }
             });
         }
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_my_sent_files);
+        super.onCreate(savedInstanceState);
         errorHandler = new MyError(this.getApplicationContext());
+//        MyFirebaseMessagingService x = new MyFirebaseMessagingService();
+//        Log.d(LOG_TAG, String.valueOf(x));
+//        x.getToken();
         doButtons();
         recyclerViewStuff();
+        setChecked(4);
+
+
     }
 
     /**
@@ -211,6 +230,10 @@ public class MySentFiles extends BaseActivity {
         Log.d(LOG_TAG, "Starting stuff");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            Log.d(LOG_TAG, "Error, user is NULL at recyclerviewstuff");
+            return;
+        }
 
         // All the agreements that are mine
         Query query = db.collection("Agreements").whereEqualTo("ownerID", user.getUid());
@@ -320,7 +343,6 @@ public class MySentFiles extends BaseActivity {
                 }
             });
         });
-
         // only pending, i.e. not approved
         btnPending.setOnClickListener(view -> {
             colourButtons(btnPending);
@@ -332,9 +354,9 @@ public class MySentFiles extends BaseActivity {
                 }
             });
         });
+        colourButtons(btnAll);
+
     }
-
-
 
     /**
      * Arbitrary function to change the date of a file in firebase. Handles UI updates and firebase stuff.
@@ -348,7 +370,11 @@ public class MySentFiles extends BaseActivity {
         file.setValidUntil(d);
 
         // filter again, so that this gets hidden if only approved
-        adapter.filterWithCurrentFilter();
+        try {
+            adapter.filterWithCurrentFilter();
+        }catch (Exception e){
+            Log.d(LOG_TAG, "Error with filter current filter");
+        }
         // do query
         db.collection("Agreements").document(file.getDocID()).update(
                 "validUntil", d

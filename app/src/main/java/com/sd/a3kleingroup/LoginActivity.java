@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         signIn();
     }
 
-    private void signIn(){
+    void signIn(){
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -126,9 +126,9 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent2 = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
                         startActivity(intent2);
                         return;
-                        // todo: This is a hack to go to sendfile after login
+//                         todo: This is a hack to go to sendfile after login
 //                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
-//                        startActivity(intent);
+//                        startActivity(intent);;
                     } else {
                         Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                         updateUI(null);
