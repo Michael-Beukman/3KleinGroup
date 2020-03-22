@@ -1,5 +1,6 @@
 {
   "projects": {
-    "3kleingroup": "kleingroupv2"
+    "3kleingroup": "kleingroupv2",
+    "default": "kleingroupv2"
   }
 }

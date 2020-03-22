@@ -18,6 +18,18 @@ public class dbUser implements dbObject{
         this.notificationToken = notificationToken;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
     @Override
     public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{

@@ -2,12 +2,18 @@ package com.sd.a3kleingroup.classes;
 
 import android.net.Uri;
 
+import com.sd.a3kleingroup.classes.db.*;
+
 public class FileModel {
 
     String fileName;
     String format;
     String path;
     String url;
+    dbAgreement agreement;
+    dbUser owner;
+
+    public FileModel(){ }
 
     public FileModel(String fileName, String format,  String path, String url) {
         this.fileName = fileName;
@@ -49,4 +55,19 @@ public class FileModel {
         this.fileName = fileName;
     }
 
+    public dbAgreement getAgreement() {
+        return agreement;
+    }
+
+    public void setAgreement(dbAgreement agreement) {
+        this.agreement = agreement;
+    }
+
+    public dbUser getOwner() {
+        return owner;
+    }
+
+    public void setOwner(dbUser owner) {
+        this.owner = owner;
+    }
 }

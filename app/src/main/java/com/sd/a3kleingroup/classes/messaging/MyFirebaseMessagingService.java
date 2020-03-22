@@ -1,6 +1,5 @@
 package com.sd.a3kleingroup.classes.messaging;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
@@ -60,6 +59,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // sendRegistrationToServer(token);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.e("current user", token);
         dbUser myuser = new dbUser(user.getEmail(), user.getDisplayName(), token);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

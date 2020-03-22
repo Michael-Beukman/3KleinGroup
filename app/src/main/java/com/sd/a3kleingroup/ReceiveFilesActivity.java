@@ -9,15 +9,25 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,15 +37,22 @@ import com.google.firebase.storage.StorageReference;
 import com.sd.a3kleingroup.classes.FileModel;
 import com.sd.a3kleingroup.classes.RecyclerAdapter;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
+import com.sd.a3kleingroup.classes.User;
+import com.sd.a3kleingroup.classes.db.*;
+import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class ReceiveFilesActivity extends AppCompatActivity {
+    Button btnSort;
+    EditText edtFilter;
+
     FirebaseFirestore db;
     RecyclerView mRecyclerView;
     ArrayList<FileModel> fileModelArrayList = new ArrayList<>();
@@ -48,11 +65,76 @@ public class ReceiveFilesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive_files);
-
+        setElements();
+        setEvents();
 
         setUpFireStore();
         determineCurrentUser();
         getDataFromFirebase();
+
+        MyFirebaseMessagingService x = new MyFirebaseMessagingService();
+        x.getToken();
+        new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
+    }
+
+    private void setEvents() {
+        btnSort.setOnClickListener(new Sorter());
+        edtFilter.addTextChangedListener(new Filter());
+    }
+
+    private void setElements() {
+        btnSort = (Button) findViewById(R.id.btnSort);
+        edtFilter = (EditText) findViewById(R.id.txtFilter);
+    }
+
+    private class Sorter implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            showSortPopup(v);
+        }
+
+        private void showSortPopup(View v) {
+            PopupMenu popup = new PopupMenu(ReceiveFilesActivity.this, v);
+            // Inflate the menu from xml
+            popup.inflate(R.menu.popup_recfiles_sort);
+            // Setup menu item selection
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.menu_date:
+                            //TODO: sort by date, update recyclerview
+                            Toast.makeText(ReceiveFilesActivity.this, "sort by date", Toast.LENGTH_SHORT).show();
+                            return true;
+                        case R.id.menu_size:
+                            //TODO: sort by size, update recyclerview
+                            Toast.makeText(ReceiveFilesActivity.this, "sort by file size", Toast.LENGTH_SHORT).show();
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            });
+            // Handle dismissal with: popup.setOnDismissListener(...);
+            // Show the menu
+            popup.show();
+        }
+    }
+
+    private class Filter implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            // TODO: filter based off ownerID, update recyclerview
+            charSequence.toString();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
     }
 
     private void determineCurrentUser() {
@@ -82,10 +164,16 @@ public class ReceiveFilesActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
 
-                            ArrayList<String> fileIDs = new ArrayList<>();
+                            HashMap<String,dbAgreement> agreements = new HashMap<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                fileIDs.add((String) document.getData().get("fileID"));
+                                HashMap<String, Object> map = (HashMap<String, Object>) document.getData();
+                                String fileID = (String) map.get("fileID");
+                                String userID = (String) map.get("ownerID");
+                                Date validUntil = ((Timestamp )map.get("validUntil")).toDate();
+                                String userSentID = (String) map.get("userID");
+                                dbAgreement agreement = new dbAgreement(fileID, userID, validUntil, userID);
+                                agreements.put(fileID, agreement);
                             }
 
                             // [START get_url's]
@@ -96,26 +184,44 @@ public class ReceiveFilesActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    if(fileIDs.contains(document.getId())){
+                                                    if(agreements.containsKey((String) document.getId())){
+                                                        Log.e(LOG_TAG, agreements.get((String) document.getId()).getFileID());
                                                         HashMap<String, Object> map = (HashMap<String, Object>) document.getData();
-                                                        FileModel file = new FileModel((String) map.get("filename"),"",(String) map.get("filepath"), (String) map.get("storageURL"));
-                                                        fileModelArrayList.add(file);
+                                                        FileModel file = new FileModel();
+                                                        file.setFileName((String) map.get("filename"));
+                                                        file.setFormat("");
+                                                        file.setPath((String) map.get("filepath"));
+                                                        file.setUrl((String) map.get("storageURL"));
+                                                        file.setAgreement(agreements.get((String) document.getId()));
+
+                                                        //Get Owner details
+                                                        db.collection("Users").document((String) map.get("userID")).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                DocumentSnapshot d = task.getResult();
+                                                                User owner = new User((String) d.getData().get("email"),(String) d.getData().get("name"),(String) d.getData().get("notificationToken"), (String) map.get("userID"));
+                                                                file.setOwner(owner);
+                                                                fileModelArrayList.add(file);
+                                                                //TODO: find another wy to do this. This seems very bad
+                                                                setUpRV();
+                                                            }
+                                                        });
                                                     }
                                                 }
-                                                setUpRV();
+                                                //setUpRV(); does not work here since it is called before the db.collection("Users") collection is fetched from firebase. How to get around this? Need to implement callbacks but not sure how
                                             } else {
-                                                Log.d(LOG_TAG, "Error getting documents: ", task.getException());
+                                                Log.e(LOG_TAG, "Error getting documents: ", task.getException());
                                             }
                                         }
                                     });
                             // [END get_url's]
 
                         } else {
-                            Log.d(LOG_TAG, "Error getting documents: ", task.getException());
+                            Log.e(LOG_TAG, "Error getting documents: ", task.getException());
                         }
                     }
                 });
-        // [END get_multiple
+        // [END get_multiple]
 
     }
 
@@ -170,14 +276,48 @@ public class ReceiveFilesActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RecyclerViewClickListener listener = new RecyclerViewClickListener() {
+        RecyclerViewClickListener TextButtonListener = new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
                 FileModel file = fileModelArrayList.get(position);
                 downloadFile(file);
             }
         };
-        myAdapter = new RecyclerAdapter(ReceiveFilesActivity.this, fileModelArrayList, listener);
+
+        RecyclerViewClickListener PopUpListener = new RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                showHamburgerPopUp(view, position);
+            }
+        };
+
+        myAdapter = new RecyclerAdapter(ReceiveFilesActivity.this, fileModelArrayList, TextButtonListener, PopUpListener);
         mRecyclerView.setAdapter(myAdapter);
+    }
+
+    private void showHamburgerPopUp(View v, int position) {
+        PopupMenu popup = new PopupMenu(ReceiveFilesActivity.this, v);
+        // Inflate the menu from xml
+        popup.inflate(R.menu.popup_received_files_hamurger);
+        // Setup menu item selection
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_share:
+                        //TODO: sort by date, update recyclerview
+                        Toast.makeText(ReceiveFilesActivity.this, "share file " + position, Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.menu_details:
+                        //TODO: sort by size, update recyclerview
+                        Toast.makeText(ReceiveFilesActivity.this, "show details of file " + position, Toast.LENGTH_SHORT).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        // Handle dismissal with: popup.setOnDismissListener(...);
+        // Show the menu
+        popup.show();
     }
 }

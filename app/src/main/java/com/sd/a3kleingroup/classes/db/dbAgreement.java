@@ -70,6 +70,21 @@ public class dbAgreement implements dbObject{
         ValidUntil = dbAgreement.getDate20YearsInfuture();
     }
 
+    public String getFileID() {
+        return fileID;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public Date getValidUntil() {
+        return ValidUntil;
+    }
+
+    public String getUserSentID() {
+        return userSentID;
+    }
 
     /**
      * Returns a hashmap, that can easily be used to upload the object.
