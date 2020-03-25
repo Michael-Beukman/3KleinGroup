@@ -31,9 +31,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.FileModel;
 import com.sd.a3kleingroup.classes.RecyclerAdapter;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
@@ -46,10 +48,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
-public class ReceiveFilesActivity extends AppCompatActivity {
+public class ReceiveFilesActivity extends BaseActivity {
     Button btnSort;
     EditText edtFilter;
 
@@ -58,22 +61,22 @@ public class ReceiveFilesActivity extends AppCompatActivity {
     ArrayList<FileModel> fileModelArrayList = new ArrayList<>();
     RecyclerAdapter myAdapter;
     FirebaseUser user;
+    FirebaseFunctions mFirebaseFunctions;
     private static final String LOG_TAG="RecievFilesctivity_LOG";
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_receive_files);
+        super.onCreate(savedInstanceState);
+
         setElements();
         setEvents();
 
         setUpFireStore();
+        mFirebaseFunctions = FirebaseFunctions.getInstance();
         determineCurrentUser();
         getDataFromFirebase();
-
-        MyFirebaseMessagingService x = new MyFirebaseMessagingService();
-        x.getToken();
         new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
     }
 
@@ -276,11 +279,13 @@ public class ReceiveFilesActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         RecyclerViewClickListener TextButtonListener = new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
                 FileModel file = fileModelArrayList.get(position);
-                downloadFile(file);
+                sendNotificationRequestingPermission(file.getFileName(), file.getOwner().getNotificationToken());
+                //downloadFile(file);
             }
         };
 
@@ -293,6 +298,20 @@ public class ReceiveFilesActivity extends AppCompatActivity {
 
         myAdapter = new RecyclerAdapter(ReceiveFilesActivity.this, fileModelArrayList, TextButtonListener, PopUpListener);
         mRecyclerView.setAdapter(myAdapter);
+    }
+
+    private void sendNotificationRequestingPermission(String fName, String ownerToken) {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("userName", user.getDisplayName());
+        data.put("fileName", fName);
+        data.put("ownerToken", ownerToken);
+        data.put("push", true);
+
+        mFirebaseFunctions
+                .getHttpsCallable("requestPermission")
+                .call(data);
+
     }
 
     private void showHamburgerPopUp(View v, int position) {

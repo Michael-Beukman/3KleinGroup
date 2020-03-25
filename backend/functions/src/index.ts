@@ -13,6 +13,30 @@ export const helloWorlds = () => {
   return "Hello World!";
 };
 
+exports.requestPermission = functions.https.onCall((data, context) => {
+  const userName = data.userName;
+  const fileName = data.fileName;
+  const ownerNotificationToken = data.ownerToken;
+
+  const payload = {
+    notification: {
+      title: "Someone wants to view your file",
+      body: `${userName} requests to view ${fileName}`
+    }
+  };
+  console.log("payload ", { payload });
+
+  admin.messaging()
+        .sendToDevice(ownerNotificationToken, payload)
+        .then((response) => {
+          // Response is a message ID string.
+          console.log('Successfully sent message:', response);
+        })
+        .catch((error) => {
+          console.log('Error sending message:', error);
+        });
+});
+
 exports.createAgreement = functions.firestore
   .document("Agreements/{agreementID}")
   .onCreate((snap, context) => {

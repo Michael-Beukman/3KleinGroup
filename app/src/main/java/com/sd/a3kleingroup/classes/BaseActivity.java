@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.sd.a3kleingroup.LoginActivity;
 import com.sd.a3kleingroup.MySentFiles;
 import com.sd.a3kleingroup.R;
+import com.sd.a3kleingroup.ReceiveFilesActivity;
 import com.sd.a3kleingroup.SendFileActivity;
 import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 
@@ -81,7 +82,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void goToRecvFiles() {
-        // TODO GUY
+        Intent I = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
+        startActivity(I);
     }
 
     private void goToMySentFiles() {

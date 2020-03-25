@@ -50,7 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
             //set values of data here
             rowHolder.txtbtnFileName.setText(fileModels.get(position).getFileName());
             rowHolder.txtOwner.setText(fileModels.get(position).getOwner().getName());
-            rowHolder.txtOwner.setText(fileModels.get(position).getAgreement().getValidUntil().toString());
+            rowHolder.txtDate.setText(fileModels.get(position).getAgreement().getValidUntil().toString());
         }
     }
 
