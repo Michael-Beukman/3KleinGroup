@@ -323,11 +323,11 @@ public class ReceiveFilesActivity extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_share:
-                        //TODO: sort by date, update recyclerview
+                        //TODO: share file
                         Toast.makeText(ReceiveFilesActivity.this, "share file " + position, Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.menu_details:
-                        //TODO: sort by size, update recyclerview
+                        //TODO: show file details in pop up
                         Toast.makeText(ReceiveFilesActivity.this, "show details of file " + position, Toast.LENGTH_SHORT).show();
                         return true;
                     default:
