@@ -156,7 +156,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         String userID = user.getUid();
         //TODO remove this when have data for guy
-        userID="En8fRBqxPiZ13HvOabUx7uOXN2T2";
+        userID="eR1HwsAKAifArcER3CACMIzMxkF3";
 
         // [START get_multiple]
         db.collection("Agreements")
