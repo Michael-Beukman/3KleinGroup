@@ -42,7 +42,6 @@ import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.FileModel;
 import com.sd.a3kleingroup.classes.MyError;
-import com.sd.a3kleingroup.classes.RecyclerAdapter;
 import com.sd.a3kleingroup.classes.RecyclerHolder;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
 import com.sd.a3kleingroup.classes.SingleSentFile;
@@ -390,7 +389,6 @@ public class ReceiveFilesActivity extends BaseActivity {
         // Add a snapshot listener, so that it updates live
         query.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e == null){
-                // good
                 myAdapter = new ReceiveFilesActivity.RecyclerAdapter(ReceiveFilesActivity.this, queryDocumentSnapshots, textButtonListener, popUpListener);
                 mRecyclerView.setAdapter(myAdapter);
 
