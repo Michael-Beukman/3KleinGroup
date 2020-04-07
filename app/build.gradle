@@ -24,7 +24,6 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/INDEX.LIST'
         exclude("META-INF/*.kotlin_module")
-
     }
     */
     defaultConfig {
@@ -63,7 +62,7 @@ android {
 
     }
 
-    
+
 
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
