@@ -1,13 +1,10 @@
- name: 3KleinGroup
+name: 3KleinGroup
 
  on:
    push:
      branches: 
      - '*'
-   pull_request:
-     branches:
-     - '*'
-     
+
  jobs:
    test:
      runs-on: macos-latest
