@@ -34,9 +34,9 @@ public class dbUserFriends implements dbObject {
     @Override
     public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{
-            put("temp name", userEmail);
-            put("temp name", friendName);
-            put("temp name", friendName);
+            put("temp name1", userEmail);
+            put("temp name2", friendName);
+            put("temp name3", friendName);
         }};
     }
 }
