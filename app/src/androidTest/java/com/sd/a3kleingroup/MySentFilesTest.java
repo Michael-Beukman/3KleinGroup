@@ -65,11 +65,6 @@ public class MySentFilesTest {
         FirebaseAuth.getInstance().signInWithCredential(authCredential).addOnCompleteListener(y->{
            Log.d("REEEEEE", "Logged in");
         });
-//        loginRule.getScenario().onActivity(activity -> {
-//            activity.signIn();
-//            Log.d("REEEEEE", "HELLO " + FirebaseAuth.getInstance().getCurrentUser());
-//        });
-//        Log.d("REEEEEE", "HELLO1 " + FirebaseAuth.getInstance().getCurrentUser());
     }
 
     @Test
