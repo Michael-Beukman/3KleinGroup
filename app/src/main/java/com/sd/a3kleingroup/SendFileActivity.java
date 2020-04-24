@@ -350,7 +350,8 @@ public class SendFileActivity extends BaseActivity {
                 }
 
                 @Override // not used
-                public void onFailure(String error, MyError.ErrorCode errorCode) { }
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                }
             };
 
             // currently logged in user
@@ -362,7 +363,7 @@ public class SendFileActivity extends BaseActivity {
             }
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
-            SendLocalFile sender = new SendLocalFile(cb, user.getUid(), userToReceiveID,  txtFilename.getText().toString(), stream, FirebaseFirestore.getInstance(), FirebaseStorage.getInstance(), progressCallback);
+            SendLocalFile sender = new SendLocalFile(cb, user.getUid(), userToReceiveID, txtFilename.getText().toString(), stream, FirebaseFirestore.getInstance(), FirebaseStorage.getInstance(), progressCallback);
             sender.send();
         }
 
@@ -377,145 +378,19 @@ public class SendFileActivity extends BaseActivity {
             userToReceiveID = data.containsKey("userID") ? (String) data.get("userID") : "-1";
 
             Log.d(LOG_TAG, "Found userID from email: " + userToReceiveID);
-            if (true){
+            if (true) {
                 sendV2();
                 return;
             }
 
-            // I now need to save the file to storage
-            // Create a storage reference from our app
-            StorageReference storageRef = storage.getReference();
-
-            // currently logged in user
-            user = auth.getCurrentUser();
-            if (user == null) {
-                // if the user is null, we need to go to the login activity first.
-                goToLogin();
-                return;
-            }
-
-            // pretty name
-            filename = txtFilename.getText().toString();
-
-            // the path that should be stored on the firebase file system
-            filePathFirebase = user.getUid() + "/" + filename.replace('/', '_');
-            fileRef = storageRef.child(filePathFirebase);
-
-            InputStream stream;
-
-            int totalSize;
-            try {
-                stream = getContentResolver().openInputStream(file.getUri());
-                totalSize = stream.available();
-            } catch (Exception e) {
-                errorHandler.displayError("Reading the file failed with message (" + e.getMessage() + ")");
-                return;
-            }
-
-            // TODO 2020/04/20 Do the encrytion part here
-            AESEncryption encryptor = new AESEncryption();
-            InputStream encrypted = encryptor.encrypt(stream);
-            // END Encrypted
-
-            UploadTask uploadTask = fileRef.putStream(encrypted);
-            // make the progress bar visible
-            progressBar.setVisibility(View.VISIBLE);
-
-            // Register observers to listen for when the download is done or if it fails
-            int finalTotalSize = totalSize;
-
-            uploadTask
-                    .addOnFailureListener(this::afterFailUploadFile)
-                    .addOnSuccessListener(snapshot -> afterUploadFile(snapshot, encryptor.getKey()))
-                    .addOnProgressListener(taskSnapshot -> {
-                        // progress update
-                        // just set the progress to be transferred/total
-                        Log.d(LOG_TAG, "PROGRESS " + taskSnapshot.getBytesTransferred() + " / " + finalTotalSize + " = " + (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize)));
-                        progressBar.setProgress(
-                                (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize))
-                        );
-                    });
         }
 
-        /**
-         * This gets called after the file is successfully uploaded. It updates the Database
-         */
-        private void afterUploadFile(UploadTask.TaskSnapshot taskSnapshot, String key) {
-            Toast.makeText(getApplicationContext(), "Successfully uploaded file", Toast.LENGTH_LONG).show();
-            Log.d(LOG_TAG, "Success on upload");
-            progressBar.setVisibility(View.INVISIBLE);
-
-            // reference this, because we need to use this class instance inside a nested class.
-            sendFile self = this;
-            //first get the file URL. This is async, so need to add oncomplete listener.
-            fileRef.getDownloadUrl().addOnCompleteListener(uriTask -> {
-                if (!uriTask.isSuccessful()) {
-                    errorHandler.displayError("Could not successfully obtain the file URL. Error: (" + uriTask.getException().getMessage() + ")");
-                    return;
-                }
-                // If file is successfully uploaded, I should update the file DB collection and the agreements collection
-
-                // Get DB instance
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                // first add a record to the File collection TODO Make better
-
-                Task<DocumentReference> fileDocRef = db.collection("Files").add(
-                        new dbFile(filePathFirebase, filename, userToReceiveID, uriTask.getResult().toString(), key).getHashmap()
-                );
-
-                // This means we didn't upload successfully
-                fileDocRef.addOnCompleteListener(task -> {
-                    DocumentReference ref = task.getResult();
-                    if (task.isSuccessful() && ref != null) {
-                        String fileID = ref.getId();
-                        Task<DocumentReference> agreementDocRef = db.collection("Agreements").add(
-                                new dbAgreement(fileID, userToReceiveID, user.getUid()).getHashmap()
-                        );
-                        agreementDocRef.addOnSuccessListener(aTask -> {
-                            afterUpdateDB();
-                        }).addOnFailureListener(self::afterFailUpdateDB);
-
-                    } else {
-                        afterFailUpdateDB(Objects.requireNonNull(task.getException()));
-                    }
-                }).addOnFailureListener(self::afterFailUpdateDB); // if it failed
-            });
-
-        }
-
-        /**
-         * This gets called after the database is successfully updated.
-         * It displays info to the user and cleans up
-         */
-        private void afterUpdateDB() {
-
-            errorHandler.displaySuccess("Database updated successfully");
-            Log.d(LOG_TAG, "Database updated successfully");
-
-
-            cleanUp();
-        }
         /* Failure handlers, i.e. what happens when stuff fails */
 
         private void afterFailGetEmail(String error, MyError.ErrorCode errorCode) {
             Log.d(LOG_TAG, "User Email failed with message (" + error + ") and code + (" + errorCode + ")");
 
             errorHandler.displayError("That user does not exist. Please ask them to sign up first.");
-            cleanUp();
-        }
-
-        private void afterFailUploadFile(Exception exception) {
-            // Handle unsuccessful uploads
-            progressBar.setVisibility(View.INVISIBLE);
-            errorHandler.displayError("An Error occured (" + exception.getMessage() + ")");
-            Log.d(LOG_TAG, "Failed to upload file");
-            cleanUp();
-        }
-
-        private void afterFailUpdateDB(Exception e) {
-            progressBar.setVisibility(View.INVISIBLE);
-            errorHandler.displayError("An Error occurred while updating database (" + e.getMessage() + ")");
-            Log.d(LOG_TAG, "Failed to update Database (" + e.getMessage() + ")");
             cleanUp();
         }
 
