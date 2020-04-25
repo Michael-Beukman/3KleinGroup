@@ -66,7 +66,6 @@ public class ReceiveFilesActivity extends BaseActivity {
 
     FirebaseFirestore db;
     RecyclerView mRecyclerView;
-    //ArrayList<FileModel> fileModelArrayList = new ArrayList<>();
     RecyclerAdapter myAdapter;
     FirebaseUser user;
     FirebaseFunctions mFirebaseFunctions;
@@ -83,7 +82,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         setUpFireStore();
         mFirebaseFunctions = FirebaseFunctions.getInstance();
-        determineCurrentUser();
+        //determineCurrentUser();
         setUpRV();
         new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
     }
@@ -148,14 +147,14 @@ public class ReceiveFilesActivity extends BaseActivity {
         }
     }
 
-    private void determineCurrentUser() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-//            String name = user.getDisplayName();
-//            String email = user.getEmail();
-//            Uri photoUrl = user.getPhotoUrl();
-        }
-    }
+//    private void determineCurrentUser() {
+////        user = FirebaseAuth.getInstance().getCurrentUser();
+////        if (user != null) {
+//////            String name = user.getDisplayName();
+//////            String email = user.getEmail();
+//////            Uri photoUrl = user.getPhotoUrl();
+////        }
+////    }
 
 
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
@@ -236,83 +235,6 @@ public class ReceiveFilesActivity extends BaseActivity {
         });
     }
 
-
-//    private void getDataFromFirebase() {
-//        if(fileModelArrayList.size()>0)
-//            fileModelArrayList.clear();
-//
-//        String userID = user.getUid();
-//
-//        // [START get_multiple]
-//        db.collection("Agreements")
-//                .whereEqualTo("userID", userID)
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//
-//                            HashMap<String,dbAgreement> agreements = new HashMap<>();
-//
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                HashMap<String, Object> map = (HashMap<String, Object>) document.getData();
-//                                String fileID = (String) map.get("fileID");
-//                                String userID = (String) map.get("ownerID");
-//                                Date validUntil = ((Timestamp )map.get("validUntil")).toDate();
-//                                String userSentID = (String) map.get("userID");
-//                                dbAgreement agreement = new dbAgreement(fileID, userID, validUntil, userID);
-//                                agreements.put(fileID, agreement);
-//                            }
-//
-//                            // [START get_url's]
-//                            db.collection("Files")
-//                                    .get()
-//                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                            if (task.isSuccessful()) {
-//                                                for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                    if(agreements.containsKey((String) document.getId())){
-//                                                        Log.e(LOG_TAG, agreements.get((String) document.getId()).getFileID());
-//                                                        HashMap<String, Object> map = (HashMap<String, Object>) document.getData();
-//                                                        FileModel file = new FileModel();
-//                                                        file.setFileName((String) map.get("filename"));
-//                                                        file.setFormat("");
-//                                                        file.setPath((String) map.get("filepath"));
-//                                                        file.setUrl((String) map.get("storageURL"));
-//                                                        file.setAgreement(agreements.get((String) document.getId()));
-//
-//                                                        //Get Owner details
-//                                                        db.collection("Users").document((String) map.get("userID")).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                                            @Override
-//                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                                                DocumentSnapshot d = task.getResult();
-//                                                                User owner = new User((String) d.getData().get("email"),(String) d.getData().get("name"),(String) d.getData().get("notificationToken"), (String) map.get("userID"));
-//                                                                file.setOwner(owner);
-//                                                                fileModelArrayList.add(file);
-//                                                                //TODO: find another wy to do this. This seems very bad
-//                                                                setUpRV();
-//                                                            }
-//                                                        });
-//                                                    }
-//                                                }
-//                                                //setUpRV(); does not work here since it is called before the db.collection("Users") collection is fetched from firebase. How to get around this? Need to implement callbacks but not sure how
-//                                            } else {
-//                                                Log.e(LOG_TAG, "Error getting documents: ", task.getException());
-//                                            }
-//                                        }
-//                                    });
-//                            // [END get_url's]
-//
-//                        } else {
-//                            Log.e(LOG_TAG, "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-//        // [END get_multiple]
-//
-//    }
-
     private void setUpFireStore(){
         db = FirebaseFirestore.getInstance();
     }
@@ -361,6 +283,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
 
     private void setUpRV(){
+        user = FirebaseAuth.getInstance().getCurrentUser();
         Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);
