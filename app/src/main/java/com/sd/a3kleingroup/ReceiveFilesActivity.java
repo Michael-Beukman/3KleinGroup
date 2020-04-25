@@ -84,7 +84,7 @@ public class ReceiveFilesActivity extends BaseActivity {
         mFirebaseFunctions = FirebaseFunctions.getInstance();
         //determineCurrentUser();
         setUpRV();
-        new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
+        //new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
     }
 
     private void setEvents() {
