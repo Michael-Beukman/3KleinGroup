@@ -26,6 +26,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -123,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                                 .set(new dbUser(user.getEmail(), user.getDisplayName()).getHashmap(), SetOptions.merge());
 
 
+                        Log.d("MY_LOGIN ", acct.getIdToken());
                         Intent intent2 = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
                         startActivity(intent2);
                         return;

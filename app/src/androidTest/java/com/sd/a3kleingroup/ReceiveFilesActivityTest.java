@@ -23,9 +23,9 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertFalse;
 
-//@RunWith(JUnit4.class)
+@RunWith(JUnit4.class)
 public class ReceiveFilesActivityTest {
-    /*
+//    /*
     @Rule
     public ActivityScenarioRule<ReceiveFilesActivity> activityScenarioRule = new ActivityScenarioRule<>(ReceiveFilesActivity.class);;;
 
@@ -34,10 +34,11 @@ public class ReceiveFilesActivityTest {
         // Log IN first
         Log.d("REEEEEE", "HELLO1 " + FirebaseAuth.getInstance().getCurrentUser());
 
-        AuthCredential authCredential = GoogleAuthProvider.getCredential("eyJhbGciOiJSUzI1NiIsImtpZCI6ImE1NDFkNmVmMDIyZDc3YTIzMThmN2RkNjU3ZjI3NzkzMjAzYmVkNGEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3ODU2NzM4NTAzOTMtbDhldjFqdHRmNDByaXM3Y2Y1aDZuMW4ya29yYXZzYTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3ODU2NzM4NTAzOTMtMHBxaWY3dWo4bWNlNW1kZjBqczV2cWU3NHA1c2xldWwuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTU4Njk1MzUxMDQ5MzE4NDE3MTYiLCJlbWFpbCI6Im1pZ2h0eW1hbjc3MEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6Im1pZ2h0eSBtYW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1BUWh0SXh4VzhQMC9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BS0YwNW5ERFFNZmoyS3F1cGI1c0ZuVXhZZjhYZDFLTjFnL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJtaWdodHkiLCJmYW1pbHlfbmFtZSI6Im1hbiIsImxvY2FsZSI6ImVuLUdCIiwiaWF0IjoxNTg0NDQxNjI1LCJleHAiOjE1ODQ0NDUyMjV9.ZlOafZtimOrVINgjlS0uh8LMrX_3R0l1rq55b9nyIL7GIQu8luF_REHUrBjAxmJwEG2KqfOEJ4DMdMFbWvA_jLyWgNqLt2JL4BumGn53KRhGIVHwSzW_eNQ_0p5X4hJ_o9lftIDQ6B7sdX4kKuB0ihJ8h0mDBt-RRy6JxHv2WdxdJYrtQcGRSxB5HdLi2I5CAvSoxJ_wCDchSmkqtuuZTmn_GQIep-nHvfKJwWZP41oaIaFoeNqstHEkIYh860ne93jA90aRO7LDv7ZPaMXdb89zHG9R5ig49XO6c5YclracuhX4m0xCakdUG4BiTEyizMgYE2-rwdBhn6tTK8kAFA", null);
+//        AuthCredential authCredential = GoogleAuthProvider.getCredential("eyJhbGciOiJSUzI1NiIsImtpZCI6ImE1NDFkNmVmMDIyZDc3YTIzMThmN2RkNjU3ZjI3NzkzMjAzYmVkNGEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3ODU2NzM4NTAzOTMtbDhldjFqdHRmNDByaXM3Y2Y1aDZuMW4ya29yYXZzYTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3ODU2NzM4NTAzOTMtMHBxaWY3dWo4bWNlNW1kZjBqczV2cWU3NHA1c2xldWwuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTU4Njk1MzUxMDQ5MzE4NDE3MTYiLCJlbWFpbCI6Im1pZ2h0eW1hbjc3MEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6Im1pZ2h0eSBtYW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1BUWh0SXh4VzhQMC9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BS0YwNW5ERFFNZmoyS3F1cGI1c0ZuVXhZZjhYZDFLTjFnL3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJtaWdodHkiLCJmYW1pbHlfbmFtZSI6Im1hbiIsImxvY2FsZSI6ImVuLUdCIiwiaWF0IjoxNTg0NDQxNjI1LCJleHAiOjE1ODQ0NDUyMjV9.ZlOafZtimOrVINgjlS0uh8LMrX_3R0l1rq55b9nyIL7GIQu8luF_REHUrBjAxmJwEG2KqfOEJ4DMdMFbWvA_jLyWgNqLt2JL4BumGn53KRhGIVHwSzW_eNQ_0p5X4hJ_o9lftIDQ6B7sdX4kKuB0ihJ8h0mDBt-RRy6JxHv2WdxdJYrtQcGRSxB5HdLi2I5CAvSoxJ_wCDchSmkqtuuZTmn_GQIep-nHvfKJwWZP41oaIaFoeNqstHEkIYh860ne93jA90aRO7LDv7ZPaMXdb89zHG9R5ig49XO6c5YclracuhX4m0xCakdUG4BiTEyizMgYE2-rwdBhn6tTK8kAFA", null);
+        AuthCredential authCredential = GoogleAuthProvider.getCredential("eyJhbGciOiJSUzI1NiIsImtpZCI6IjI4Yjc0MWU4ZGU5ODRhNDcxNTlmMTllNmQ3NzgzZTlkNGZhODEwZGIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI3ODU2NzM4NTAzOTMtbDhldjFqdHRmNDByaXM3Y2Y1aDZuMW4ya29yYXZzYTIuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI3ODU2NzM4NTAzOTMtMHBxaWY3dWo4bWNlNW1kZjBqczV2cWU3NHA1c2xldWwuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMTU4Njk1MzUxMDQ5MzE4NDE3MTYiLCJlbWFpbCI6Im1pZ2h0eW1hbjc3MEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6Im1pZ2h0eSBtYW4iLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1BUWh0SXh4VzhQMC9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BQUtXSkpPRWs3dUNiRnM2dFJvb0c2TkluVjUweEUtbUZ3L3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJtaWdodHkiLCJmYW1pbHlfbmFtZSI6Im1hbiIsImxvY2FsZSI6ImVuLUdCIiwiaWF0IjoxNTg3ODE2ODk2LCJleHAiOjE1ODc4MjA0OTZ9.pvs4nu6KO_lZyqYK-cLJ1l48BHawC8E-iMvl3uQ6DXyxSdwqhzSf2utiJOWpSrJofY4pvM2185DzrW4GhUYp1TcbjVfToGU1ZiD7S7d_HZ1XKXDyiWhoRiDclhSE-GdI4fDWFdbP-w1g9JemI36mOdA6RtNtiXbW4yYvK1FbuKfu_meEEoA8eTytVFHbRWnBCPr2LNnQTJ9hB8p5kbAaKUCfF-EOyXeajkPXtx7OLeA-gigg_x7r4aLIqjLbdsjF2s74TiDW9cTu3ENZtSwUjsTxXLw1L9tuye81ApHlE1ew_qZcplcQypmDqaNhzCmLKfOYUgdH159FriX_yw1nuQ", null);
         FirebaseAuth.getInstance().signInWithCredential(authCredential).addOnCompleteListener(y->{
 
-            Log.d("REEEEEE", "Logged in " + FirebaseAuth.getInstance().getCurrentUser() + " success " + y.isSuccessful() + y.getException().getMessage());
+            Log.d("REEEEEE", "Logged in " + FirebaseAuth.getInstance().getCurrentUser() + " success " + y.isSuccessful() + (y.getException() !=null ? y.getException().getMessage() : "No exception"));
 //            assertFalse(true);
         });
         Thread.sleep(3000);
@@ -97,5 +98,5 @@ public class ReceiveFilesActivityTest {
 
         Thread.sleep(2000);
     }
-    */
+//    */
 }
