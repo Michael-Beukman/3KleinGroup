@@ -1,61 +1,68 @@
 package com.sd.a3kleingroup;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.telecom.Call;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
+import com.sd.a3kleingroup.classes.Sending.SendLocalFile;
+import com.sd.a3kleingroup.classes.Sending.SendReceivedFile;
+import com.sd.a3kleingroup.classes.callbacks.ArrayCallback;
 import com.sd.a3kleingroup.classes.db.dbUser;
 import com.sd.a3kleingroup.classes.encryption.AESEncryption;
-import com.sd.a3kleingroup.classes.encryption.RSA;
 import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.MyFile;
 import com.sd.a3kleingroup.classes.Utils;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
+import com.sd.a3kleingroup.classes.querying.GetAgreementsUsersFiles;
+
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class SendFileActivity extends BaseActivity {
     private final int FILE_RESULT_SUCCESS = -1;
     private final int FILE_REQUEST_CODE = 1;
-    private final String LOG_TAG = "SEND_FILE_ACTIVITY";
+    private final String LOG_TAG = "MY_SEND_FILE_ACTIVITY";
 
     // firebase storage reference
     private FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -69,6 +76,9 @@ public class SendFileActivity extends BaseActivity {
     private EditText txtFilename;
     private TextView lblFilename;
     private ProgressBar progressBar;
+
+    // this is my choosefile. We need an instance, so that we can preload the required data and cache it.
+    private chooseReceivedFile myChooseReceivedFile;
 
     private MyError errorHandler;
 
@@ -107,22 +117,159 @@ public class SendFileActivity extends BaseActivity {
 
     // what happens when the user tries to send a received file.
     private class chooseReceivedFile implements View.OnClickListener {
+        private ArrayList<GetAgreementsUsersFiles.FileUserAgreementTriple> myFiles;
+        private boolean hasReceivedFiles = false;
+        private AlertDialog loadingDlg = null;
+        private AlertDialog listDlg = null;
+        public GetAgreementsUsersFiles.FileUserAgreementTriple selectedFile;
+
+        public chooseReceivedFile() {
+            myFiles = new ArrayList<>();
+        }
+
         @Override
         public void onClick(View view) {
             makeDialogBox();
         }
 
         private void makeDialogBox() {
-// 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
+            if (hasReceivedFiles) {
+                this.closeDialogBoxes();
+                this.makeFileBox();
+            } else {
+                this.closeDialogBoxes();
+                this.makeLoadingBox();
+                this.loadDataV2();
+            }
+        }
+
+        /**
+         * Creates a dialog with the files in
+         */
+        private void makeFileBox() {
+            Log.d(LOG_TAG, "Drawing file box " + Arrays.toString(myFiles.toArray()));
+            // setup the alert builder
             AlertDialog.Builder builder = new AlertDialog.Builder(SendFileActivity.this);
+            builder.setTitle("Choose a file to send");
+            // add a radio button list
 
-// 2. Chain together various setter methods to set the dialog characteristics
-            builder.setMessage("abc")
-                    .setTitle("def");
+            // first get the name
+            Collection<String> col = Collections2.transform(myFiles, new Function<GetAgreementsUsersFiles.FileUserAgreementTriple, String>() {
+                @NullableDecl
+                @Override
+                public String apply(@NullableDecl GetAgreementsUsersFiles.FileUserAgreementTriple input) {
+                    if (input == null) return "null";
+                    return input.file.getName() + " (from " + input.user.getName() + ")";
+                }
+            });
 
-// 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+            // then we add this as a single choice list
+            String[] arr = col.toArray(new String[0]);
+            Log.d(LOG_TAG, Arrays.toString(arr));
+            AtomicInteger checkedItem = new AtomicInteger();
+            builder.setSingleChoiceItems(arr, checkedItem.get(), (dialog, which) -> {
+                // user checked an item
+                Log.d(LOG_TAG, "Changed an item (" + which + ")");
+
+                checkedItem.set(which);
+            });
+            // add OK and Cancel buttons
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                // user clicked OK
+                Log.d(LOG_TAG, "We chose a received file (" + checkedItem + ")");
+                isSendFileLocalStorage = false;
+                fileToSend = myFiles.get(checkedItem.get()).file;
+                selectedFile = myFiles.get(checkedItem.get());
+                updateFileShowUI();
+            });
+            builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
+                // we didn't choose anything
+                Log.d(LOG_TAG, "Did not choose a received file");
+            });
+            // create and show the alert dialog
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+
+        /**
+         * This loads my received files from firebase, and creates the dialog boxes when the data is received
+         */
+        private void loadDataV2() {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            Query q = db.collection("Agreements")
+                    .whereEqualTo("userID", userID);
+            //                    .whereGreaterThan("validUntil", new Date().getTime())
+
+            chooseReceivedFile self = this;
+            ArrayCallback<GetAgreementsUsersFiles.FileUserAgreementTriple> callback = new ArrayCallback<GetAgreementsUsersFiles.FileUserAgreementTriple>() {
+                @Override
+                public void onSuccess(ArrayList<GetAgreementsUsersFiles.FileUserAgreementTriple> arr, String message) {
+                    self.myFiles = arr;
+                    Log.d(LOG_TAG, "Received these files " + Arrays.toString(arr.toArray()));
+                    for (GetAgreementsUsersFiles.FileUserAgreementTriple t: arr){
+                        Log.d(LOG_TAG, "Received these things " + t.file + " - " + t.agreement + " - " + t.user);
+                    }
+                    self.hasReceivedFiles = true;
+                    self.makeDialogBox();
+                }
+
+                @Override
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                    // todo
+                    Log.d(LOG_TAG, "ERROR when getting agreements " + error);
+                }
+            };
+            GetAgreementsUsersFiles get = new GetAgreementsUsersFiles(q, callback, userID, db);
+            get.getData();
+        }
+
+        private void closeDialogBoxes() {
+            if (loadingDlg != null) loadingDlg.hide();
+            if (listDlg != null) listDlg.hide();
+        }
+
+        private void makeLoadingBox() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SendFileActivity.this);
+
+            builder.setTitle("Loading...");
+
+            // add OK and Cancel buttons
+            final ProgressBar progressBar = new ProgressBar(SendFileActivity.this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            builder.setView(progressBar);
+            progressBar.setLayoutParams(lp);
+
+            builder.setView(progressBar);
+            // create and show the alert dialog
+
+// 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+            loadingDlg = builder.create();
+            loadingDlg.show();
+        }
+    }
+
+    /**
+     * This updates our UI, to make sure that the file selected is shown correctly.
+     */
+    private void updateFileShowUI() {
+        // todo
+        txtFilename.setVisibility(View.VISIBLE);
+        btnSend.setEnabled(true);
+        if (isSendFileLocalStorage) {
+            // then we show the local file
+        } else {
+            // show the received file
+            GetAgreementsUsersFiles.FileUserAgreementTriple x = myChooseReceivedFile.selectedFile;
+            String name;
+            if (x != null) {
+                name = x.file.getName() + "(From " + x.user.getName() + ")";
+            } else {
+                name = fileToSend.getName();
+            }
+            txtFilename.setText(name);
         }
     }
 
@@ -158,37 +305,19 @@ public class SendFileActivity extends BaseActivity {
         }
 
         /**
-         * This gets called after we successfully get the email. Then we can continue with the process.
-         *
-         * @param data     The data from Utils.GetEmail. userID: <userID>
-         * @param message: Extra info/message
+         * This sends the file
          */
-        private void afterGetEmail(Map<String, Object> data, String message) {
-            // can now actually send, since we got a proper email.
-            userToReceiveID = data.containsKey("userID") ? (String) data.get("userID") : "-1";
-            Log.d(LOG_TAG, "Found userID from email: " + userToReceiveID);
-
-            // I now need to save the file to storage
-            // Create a storage reference from our app
-            StorageReference storageRef = storage.getReference();
-
-            // currently logged in user
-            user = auth.getCurrentUser();
-            if (user == null) {
-                // if the user is null, we need to go to the login activity first.
-                goToLogin();
-                return;
+        private void sendV2() {
+            if (isSendFileLocalStorage){
+                sendLocalFile();
+            }else{
+                sendReceivedFile();
             }
+        }
 
-            // pretty name
-            filename = txtFilename.getText().toString();
-
-            // the path that should be stored on the firebase file system
-            filePathFirebase = user.getUid() + "/" + filename.replace('/', '_');
-            fileRef = storageRef.child(filePathFirebase);
-
+        private void sendLocalFile(){
+            // gets the input stream
             InputStream stream;
-
             int totalSize;
             try {
                 stream = getContentResolver().openInputStream(file.getUri());
@@ -198,110 +327,97 @@ public class SendFileActivity extends BaseActivity {
                 return;
             }
 
-            // TODO 2020/04/20 Do the encrytion part here
-            AESEncryption encryptor = new AESEncryption();
-            InputStream encrypted = encryptor.encrypt(stream);
-            // END Encrypted
-
-            UploadTask uploadTask = fileRef.putStream(encrypted);
-            // make the progress bar visible
-            progressBar.setVisibility(View.VISIBLE);
-
-            // Register observers to listen for when the download is done or if it fails
-            int finalTotalSize = totalSize;
-
-            uploadTask
-                    .addOnFailureListener(this::afterFailUploadFile)
-                    .addOnSuccessListener(snapshot -> afterUploadFile(snapshot, encryptor.getKey()))
-                    .addOnProgressListener(taskSnapshot -> {
-                        // progress update
-                        // just set the progress to be transferred/total
-                        Log.d(LOG_TAG, "PROGRESS " + taskSnapshot.getBytesTransferred() + " / " + finalTotalSize + " = " + (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize)));
-                        progressBar.setProgress(
-                                (int) (100 * ((float) taskSnapshot.getBytesTransferred() / (float) finalTotalSize))
-                        );
-                    });
-        }
-
-        /**
-         * This gets called after the file is successfully uploaded. It updates the Database
-         */
-        private void afterUploadFile(UploadTask.TaskSnapshot taskSnapshot, String key) {
-            Toast.makeText(getApplicationContext(), "Successfully uploaded file", Toast.LENGTH_LONG).show();
-            Log.d(LOG_TAG, "Success on upload");
-            progressBar.setVisibility(View.INVISIBLE);
-
-            // reference this, because we need to use this class instance inside a nested class.
-            sendFile self = this;
-            //first get the file URL. This is async, so need to add oncomplete listener.
-            fileRef.getDownloadUrl().addOnCompleteListener(uriTask -> {
-                if (!uriTask.isSuccessful()) {
-                    errorHandler.displayError("Could not successfully obtain the file URL. Error: (" + uriTask.getException().getMessage() + ")");
-                    return;
+            Callback cb = new Callback() {
+                @Override
+                public void onSuccess(Map<String, Object> data, String message) {
+                    errorHandler.displaySuccess(message);
+                    cleanUp();
                 }
-                // If file is successfully uploaded, I should update the file DB collection and the agreements collection
 
-                // Get DB instance
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                // first add a record to the File collection TODO Make better
+                @Override
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                    errorHandler.displayError(error);
+                    cleanUp();
+                }
+            };
 
-                Task<DocumentReference> fileDocRef = db.collection("Files").add(
-                        new dbFile(filePathFirebase, filename, userToReceiveID, uriTask.getResult().toString(), key).getHashmap()
-                );
+            Callback progressCallback = new Callback() {
+                // on progress.
+                @Override
+                public void onSuccess(Map<String, Object> data, String message) {
+                    long numBytes = (long) data.get("transferred");
+                    Log.d(LOG_TAG, "PROGRESS " + numBytes + " / " + totalSize + " = " + (int) (100 * ((float) numBytes / (float) totalSize)));
+                    progressBar.setProgress(
+                            (int) (100 * ((float) numBytes / (float) totalSize))
+                    );
+                }
 
-                // This means we didn't upload successfully
-                fileDocRef.addOnCompleteListener(task -> {
-                    DocumentReference ref = task.getResult();
-                    if (task.isSuccessful() && ref != null) {
-                        String fileID = ref.getId();
-                        Task<DocumentReference> agreementDocRef = db.collection("Agreements").add(
-                                new dbAgreement(fileID, userToReceiveID, user.getUid()).getHashmap()
-                        );
-                        agreementDocRef.addOnSuccessListener(aTask -> {
-                            afterUpdateDB();
-                        }).addOnFailureListener(self::afterFailUpdateDB);
+                @Override // not used
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                }
+            };
 
-                    } else {
-                        afterFailUpdateDB(Objects.requireNonNull(task.getException()));
-                    }
-                }).addOnFailureListener(self::afterFailUpdateDB); // if it failed
-            });
+            // currently logged in user
+            user = auth.getCurrentUser();
+            if (user == null) {
+                // if the user is null, we need to go to the login activity first.
+                goToLogin();
+                return;
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(0);
+            SendLocalFile sender = new SendLocalFile(cb, user.getUid(), userToReceiveID, txtFilename.getText().toString(), stream, FirebaseFirestore.getInstance(), FirebaseStorage.getInstance(), progressCallback);
+            sender.send();
+        }
 
+        private void sendReceivedFile(){
+            Log.d(LOG_TAG, "Starting send of received file");
+            Callback cb = new Callback() {
+                @Override
+                public void onSuccess(Map<String, Object> data, String message) {
+                    Log.d(LOG_TAG, "Succeeded in sending a received file !  (" + message + ")");
+                    cleanUp();
+                }
+
+                @Override
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                    Log.d(LOG_TAG, "WE had an error ( " + error + ")");
+                    errorHandler.displayError(error);
+                    cleanUp();
+                }
+            };
+            if (!myChooseReceivedFile.hasReceivedFiles || myChooseReceivedFile.selectedFile ==null){
+
+                cb.onFailure("Something went wrong with selecting a received file. Please try again later", MyError.ErrorCode.NOT_FOUND);
+                return;
+            }
+            Log.d(LOG_TAG, "Sending the following data " + myChooseReceivedFile.selectedFile.user + " - " + myChooseReceivedFile.selectedFile.agreement + " - " + myChooseReceivedFile.selectedFile.file);
+            SendReceivedFile sender = new SendReceivedFile(cb, myChooseReceivedFile.selectedFile, userToReceiveID, FirebaseFirestore.getInstance());
+            sender.send();
         }
 
         /**
-         * This gets called after the database is successfully updated.
-         * It displays info to the user and cleans up
+         * This gets called after we successfully get the email. Then we can continue with the process.
+         *
+         * @param data     The data from Utils.GetEmail. userID: <userID>
+         * @param message: Extra info/message
          */
-        private void afterUpdateDB() {
+        private void afterGetEmail(Map<String, Object> data, String message) {
+            // can now actually send, since we got a proper email.
+            userToReceiveID = data.containsKey("userID") ? (String) data.get("userID") : "-1";
 
-            errorHandler.displaySuccess("Database updated successfully");
-            Log.d(LOG_TAG, "Database updated successfully");
+            Log.d(LOG_TAG, "Found userID from email: " + userToReceiveID);
 
-
-            cleanUp();
+            // Now send the file.
+            sendV2();
         }
+
         /* Failure handlers, i.e. what happens when stuff fails */
 
         private void afterFailGetEmail(String error, MyError.ErrorCode errorCode) {
             Log.d(LOG_TAG, "User Email failed with message (" + error + ") and code + (" + errorCode + ")");
 
             errorHandler.displayError("That user does not exist. Please ask them to sign up first.");
-            cleanUp();
-        }
-
-        private void afterFailUploadFile(Exception exception) {
-            // Handle unsuccessful uploads
-            progressBar.setVisibility(View.INVISIBLE);
-            errorHandler.displayError("An Error occured (" + exception.getMessage() + ")");
-            Log.d(LOG_TAG, "Failed to upload file");
-            cleanUp();
-        }
-
-        private void afterFailUpdateDB(Exception e) {
-            progressBar.setVisibility(View.INVISIBLE);
-            errorHandler.displayError("An Error occurred while updating database (" + e.getMessage() + ")");
-            Log.d(LOG_TAG, "Failed to update Database (" + e.getMessage() + ")");
             cleanUp();
         }
 
@@ -362,6 +478,8 @@ public class SendFileActivity extends BaseActivity {
                 btnSend.setEnabled(true);
 
                 Log.d(LOG_TAG, "User chose File: " + filePath + " get path " + getPath(fileUri));
+                isSendFileLocalStorage = true;
+                updateFileShowUI();
             } else {
 
                 errorHandler.displayError("Choosing file failed with code (" + resultCode + ")");
@@ -377,6 +495,7 @@ public class SendFileActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_send_file);
         super.onCreate(savedInstanceState);
+        myChooseReceivedFile = new chooseReceivedFile();
 
         setElements();
         setEvents();
@@ -399,7 +518,7 @@ public class SendFileActivity extends BaseActivity {
         btnSend.setOnClickListener(new sendFile());
         txtFilename.addTextChangedListener(new FilenameChange());
 
-        btnChooseReceivedFile.setOnClickListener(new chooseReceivedFile());
+        btnChooseReceivedFile.setOnClickListener(myChooseReceivedFile);
     }
 
     /**

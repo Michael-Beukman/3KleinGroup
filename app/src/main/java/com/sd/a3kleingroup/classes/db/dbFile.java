@@ -37,4 +37,8 @@ public class dbFile implements dbObject{
             put("encryptionKey", encryptionKey);
         }};
     }
+
+    public String getName() {
+        return name;
+    }
 }
