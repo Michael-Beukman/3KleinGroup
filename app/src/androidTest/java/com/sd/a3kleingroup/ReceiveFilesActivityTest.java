@@ -23,9 +23,9 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertFalse;
 
-@RunWith(JUnit4.class)
+//@RunWith(JUnit4.class)
 public class ReceiveFilesActivityTest {
-//    /*
+    /*
     @Rule
     public ActivityScenarioRule<ReceiveFilesActivity> activityScenarioRule = new ActivityScenarioRule<>(ReceiveFilesActivity.class);;;
 
@@ -98,5 +98,5 @@ public class ReceiveFilesActivityTest {
 
         Thread.sleep(2000);
     }
-//    */
+    */
 }
