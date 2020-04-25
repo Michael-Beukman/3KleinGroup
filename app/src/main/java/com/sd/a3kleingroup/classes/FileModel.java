@@ -13,7 +13,14 @@ public class FileModel {
     dbAgreement agreement;
     dbUser owner;
 
-    public FileModel(){ }
+    public FileModel(){
+        fileName=null;
+        format=null;
+        path=null;
+        url=null;
+        agreement=null;
+        owner=null;
+    }
 
     public FileModel(String fileName, String format,  String path, String url) {
         this.fileName = fileName;
@@ -69,5 +76,9 @@ public class FileModel {
 
     public void setOwner(dbUser owner) {
         this.owner = owner;
+    }
+
+    public boolean isAllDataRetrieved(){
+        return !(fileName==null||url==null||path==null||agreement==null||owner==null);
     }
 }
