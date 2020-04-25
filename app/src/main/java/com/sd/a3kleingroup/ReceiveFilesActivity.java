@@ -284,6 +284,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
     private void setUpRV(){
         user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d("REEEEEE", "temp " + user.getUid());
         Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);

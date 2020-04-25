@@ -90,7 +90,6 @@ public class GetAgreementsUsersFiles {
                         return;
                     }
                     // all agreements
-                    Map<String, Object> agreements = new HashMap<>();
                     numberOfAgreements = agreementSnapshots.size();
                     if (numberOfAgreements == 0){
                         end();
@@ -104,6 +103,7 @@ public class GetAgreementsUsersFiles {
                         String agreementID = document.getId();
 
                         agreements.put(agreementID, agreement);
+                        Log.d(LOG_TAG, "Hey here is the agreement id = " + agreementID + " agr = " + agreement);
                         getUser(agreementID, agreement.getUserSentID());
                         getFile(agreementID, agreement.getFileID());
                     }
@@ -176,6 +176,7 @@ public class GetAgreementsUsersFiles {
      */
     private void endGetAgreement(String agreementID) {
         numberOfAgreementsGotten++;
+        Log.d(LOG_TAG, "Got the following: agreement = " + agreements.get(agreementID) + "file is " + files.get(agreementID) + " user is " + users.get(agreementID));
         arr.add(
                 new FileUserAgreementTriple(
                         files.get(agreementID),

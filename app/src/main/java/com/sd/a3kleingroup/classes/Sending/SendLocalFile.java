@@ -126,7 +126,6 @@ public class SendLocalFile {
                 callback.onFailure("Could not successfully obtain the file URL. Error: (" + uriTask.getException().getMessage() + ")", MyError.ErrorCode.TASK_FAILED);
                 return;
             }
-
             // If file is successfully uploaded, I should update the file DB collection and the agreements collection
 
             // Get DB instance
@@ -134,7 +133,7 @@ public class SendLocalFile {
             // first add a record to the File collection TODO Make better
 
             Task<DocumentReference> fileDocRef = db.collection("Files").add(
-                    new dbFile(filePathFirebase, filename, userReceiving, uriTask.getResult().toString(), key).getHashmap()
+                    new dbFile(filePathFirebase, filename, userSending, uriTask.getResult().toString(), key).getHashmap()
             );
 
             fileDocRef.addOnCompleteListener(task -> {

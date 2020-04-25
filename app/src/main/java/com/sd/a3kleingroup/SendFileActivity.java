@@ -35,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.Sending.SendLocalFile;
+import com.sd.a3kleingroup.classes.Sending.SendReceivedFile;
 import com.sd.a3kleingroup.classes.callbacks.ArrayCallback;
 import com.sd.a3kleingroup.classes.db.dbUser;
 import com.sd.a3kleingroup.classes.encryption.AESEncryption;
@@ -116,16 +117,6 @@ public class SendFileActivity extends BaseActivity {
 
     // what happens when the user tries to send a received file.
     private class chooseReceivedFile implements View.OnClickListener {
-        class FileUserPair {
-            public dbFile file;
-            public dbUser user;
-
-            public FileUserPair(dbFile file, dbUser user) {
-                this.file = file;
-                this.user = user;
-            }
-        }
-
         private ArrayList<GetAgreementsUsersFiles.FileUserAgreementTriple> myFiles;
         private boolean hasReceivedFiles = false;
         private AlertDialog loadingDlg = null;
@@ -215,6 +206,10 @@ public class SendFileActivity extends BaseActivity {
                 @Override
                 public void onSuccess(ArrayList<GetAgreementsUsersFiles.FileUserAgreementTriple> arr, String message) {
                     self.myFiles = arr;
+                    Log.d(LOG_TAG, "Received these files " + Arrays.toString(arr.toArray()));
+                    for (GetAgreementsUsersFiles.FileUserAgreementTriple t: arr){
+                        Log.d(LOG_TAG, "Received these things " + t.file + " - " + t.agreement + " - " + t.user);
+                    }
                     self.hasReceivedFiles = true;
                     self.makeDialogBox();
                 }
@@ -313,6 +308,14 @@ public class SendFileActivity extends BaseActivity {
          * This sends the file
          */
         private void sendV2() {
+            if (isSendFileLocalStorage){
+                sendLocalFile();
+            }else{
+                sendReceivedFile();
+            }
+        }
+
+        private void sendLocalFile(){
             // gets the input stream
             InputStream stream;
             int totalSize;
@@ -367,6 +370,32 @@ public class SendFileActivity extends BaseActivity {
             sender.send();
         }
 
+        private void sendReceivedFile(){
+            Log.d(LOG_TAG, "Starting send of received file");
+            Callback cb = new Callback() {
+                @Override
+                public void onSuccess(Map<String, Object> data, String message) {
+                    Log.d(LOG_TAG, "Succeeded in sending a received file !  (" + message + ")");
+                    cleanUp();
+                }
+
+                @Override
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                    Log.d(LOG_TAG, "WE had an error ( " + error + ")");
+                    errorHandler.displayError(error);
+                    cleanUp();
+                }
+            };
+            if (!myChooseReceivedFile.hasReceivedFiles || myChooseReceivedFile.selectedFile ==null){
+
+                cb.onFailure("Something went wrong with selecting a received file. Please try again later", MyError.ErrorCode.NOT_FOUND);
+                return;
+            }
+            Log.d(LOG_TAG, "Sending the following data " + myChooseReceivedFile.selectedFile.user + " - " + myChooseReceivedFile.selectedFile.agreement + " - " + myChooseReceivedFile.selectedFile.file);
+            SendReceivedFile sender = new SendReceivedFile(cb, myChooseReceivedFile.selectedFile, userToReceiveID, FirebaseFirestore.getInstance());
+            sender.send();
+        }
+
         /**
          * This gets called after we successfully get the email. Then we can continue with the process.
          *
@@ -378,11 +407,9 @@ public class SendFileActivity extends BaseActivity {
             userToReceiveID = data.containsKey("userID") ? (String) data.get("userID") : "-1";
 
             Log.d(LOG_TAG, "Found userID from email: " + userToReceiveID);
-            if (true) {
-                sendV2();
-                return;
-            }
 
+            // Now send the file.
+            sendV2();
         }
 
         /* Failure handlers, i.e. what happens when stuff fails */

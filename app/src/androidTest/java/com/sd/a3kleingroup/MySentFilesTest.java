@@ -65,6 +65,7 @@ public class MySentFilesTest {
         FirebaseAuth.getInstance().signInWithCredential(authCredential).addOnCompleteListener(y->{
            Log.d("REEEEEE", "Logged in");
         });
+        Thread.sleep(TIME_TO_SLEEP);
     }
 
     @Test
