@@ -36,6 +36,8 @@ public class ReceiveFilesActivityTest {
         FirebaseAuth.getInstance().signInWithCredential(authCredential).addOnCompleteListener(y->{
             Log.d("REEEEEE", "Logged in");
         });
+        Thread.sleep(2000);
+
     }
 
     @Test
