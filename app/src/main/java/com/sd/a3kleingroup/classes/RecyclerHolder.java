@@ -82,6 +82,7 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
                 joinedFileInfo.setFileName((String)data.get("filename"));
                 joinedFileInfo.setUrl((String)data.get("storageURL"));
                 joinedFileInfo.setPath((String)data.get("filepath"));
+                joinedFileInfo.setEncryptionKey((String)data.get("encryptionKey"));
             }
 
             @Override

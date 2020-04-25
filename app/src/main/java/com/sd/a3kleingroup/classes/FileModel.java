@@ -10,6 +10,7 @@ public class FileModel {
     String format;
     String path;
     String url;
+    String encryptionKey;
     dbAgreement agreement;
     dbUser owner;
 
@@ -27,6 +28,14 @@ public class FileModel {
         this.format=format;
         this.path = path;
         this.url = url;
+    }
+
+    public String getEncryptionKey() {
+        return encryptionKey;
+    }
+
+    public void setEncryptionKey(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
     }
 
     public String getPath() {

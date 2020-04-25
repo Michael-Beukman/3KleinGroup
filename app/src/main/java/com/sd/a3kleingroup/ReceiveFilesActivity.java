@@ -2,11 +2,13 @@ package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,6 +24,7 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.util.IOUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,10 +50,17 @@ import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
 import com.sd.a3kleingroup.classes.SingleSentFile;
 import com.sd.a3kleingroup.classes.User;
 import com.sd.a3kleingroup.classes.db.*;
+import com.sd.a3kleingroup.classes.encryption.AESEncryption;
 import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -246,29 +256,56 @@ public class ReceiveFilesActivity extends BaseActivity {
         StorageReference storageRef = storage.getReference();
         StorageReference fileRef = storageRef.child(file.getPath());
 
-        File localFile = null;
-        try {
-            //TODO check that filename is valid
-            localFile = File.createTempFile("temp", null,null);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        }
+        final long ONE_MEGABYTE = 1024 * 1024 * 10;
+        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            //bytes is of type byte[]
+            AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
+            InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
+            try {
+                //Create temp file to store file so that external apps can be used to open it.
+                File tmpFile = File.createTempFile("tmp", ".pdf");
+                OutputStream outputStream = new FileOutputStream(tmpFile);
+                IOUtils.copyStream(stream, outputStream);
 
-
-        fileRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                // Local temp file has been created
-                Log.e(LOG_TAG, taskSnapshot.getBytesTransferred()+"");
+                //Open file with external app
+                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(path, "application/pdf");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
+                tmpFile.deleteOnExit();
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Log.e(LOG_TAG, exception.getMessage());
-            }
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
         });
-        Log.e(LOG_TAG, localFile.getAbsolutePath());
+
+//        File localFile = null;
+//        try {
+//            //TODO check that filename is valid
+//            localFile = File.createTempFile("temp", null,null);
+//        } catch (IOException e) {
+//            Log.e(LOG_TAG, e.getMessage());
+//        }
+//
+//
+//        fileRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                // Local temp file has been created
+//                Log.e(LOG_TAG, taskSnapshot.getBytesTransferred()+"");
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle any errors
+//                Log.e(LOG_TAG, exception.getMessage());
+//            }
+//        });
+//        Log.e(LOG_TAG, localFile.getAbsolutePath());
 
         //Google download manager
 //        DownloadManager downloadmanager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
@@ -292,17 +329,18 @@ public class ReceiveFilesActivity extends BaseActivity {
         RecyclerViewClickListener textButtonListener = new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position, RecyclerHolder holder) {
+                //make sure all data for this file has been retrieved from firebase
                 if(holder.joinedFileInfo.isAllDataRetrieved()){
                     FileModel file = holder.joinedFileInfo;
-                    sendNotificationRequestingPermission(file.getFileName(), file.getOwner().getNotificationToken());
+                    checkPermission(file);
                 }
-                //downloadFile(file);
             }
         };
 
         RecyclerViewClickListener popUpListener = new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position, RecyclerHolder holder) {
+                //make sure all data for this file has been retrieved from firebase
                 if(holder.joinedFileInfo.isAllDataRetrieved()){
                     showHamburgerPopUp(view, position, holder.joinedFileInfo);
                 }
@@ -321,6 +359,17 @@ public class ReceiveFilesActivity extends BaseActivity {
                 Log.d(LOG_TAG, "Error at query snapshotlistener "+ e.getMessage());
             }
         });
+    }
+
+    private void checkPermission(FileModel file) {
+        //Check if permission expired
+        if(file.getAgreement().getValidUntil().before(new Date())){
+            //permission expired, request new permission
+            Toast.makeText(ReceiveFilesActivity.this, "Permission Expired. Request Sent", Toast.LENGTH_SHORT).show();
+            sendNotificationRequestingPermission(file.getFileName(), file.getOwner().getNotificationToken());
+        }else{
+            downloadFile(file);
+        }
     }
 
     private void sendNotificationRequestingPermission(String fName, String ownerToken) {
