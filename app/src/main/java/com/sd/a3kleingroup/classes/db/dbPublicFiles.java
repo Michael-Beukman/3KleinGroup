@@ -26,18 +26,12 @@ public class dbPublicFiles implements dbObject{
     private String filePath;
     private String encryptionKey = ""; //Check later for now just leave as "" to indicate no key just yet
 
-    /*public dbPublicFiles(String userID, String fileName, String fileStorage, String filePath, String encryptionKey ){
+    public dbPublicFiles(String userID, String fileName, String fileStorage, String filePath, String encryptionKey ){
         this.userID = userID;
         this.fileName = fileName;
         this.fileStorage = fileStorage;
         this.filePath = filePath;
         this.encryptionKey = encryptionKey;
-    }*/
-    public dbPublicFiles(String userID, String fileName, String fileStorage, String filePath){
-        this.userID = userID;
-        this.fileName = fileName;
-        this.fileStorage = fileStorage;
-        this.filePath = filePath;
     }
 
     @Override

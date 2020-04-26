@@ -2,6 +2,7 @@ package com.sd.a3kleingroup;
 
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
+import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
 import org.junit.Assert;
@@ -61,4 +62,22 @@ public class dbClassesTest {
             put("notificationToken",null);
         }}, user.getHashmap());
     }
+
+    @Test
+    public void testDBPublicFileNoEncrypt(){
+        String userID = "testUser";
+        String fileName = "testName";
+        String fileStorage = "testUrl";
+        String filePath = "testPath";
+        String encryptionKey = " ";
+        dbPublicFiles publicFiles = new dbPublicFiles(userID, fileName, fileStorage, filePath, encryptionKey);
+        Assert.assertEquals(new HashMap<String, Object>(){{
+            put("user_id",userID);
+            put("file_name",fileName);
+            put("file_storage",fileStorage);
+            put("file_path",filePath);
+            put("encryptionKey",encryptionKey);
+        }}, publicFiles.getHashmap());
+    }
+
 }
