@@ -82,7 +82,7 @@ public class dbClassesTest {
     }
 
     //Test instance for other functions
-    dbPublicFiles publicFiles = new dbPublicFiles("userID", "fileName", "fileStorage", "filePath", "encryptionKey");
+    private dbPublicFiles publicFiles = new dbPublicFiles("userID", "fileName", "fileStorage", "filePath", "encryptionKey");
     @Test
     public void testDBPublicUserID(){
         String userID = "userID";
