@@ -20,6 +20,7 @@ public class dbPublicFiles implements dbObject{
     // 2) implement separately.
     // will do 2) for now but consider integrate the two later or extending
     //partially due to the fact that originally envisioned friend id being a part of it but probably a better idea to use friend bool to request files and just transfer database info
+
     private String userID;
     private String fileName;
     private String fileStorage;
@@ -46,5 +47,14 @@ public class dbPublicFiles implements dbObject{
     }
 
     public String getFileName() { return fileName; }
+
+    public String getFileStorage() { return fileStorage; }
+
+    public String getFilePath() { return filePath; }
+
+    public String getUserID() { return userID; }
+
+    private String getEncryptionKey () { return encryptionKey; }
+
 
 }

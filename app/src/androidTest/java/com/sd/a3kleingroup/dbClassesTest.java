@@ -63,6 +63,7 @@ public class dbClassesTest {
         }}, user.getHashmap());
     }
 
+    //Welcome to the Matthew zone
     @Test
     public void testDBPublicFileNoEncrypt(){
         String userID = "testUser";
@@ -78,6 +79,34 @@ public class dbClassesTest {
             put("file_path",filePath);
             put("encryptionKey",encryptionKey);
         }}, publicFiles.getHashmap());
+    }
+
+    //Test instance for other functions
+    dbPublicFiles publicFiles = new dbPublicFiles("userID", "fileName", "fileStorage", "filePath", "encryptionKey");
+    @Test
+    public void testDBPublicUserID(){
+        String userID = "userID";
+        Assert.assertEquals(publicFiles.getUserID(), userID);
+    }
+    @Test
+    public void testDBPublicFileName(){
+        String fileName = "fileName";
+        Assert.assertEquals(publicFiles.getFileName(), fileName);
+    }
+    @Test
+    public void testDBPublicFileStorage(){
+        String fileStorage = "fileStorage";
+        Assert.assertEquals(publicFiles.getFileStorage(), fileStorage);
+    }
+    @Test
+    public void testDBPublicFilePath(){
+        String filePath = "filePath";
+        Assert.assertEquals(publicFiles.getFileName(), filePath);
+    }
+    @Test
+    public void testDBPublicFileEncryptionKey(){
+        String encryptionKey = "encryptionKey";
+        Assert.assertEquals(publicFiles.getFileName(), encryptionKey);
     }
 
 }
