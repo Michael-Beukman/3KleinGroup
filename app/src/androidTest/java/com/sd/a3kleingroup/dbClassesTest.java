@@ -101,12 +101,12 @@ public class dbClassesTest {
     @Test
     public void testDBPublicFilePath(){
         String filePath = "filePath";
-        Assert.assertEquals(publicFiles.getFileName(), filePath);
+        Assert.assertEquals(publicFiles.getFilePath(), filePath);
     }
     @Test
     public void testDBPublicFileEncryptionKey(){
         String encryptionKey = "encryptionKey";
-        Assert.assertEquals(publicFiles.getFileName(), encryptionKey);
+        Assert.assertEquals(publicFiles.getEncryptionKey(), encryptionKey);
     }
 
 }

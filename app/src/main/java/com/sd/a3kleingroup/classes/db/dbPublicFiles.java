@@ -25,7 +25,7 @@ public class dbPublicFiles implements dbObject{
     private String fileName;
     private String fileStorage;
     private String filePath;
-    private String encryptionKey = ""; //Check later for now just leave as "" to indicate no key just yet
+    private String encryptionKey; //Check later for now just leave as "" to indicate no key just yet
 
     public dbPublicFiles(String userID, String fileName, String fileStorage, String filePath, String encryptionKey ){
         this.userID = userID;
@@ -54,7 +54,7 @@ public class dbPublicFiles implements dbObject{
 
     public String getUserID() { return userID; }
 
-    private String getEncryptionKey () { return encryptionKey; }
+    public String getEncryptionKey () { return encryptionKey; }
 
 
 }
