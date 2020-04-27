@@ -19,8 +19,9 @@ public class SendReceivedFile {
     private FirebaseFirestore db;
 
     /**
+     *
      * @param cb             The callback that will be called after completion
-     * @param tripleToSend   The (File, User, Agreement) that we should send the file of.
+     * @param tripleToSend   The (File, User, Agreement) that we should send the file of. We only actually use the agreement part, so the others may be fudged
      * @param userIDToSendTo The user to send to.
      * @param db             The database instance.
      */

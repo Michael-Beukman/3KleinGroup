@@ -1,13 +1,11 @@
 package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,25 +18,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.util.IOUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sd.a3kleingroup.classes.BaseActivity;
@@ -47,26 +40,22 @@ import com.sd.a3kleingroup.classes.FileModel;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.RecyclerHolder;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
-import com.sd.a3kleingroup.classes.SingleSentFile;
-import com.sd.a3kleingroup.classes.User;
+import com.sd.a3kleingroup.classes.Sending.SendReceivedFile;
+import com.sd.a3kleingroup.classes.Utils;
 import com.sd.a3kleingroup.classes.db.*;
 import com.sd.a3kleingroup.classes.encryption.AESEncryption;
-import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
+import com.sd.a3kleingroup.classes.querying.GetAgreementsUsersFiles;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class ReceiveFilesActivity extends BaseActivity {
     final String USER_COLLECTION_NAME = "Users";
@@ -79,7 +68,7 @@ public class ReceiveFilesActivity extends BaseActivity {
     RecyclerAdapter myAdapter;
     FirebaseUser user;
     FirebaseFunctions mFirebaseFunctions;
-    private static final String LOG_TAG="RecievFilesctivity_LOG";
+    private static final String LOG_TAG = "RecievFilesctivity_LOG";
 
 
     @Override
@@ -176,13 +165,13 @@ public class ReceiveFilesActivity extends BaseActivity {
         ArrayList<dbAgreement> agreements;
 
         public RecyclerAdapter(ReceiveFilesActivity receiveFilesActivity, QuerySnapshot data, RecyclerViewClickListener txtbtnlistener, RecyclerViewClickListener popuplistener) {
-            mTextBtnListener=txtbtnlistener;
+            mTextBtnListener = txtbtnlistener;
             mPopUpListener = popuplistener;
             this.receiveFilesActivity = receiveFilesActivity;
             agreements = new ArrayList<>();
-            for (DocumentSnapshot d: data.getDocuments()){
+            for (DocumentSnapshot d : data.getDocuments()) {
                 agreements.add(
-                        new dbAgreement((String)d.get("fileID"), (String)d.get("userID"), ((Timestamp)d.get("validUntil")).toDate(), (String)d.get("ownerID"))
+                        new dbAgreement((String) d.get("fileID"), (String) d.get("userID"), ((Timestamp) d.get("validUntil")).toDate(), (String) d.get("ownerID"))
                 );
             }
         }
@@ -222,16 +211,15 @@ public class ReceiveFilesActivity extends BaseActivity {
         }
     }
 
-    protected void getAsync(String collectionName, String docID, Callback cb){
+    protected void getAsync(String collectionName, String docID, Callback cb) {
         System.out.println("REEE " + db);
         db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
             Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
-            if (documentSnapshot.getData() == null){
+            if (documentSnapshot.getData() == null) {
                 cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
                 System.out.println("NEEE");
 
-            }
-            else {
+            } else {
                 cb.onSuccess(documentSnapshot.getData(), "");
                 System.out.println("NEEE");
 
@@ -245,7 +233,7 @@ public class ReceiveFilesActivity extends BaseActivity {
         });
     }
 
-    private void setUpFireStore(){
+    private void setUpFireStore() {
         db = FirebaseFirestore.getInstance();
     }
 
@@ -319,9 +307,8 @@ public class ReceiveFilesActivity extends BaseActivity {
     }
 
 
-    private void setUpRV(){
+    private void setUpRV() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d("REEEEEE", "temp " + user);
         Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);
@@ -331,7 +318,7 @@ public class ReceiveFilesActivity extends BaseActivity {
             @Override
             public void onClick(View view, int position, RecyclerHolder holder) {
                 //make sure all data for this file has been retrieved from firebase
-                if(holder.joinedFileInfo.isAllDataRetrieved()){
+                if (holder.joinedFileInfo.isAllDataRetrieved()) {
                     FileModel file = holder.joinedFileInfo;
                     checkPermission(file);
                 }
@@ -342,7 +329,7 @@ public class ReceiveFilesActivity extends BaseActivity {
             @Override
             public void onClick(View view, int position, RecyclerHolder holder) {
                 //make sure all data for this file has been retrieved from firebase
-                if(holder.joinedFileInfo.isAllDataRetrieved()){
+                if (holder.joinedFileInfo.isAllDataRetrieved()) {
                     showHamburgerPopUp(view, position, holder.joinedFileInfo);
                 }
             }
@@ -350,25 +337,25 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         // Add a snapshot listener, so that it updates live
         query.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (e == null){
+            if (e == null) {
                 myAdapter = new ReceiveFilesActivity.RecyclerAdapter(ReceiveFilesActivity.this, queryDocumentSnapshots, textButtonListener, popUpListener);
                 mRecyclerView.setAdapter(myAdapter);
 
                 mRecyclerView.setLayoutManager(viewManager);
-            }else{
+            } else {
                 // todo error
-                Log.d(LOG_TAG, "Error at query snapshotlistener "+ e.getMessage());
+                Log.d(LOG_TAG, "Error at query snapshotlistener " + e.getMessage());
             }
         });
     }
 
     private void checkPermission(FileModel file) {
         //Check if permission expired
-        if(file.getAgreement().getValidUntil().before(new Date())){
+        if (file.getAgreement().getValidUntil().before(new Date())) {
             //permission expired, request new permission
             Toast.makeText(ReceiveFilesActivity.this, "Permission Expired. Request Sent", Toast.LENGTH_SHORT).show();
             sendNotificationRequestingPermission(file.getFileName(), file.getOwner().getNotificationToken());
-        }else{
+        } else {
             downloadFile(file);
         }
     }
@@ -399,6 +386,8 @@ public class ReceiveFilesActivity extends BaseActivity {
                     case R.id.menu_share:
                         //TODO: share file
                         Toast.makeText(ReceiveFilesActivity.this, "share file " + file.getFileName(), Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, "Tried to Share and clicked the following position " + position + " " + file);
+                        shareFile(file);
                         return true;
                     case R.id.menu_details:
                         //TODO: show file details in pop up
@@ -412,5 +401,125 @@ public class ReceiveFilesActivity extends BaseActivity {
         // Handle dismissal with: popup.setOnDismissListener(...);
         // Show the menu
         popup.show();
+    }
+
+
+    /**
+     * Shares a (received) file. Does popup stuff to get emails and send the received file.
+     *
+     * @param file
+     */
+    private void shareFile(FileModel file) {
+        class doShareFile {
+            private String userIDToSendTo = null;
+            private AlertDialog emailPopup = null;
+            /** The callback that will happen after getting an id from an email successfully or not*/
+            private Callback afterGetUserEmailCallback;
+            private MyError handler;
+
+            public doShareFile() {
+                handler = new MyError(getApplication());
+                afterGetUserEmailCallback = new Callback() {
+                    @Override
+                    public void onSuccess(Map<String, Object> data, String message) {
+                        getEmail(data, message);
+                    }
+
+                    @Override
+                    public void onFailure(String error, MyError.ErrorCode errorCode) {
+                        failToGetEmail(error, errorCode);
+                    }
+                };
+            }
+
+            /**
+             * This creates a dialog box with input for email, to get the user ID.
+             */
+            public void makeEmailDialog() {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ReceiveFilesActivity.this);
+
+                builder.setTitle("Choose a user to send to.");
+
+                // add OK and Cancel buttons
+                final EditText textInput = new EditText(ReceiveFilesActivity.this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                builder.setView(textInput);
+                textInput.setLayoutParams(lp);
+
+                // add OK and Cancel buttons
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    // user clicked OK
+                    Log.d(LOG_TAG, "We said OK to the email dialog");
+                    String emailToGet = String.valueOf(textInput.getText());
+                    Utils.getInstance().getUserFromEmail(emailToGet, afterGetUserEmailCallback);
+
+                });
+                builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    // we didn't choose anything
+                    Log.d(LOG_TAG, "Did not choose an email to send to. Not doing anything");
+                });
+
+                builder.setView(textInput);
+                // create and show the alert dialog
+
+                emailPopup = builder.create();
+                emailPopup.show();
+
+            }
+
+            boolean readyToSend() {
+                return userIDToSendTo != null;
+            }
+
+            void getEmail(Map<String, Object> mData, String message) {
+                Log.d(LOG_TAG, "We received the userID from the email " + message + " - " + mData.toString());
+                if (!mData.containsKey("userID")){
+                    failToGetEmail("Could not get email from map", MyError.ErrorCode.NOT_FOUND);
+                    return;
+                }
+
+                userIDToSendTo = (String)mData.get("userID");
+                // now, given that we have the userID, we can send easily
+                sendFile();
+            }
+
+            /**
+             * This actually send the file to the other user
+             */
+            private void sendFile() {
+                // first we convert a filemodel to a triple of file, agreement and user
+                GetAgreementsUsersFiles.FileUserAgreementTriple toSend = new GetAgreementsUsersFiles.FileUserAgreementTriple(
+                        new dbFile(file.getPath(), file.getFileName(), "", file.getUrl(), file.getEncryptionKey()),
+                        file.getAgreement(), file.getOwner()
+                );
+                Callback cb = new Callback() {
+                    @Override
+                    public void onSuccess(Map<String, Object> data, String message) {
+                        // we successfully sent it
+                        Log.d(LOG_TAG, "Successfully sent the received file");
+                        handler.displayError("Successfully sent the received file");
+                    }
+
+                    @Override
+                    public void onFailure(String error, MyError.ErrorCode errorCode) {
+                        Log.d(LOG_TAG, "Failed to send the received file (" + error  + ")");
+                        handler.displayError("Failed to send the received file (" + error  + ")");
+                    }
+                };
+
+                SendReceivedFile sender = new SendReceivedFile(cb, toSend, userIDToSendTo, FirebaseFirestore.getInstance());
+                sender.send();
+            }
+
+            private void failToGetEmail(String error, MyError.ErrorCode errorCode) {
+                // todo make an error
+                handler.displayError(error);
+            }
+        }
+
+        doShareFile f = new doShareFile();
+        f.makeEmailDialog();
+
     }
 }

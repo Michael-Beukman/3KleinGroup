@@ -51,6 +51,12 @@ public class GetAgreementsUsersFiles {
         public dbAgreement agreement;
         public dbUser user;
 
+        /**
+         *
+         * @param file The file in question
+         * @param agreement The agreement
+         * @param user The owner of the above file
+         */
         public FileUserAgreementTriple(dbFile file, dbAgreement agreement, dbUser user) {
             this.file = file;
             this.agreement = agreement;
