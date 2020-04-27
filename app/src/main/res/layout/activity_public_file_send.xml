@@ -7,18 +7,6 @@
     tools:context=".PublicFileSendActivity">
 
     <Button
-        android:id="@+id/public_file_btnChooseFileFromReceived"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose A Received File"
-        app:layout_constraintBottom_toTopOf="@+id/public_file_btnSend"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/public_file_btnChooseFile"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
         android:id="@+id/public_file_btnChooseFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,18 +30,6 @@
         app:layout_constraintVertical_bias="0.214" />
 
     <EditText
-        android:id="@+id/public_file_txtRecipientEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/public_file_txtFilename"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toEndOf="@+id/public_file_lblEmail" />
-
-    <EditText
         android:id="@+id/public_file_txtFilename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,11 +40,11 @@
         app:layout_constraintBottom_toTopOf="@+id/public_file_btnChooseFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.934"
-        app:layout_constraintStart_toEndOf="@+id/public_file_lblFilename"
+        app:layout_constraintStart_toEndOf="@id/public_file_lblFilename"
         tools:visibility="invisible" />
 
     <TextView
-        android:id="@+id/sf_lblFilename"
+        android:id="@+id/public_file_lblFilename"
         android:layout_width="59dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -87,17 +63,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/public_file_btnChooseFile" />
-
-    <TextView
-        android:id="@+id/public_file_lblEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="User Email"
-        app:layout_constraintBottom_toBottomOf="@+id/public_file_txtRecipientEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/public_file_txtRecipientEmail"
-        app:layout_constraintVertical_bias="0.423" />
 
     <ProgressBar
         android:id="@+id/public_file_prgbProgress"
