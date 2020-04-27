@@ -22,7 +22,7 @@
         android:id="@+id/public_file_txtHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose a File and user to send it to"
+        android:text="Choose a file to upload to your public files"
         app:layout_constraintBottom_toTopOf="@+id/public_file_btnChooseFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -18,4 +18,11 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="public_send_file_upload">Upload</string>
+    <string name="public_send_file_choose_file">Choose File</string>
+    <string name="public_send_file_name">File Name</string>
+    <string name="public_send_file_hint_name">File Name</string>
+    <string name="public_send_file_info">Choose a file to upload to your public files</string>
+
 </resources>
