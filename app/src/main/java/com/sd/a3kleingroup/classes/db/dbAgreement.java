@@ -11,6 +11,9 @@ public class dbAgreement implements dbObject{
     private Date ValidUntil;
     private String userSentID;
 
+    // the agreement ID;
+    private String id = "";
+
     /**
      * Returns a date 20 years in future
      * @return
@@ -70,6 +73,14 @@ public class dbAgreement implements dbObject{
 
 
         ValidUntil = dbAgreement.getDateTomorrow();
+    }
+
+    public void setID(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getFileID() {

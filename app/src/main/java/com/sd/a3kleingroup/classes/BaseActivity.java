@@ -6,9 +6,11 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +24,7 @@ import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 
 public abstract class BaseActivity extends AppCompatActivity {
 //    @Override
+    protected String LOG_TAG;
     protected BottomNavigationView nav;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,5 +106,29 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void setChecked(int item){
         if (nav != null)
             nav.getMenu().getItem(item).setChecked(true);
+    }
+
+
+
+    protected void getAsync(String collectionName, String docID, Callback cb) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
+            Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
+            if (documentSnapshot.getData() == null) {
+                cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
+                System.out.println("NEEE");
+
+            } else {
+                cb.onSuccess(documentSnapshot.getData(), "");
+                System.out.println("NEEE");
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                cb.onFailure(e.getMessage(), MyError.ErrorCode.TASK_FAILED);
+                System.out.println("NEEE");
+            }
+        });
     }
 }

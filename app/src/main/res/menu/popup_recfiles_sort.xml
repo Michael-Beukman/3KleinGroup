@@ -4,6 +4,6 @@
         android:id="@+id/menu_date"
         android:title="Date" />
     <item
-        android:id="@+id/menu_size"
-        android:title="Size" />
+        android:id="@+id/menu_name"
+        android:title="Name" />
 </menu>

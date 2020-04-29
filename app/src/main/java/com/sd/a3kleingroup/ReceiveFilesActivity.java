@@ -41,6 +41,7 @@ import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.RecyclerHolder;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
 import com.sd.a3kleingroup.classes.Sending.SendReceivedFile;
+import com.sd.a3kleingroup.classes.UI.ReceiveFilesSorter;
 import com.sd.a3kleingroup.classes.Utils;
 import com.sd.a3kleingroup.classes.db.*;
 import com.sd.a3kleingroup.classes.encryption.AESEncryption;
@@ -53,6 +54,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,67 +71,27 @@ public class ReceiveFilesActivity extends BaseActivity {
     RecyclerAdapter myAdapter;
     FirebaseUser user;
     FirebaseFunctions mFirebaseFunctions;
-    private static final String LOG_TAG = "RecievFilesctivity_LOG";
+    ReceiveFilesSorter mySorter = null;
+    Filter myFilter = new Filter();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        LOG_TAG = "RecievFilesctivity_LOG";
         setContentView(R.layout.activity_receive_files);
         super.onCreate(savedInstanceState);
 
         setElements();
+        mySorter = new ReceiveFilesSorter(null, ReceiveFilesActivity.this);
         setEvents();
 
         setUpFireStore();
         mFirebaseFunctions = FirebaseFunctions.getInstance();
         //determineCurrentUser();
         setUpRV();
-        //new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
+
     }
 
-    private void setEvents() {
-        btnSort.setOnClickListener(new Sorter());
-        edtFilter.addTextChangedListener(new Filter());
-    }
-
-    private void setElements() {
-        btnSort = (Button) findViewById(R.id.btnSort);
-        edtFilter = (EditText) findViewById(R.id.txtFilter);
-    }
-
-    private class Sorter implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            showSortPopup(v);
-        }
-
-        private void showSortPopup(View v) {
-            PopupMenu popup = new PopupMenu(ReceiveFilesActivity.this, v);
-            // Inflate the menu from xml
-            popup.inflate(R.menu.popup_recfiles_sort);
-            // Setup menu item selection
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.menu_date:
-                            //TODO: sort by date, update recyclerview
-                            Toast.makeText(ReceiveFilesActivity.this, "sort by date", Toast.LENGTH_SHORT).show();
-                            return true;
-                        case R.id.menu_size:
-                            //TODO: sort by size, update recyclerview
-                            Toast.makeText(ReceiveFilesActivity.this, "sort by file size", Toast.LENGTH_SHORT).show();
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            });
-            // Handle dismissal with: popup.setOnDismissListener(...);
-            // Show the menu
-            popup.show();
-        }
-    }
 
     private class Filter implements TextWatcher {
         @Override
@@ -138,7 +101,25 @@ public class ReceiveFilesActivity extends BaseActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             // TODO: filter based off ownerID, update recyclerview
-            charSequence.toString();
+            Log.d(LOG_TAG, "In filter " + charSequence.toString());
+            String toFind = charSequence.toString().toLowerCase();
+            if (myAdapter == null) return;
+            ;
+            myAdapter.filteredAgreements = new ArrayList<>();
+            for (dbAgreement a : myAdapter.OGagreements) {
+                if (RecyclerHolder.cache.containsKey(a.getId())) {
+                    // then we can possibly filter on this.
+                    FileModel f = RecyclerHolder.cache.get(a.getId());
+                    if (f.getOwner().getName().toLowerCase().contains(toFind) || f.getFileName().toLowerCase().contains(toFind)) {
+                        Log.d(LOG_TAG, "user is " + f.getOwner().getName() + " USER " + f.getOwner().getName().contains(charSequence) + " file " + f.getFileName().contains(charSequence) + " File name is " + f.getFileName());
+                        myAdapter.filteredAgreements.add(a);
+                    }
+                }
+                //else we cannot do anything
+            }
+            Log.d(LOG_TAG, "After filter our dataset has " + myAdapter.filteredAgreements.size() + " and looks like " + Arrays.toString(myAdapter.filteredAgreements.toArray()));
+            myAdapter.onChangeDataset();
+
         }
 
         @Override
@@ -146,34 +127,30 @@ public class ReceiveFilesActivity extends BaseActivity {
         }
     }
 
-//    private void determineCurrentUser() {
-////        user = FirebaseAuth.getInstance().getCurrentUser();
-////        if (user != null) {
-//////            String name = user.getDisplayName();
-//////            String email = user.getEmail();
-//////            Uri photoUrl = user.getPhotoUrl();
-////        }
-////    }
-
-
     public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerHolder> {
 
         RecyclerViewClickListener mTextBtnListener;
         RecyclerViewClickListener mPopUpListener;
 
         ReceiveFilesActivity receiveFilesActivity;
-        ArrayList<dbAgreement> agreements;
+        public ArrayList<dbAgreement> OGagreements;
+        public ArrayList<dbAgreement> filteredAgreements;
+
 
         public RecyclerAdapter(ReceiveFilesActivity receiveFilesActivity, QuerySnapshot data, RecyclerViewClickListener txtbtnlistener, RecyclerViewClickListener popuplistener) {
             mTextBtnListener = txtbtnlistener;
             mPopUpListener = popuplistener;
             this.receiveFilesActivity = receiveFilesActivity;
-            agreements = new ArrayList<>();
+            OGagreements = new ArrayList<>();
+            filteredAgreements = new ArrayList<>();
             for (DocumentSnapshot d : data.getDocuments()) {
-                agreements.add(
-                        new dbAgreement((String) d.get("fileID"), (String) d.get("userID"), ((Timestamp) d.get("validUntil")).toDate(), (String) d.get("ownerID"))
-                );
+                dbAgreement toAdd = new dbAgreement((String) d.get("fileID"), (String) d.get("userID"), ((Timestamp) d.get("validUntil")).toDate(), (String) d.get("ownerID"));
+                // sets the Id, to make sure we have a reference to the agreement
+                toAdd.setID(d.getId());
+                OGagreements.add(toAdd);
+                filteredAgreements.add(toAdd);
             }
+
         }
 
         @NonNull
@@ -182,14 +159,16 @@ public class ReceiveFilesActivity extends BaseActivity {
 
             LayoutInflater layoutInflater = LayoutInflater.from(receiveFilesActivity.getBaseContext());
             View view = layoutInflater.inflate(R.layout.view_recycler, null, false);
+
             return new RecyclerHolder(view, mTextBtnListener, mPopUpListener);
         }
+
 
         //Provides a means to handle each view holder in the list
         @Override
         public void onBindViewHolder(@NonNull RecyclerHolder holder, int position) {
 
-            dbAgreement agreement = agreements.get(position);
+            dbAgreement agreement = filteredAgreements.get(position);
             holder.joinedFileInfo.setAgreement(agreement);
             //set text of views asynchronously
 
@@ -199,44 +178,48 @@ public class ReceiveFilesActivity extends BaseActivity {
             holder.setLoading();
 
             holder.txtDate.setText(agreement.getValidUntil().toString());
-            // get Username
-            getAsync(USER_COLLECTION_NAME, agreement.getUserSentID(), holder.cbOwner);
-            // get filename
-            getAsync(FILE_COLLECTION_NAME, agreement.getFileID(), holder.cbFile);
+
+            if (!RecyclerHolder.cache.containsKey(agreement.getId())) {
+                // if the cache doesn't contain the data, i.e. we haven't gotten file/owner, get it.
+                // get Username
+                getAsync(USER_COLLECTION_NAME, agreement.getUserSentID(), holder.cbOwner);
+                // get filename
+                getAsync(FILE_COLLECTION_NAME, agreement.getFileID(), holder.cbFile);
+            } else {
+                // we already have it.
+                holder.populateViews(RecyclerHolder.cache.get(agreement.getId()));
+            }
+            Log.d(LOG_TAG, "Holder at position " + position);
         }
 
         @Override
         public int getItemCount() {
-            return agreements.size();
+            return filteredAgreements.size();
+        }
+
+        /**
+         * Notifies that the dataset changed.
+         */
+        public void onChangeDataset() {
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onViewAttachedToWindow(@NonNull RecyclerHolder holder) {
+            // TODO SOMEHOW FILTER/sort after recyclerview has been mounted, in case we get new data.
+            super.onViewAttachedToWindow(holder);
+            // after it's mounted, we filter now
+//            myFilter.onTextChanged(edtFilter.getText(), 0,1, 2);
         }
     }
 
-    protected void getAsync(String collectionName, String docID, Callback cb) {
-        System.out.println("REEE " + db);
-        db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
-            Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
-            if (documentSnapshot.getData() == null) {
-                cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
-                System.out.println("NEEE");
-
-            } else {
-                cb.onSuccess(documentSnapshot.getData(), "");
-                System.out.println("NEEE");
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                cb.onFailure(e.getMessage(), MyError.ErrorCode.TASK_FAILED);
-                System.out.println("NEEE");
-            }
-        });
-    }
 
     private void setUpFireStore() {
         db = FirebaseFirestore.getInstance();
     }
 
+
+    /* FILE THINGS */
 
     public void downloadFile(FileModel file) {
 
@@ -270,83 +253,6 @@ public class ReceiveFilesActivity extends BaseActivity {
         }).addOnFailureListener(exception -> {
             // Handle any errors
         });
-
-//        File localFile = null;
-//        try {
-//            //TODO check that filename is valid
-//            localFile = File.createTempFile("temp", null,null);
-//        } catch (IOException e) {
-//            Log.e(LOG_TAG, e.getMessage());
-//        }
-//
-//
-//        fileRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                // Local temp file has been created
-//                Log.e(LOG_TAG, taskSnapshot.getBytesTransferred()+"");
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle any errors
-//                Log.e(LOG_TAG, exception.getMessage());
-//            }
-//        });
-//        Log.e(LOG_TAG, localFile.getAbsolutePath());
-
-        //Google download manager
-//        DownloadManager downloadmanager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
-//        Uri uri = Uri.parse(url);
-//        DownloadManager.Request request = new DownloadManager.Request(uri);
-//
-//        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-//        request.setDestinationInExternalFilesDir(this, destinationDirectory, fileName + fileExtension);
-//
-//        downloadmanager.enqueue(request);
-    }
-
-
-    private void setUpRV() {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
-        mRecyclerView = findViewById(R.id.recycle);
-        mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this);
-
-        RecyclerViewClickListener textButtonListener = new RecyclerViewClickListener() {
-            @Override
-            public void onClick(View view, int position, RecyclerHolder holder) {
-                //make sure all data for this file has been retrieved from firebase
-                if (holder.joinedFileInfo.isAllDataRetrieved()) {
-                    FileModel file = holder.joinedFileInfo;
-                    checkPermission(file);
-                }
-            }
-        };
-
-        RecyclerViewClickListener popUpListener = new RecyclerViewClickListener() {
-            @Override
-            public void onClick(View view, int position, RecyclerHolder holder) {
-                //make sure all data for this file has been retrieved from firebase
-                if (holder.joinedFileInfo.isAllDataRetrieved()) {
-                    showHamburgerPopUp(view, position, holder.joinedFileInfo);
-                }
-            }
-        };
-
-        // Add a snapshot listener, so that it updates live
-        query.addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (e == null) {
-                myAdapter = new ReceiveFilesActivity.RecyclerAdapter(ReceiveFilesActivity.this, queryDocumentSnapshots, textButtonListener, popUpListener);
-                mRecyclerView.setAdapter(myAdapter);
-
-                mRecyclerView.setLayoutManager(viewManager);
-            } else {
-                // todo error
-                Log.d(LOG_TAG, "Error at query snapshotlistener " + e.getMessage());
-            }
-        });
     }
 
     private void checkPermission(FileModel file) {
@@ -372,36 +278,91 @@ public class ReceiveFilesActivity extends BaseActivity {
         mFirebaseFunctions
                 .getHttpsCallable("requestPermission")
                 .call(data);
+    }
+    /* END FILE THINGS */
 
+    /* EVENTS AND ELEMENTS */
+
+    private void setEvents() {
+
+        // sorting gets set up when the data comes.
+         btnSort.setOnClickListener(mySorter);
+
+        edtFilter.addTextChangedListener(myFilter);
+    }
+
+    private void setElements() {
+        btnSort = (Button) findViewById(R.id.btnSort);
+        edtFilter = (EditText) findViewById(R.id.txtFilter);
     }
 
     private void showHamburgerPopUp(View v, int position, FileModel file) {
         PopupMenu popup = new PopupMenu(ReceiveFilesActivity.this, v);
+
         // Inflate the menu from xml
         popup.inflate(R.menu.popup_received_files_hamurger);
         // Setup menu item selection
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_share:
-                        //TODO: share file
-                        Toast.makeText(ReceiveFilesActivity.this, "share file " + file.getFileName(), Toast.LENGTH_SHORT).show();
-                        Log.d(LOG_TAG, "Tried to Share and clicked the following position " + position + " " + file);
-                        shareFile(file);
-                        return true;
-                    case R.id.menu_details:
-                        //TODO: show file details in pop up
-                        Toast.makeText(ReceiveFilesActivity.this, "show details of file " + file.getFileName(), Toast.LENGTH_SHORT).show();
-                        return true;
-                    default:
-                        return false;
-                }
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_share:
+                    //TODO: share file
+                    Toast.makeText(ReceiveFilesActivity.this, "share file " + file.getFileName(), Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "Tried to Share and clicked the following position " + position + " " + file);
+                    shareFile(file);
+                    return true;
+                case R.id.menu_details:
+                    //TODO: show file details in pop up
+                    Toast.makeText(ReceiveFilesActivity.this, "show details of file " + file.getFileName(), Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+                    return false;
             }
         });
         // Handle dismissal with: popup.setOnDismissListener(...);
         // Show the menu
         popup.show();
     }
+
+    private void setUpRV() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
+        mRecyclerView = findViewById(R.id.recycle);
+        mRecyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this);
+
+        RecyclerViewClickListener textButtonListener = (view, position, holder) -> {
+            //make sure all data for this file has been retrieved from firebase
+            if (holder.joinedFileInfo.isAllDataRetrieved()) {
+                FileModel file = holder.joinedFileInfo;
+                checkPermission(file);
+            }
+        };
+
+        RecyclerViewClickListener popUpListener = (view, position, holder) -> {
+            //make sure all data for this file has been retrieved from firebase
+            Log.d(LOG_TAG, "Clickec thingy " + holder.joinedFileInfo.isAllDataRetrieved());
+            if (holder.joinedFileInfo.isAllDataRetrieved()) {
+                showHamburgerPopUp(view, position, holder.joinedFileInfo);
+            }
+        };
+
+        // Add a snapshot listener, so that it updates live
+        query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e == null) {
+                myAdapter = new ReceiveFilesActivity.RecyclerAdapter(ReceiveFilesActivity.this, queryDocumentSnapshots, textButtonListener, popUpListener);
+                mRecyclerView.setAdapter(myAdapter);
+                mRecyclerView.setLayoutManager(viewManager);
+                if (mySorter.getAdapter() == null) {
+                    mySorter.setAdapter(myAdapter);
+                }
+            } else {
+                // todo error
+                Log.d(LOG_TAG, "Error at query snapshotlistener " + e.getMessage());
+            }
+        });
+    }
+
+    /* END EVENTS AND ELEMENTS */
 
 
     /**
@@ -474,12 +435,12 @@ public class ReceiveFilesActivity extends BaseActivity {
 
             void getEmail(Map<String, Object> mData, String message) {
                 Log.d(LOG_TAG, "We received the userID from the email " + message + " - " + mData.toString());
-                if (!mData.containsKey("userID")){
+                if (!mData.containsKey("userID")) {
                     failToGetEmail("Could not get email from map", MyError.ErrorCode.NOT_FOUND);
                     return;
                 }
 
-                userIDToSendTo = (String)mData.get("userID");
+                userIDToSendTo = (String) mData.get("userID");
                 // now, given that we have the userID, we can send easily
                 sendFile();
             }
@@ -498,13 +459,13 @@ public class ReceiveFilesActivity extends BaseActivity {
                     public void onSuccess(Map<String, Object> data, String message) {
                         // we successfully sent it
                         Log.d(LOG_TAG, "Successfully sent the received file");
-                        handler.displayError("Successfully sent the received file");
+                        handler.displaySuccess("Successfully sent the received file");
                     }
 
                     @Override
                     public void onFailure(String error, MyError.ErrorCode errorCode) {
-                        Log.d(LOG_TAG, "Failed to send the received file (" + error  + ")");
-                        handler.displayError("Failed to send the received file (" + error  + ")");
+                        Log.d(LOG_TAG, "Failed to send the received file (" + error + ")");
+                        handler.displayError("Failed to send the received file (" + error + ")");
                     }
                 };
 
