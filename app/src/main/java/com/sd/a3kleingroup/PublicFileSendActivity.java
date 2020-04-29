@@ -98,8 +98,6 @@ public class PublicFileSendActivity extends AppCompatActivity {
             }
         });
 
-        //need to give the file a name
-
     }
 
     private void uploadPublicFile() {
@@ -110,6 +108,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
         //we need the file name.
         publicFile.setFilename(setFileName());
         //CHANGE UPLOAD AND ADD PIECES
+        // TODO: 2020/04/29 ensure the pathing is correct
         storageReference.child("temp_name").child(publicFile.getFilename()).putFile(publicFile.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -131,7 +130,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
                 int currentProgress = (int) (100 * taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount()); // to get the percentage transferred currently
                 String prog = Integer.toString(currentProgress);
                 prog.concat("% has been transferred");
-                Toast.makeText(PublicFileSendActivity.this, prog, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PublicFileSendActivity.this, prog, Toast.LENGTH_SHORT).show(); // TODO: 2020/04/29 change to progressbar
             }
         });
 
