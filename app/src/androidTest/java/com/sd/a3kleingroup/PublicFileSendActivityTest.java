@@ -10,10 +10,11 @@ public class PublicFileSendActivityTest {
     //@Rule
     //ActivityScenarioRule<PublicFileSendActivity> publicFileSendActivityActivityScenarioRule = new ActivityScenarioRule<PublicFileSendActivity>(PublicFileSendActivity.class);
     //PublicFileSendActivity publicFileSendActivity = new PublicFileSendActivity();
-
+    // TODO: 2020/04/29 tests
     @Test
     public void onCreate(){
         Assert.assertEquals(1,1);
     }
+
 
 }

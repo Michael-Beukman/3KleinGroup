@@ -27,6 +27,7 @@ import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.PublicFile;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
+import com.sd.a3kleingroup.classes.db.dbUser;
 
 import io.grpc.Context;
 
@@ -61,7 +62,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
     private PublicFile publicFile;
     private MyError errorHandler;
     private dbPublicFiles fileToMakePublic;
-    //private dbUser thisUser;
+    private dbUser thisUser;
 
 
     @Override
@@ -111,7 +112,8 @@ public class PublicFileSendActivity extends AppCompatActivity {
         publicFile.setFilename(setFileName());
         //CHANGE UPLOAD AND ADD PIECES
         // TODO: 2020/04/29 ensure the pathing is correct
-        storageReference.child("temp_name").child(publicFile.getFilename()).putFile(publicFile.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        // TODO: 2020/04/29 make sure to use this user's userID for the storage - not the email - talk to Guy/Michael
+        storageReference.child(thisUser.getEmail()).child(publicFile.getFilename()).putFile(publicFile.getUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 //need to upload the url for downloading or auto created ?
