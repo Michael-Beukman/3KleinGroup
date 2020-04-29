@@ -115,8 +115,17 @@ public class PublicFileSendActivity extends AppCompatActivity {
         }
     }
 
+    //will be invoked in select file.
+    //just need to see if user selected a file or not
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+        //will check if the user selected a file
+        //resultCode is just to see if the task was successfully completed(opening and closing of file manager).
+        super.onActivityResult(requestCode, resultCode, data); /** this might be wrong **/
+        if (requestCode == PUBLIC_FILE_REQUEST_FILE_CODE && resultCode == RESULT_OK && data != null) {
+            publicFile.setUri(data.getData()); //setting the uri of the file selected since getData() should get the uri
+        } else {
+            Toast.makeText(PublicFileSendActivity.this, "A file was not selected", Toast.LENGTH_LONG).show(); //inform the user a file was not selected
+        }
     }
 }
