@@ -92,6 +92,8 @@ public class PublicFileSendActivity extends AppCompatActivity {
             //need to upload this part to the firebase storage
             if(publicFile.getUri() != null){
                 uploadPublicFile();
+                // TODO: 2020/04/29 choose if notification should be formal - push notification or just a toast. For now leaving as a toast
+                Toast.makeText(PublicFileSendActivity.this, "Successfully uploaded " + publicFile.getFilename(), Toast.LENGTH_SHORT ).show();
             }
             else{
                 Toast.makeText(PublicFileSendActivity.this, "Please select a file", Toast.LENGTH_SHORT).show();
