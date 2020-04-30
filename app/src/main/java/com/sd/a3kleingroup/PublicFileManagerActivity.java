@@ -13,8 +13,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.PublicFile;
 
@@ -37,7 +39,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
     private CollectionReference publicFilesRef = firebaseFirestore.collection("Public Files");
 
     private String userID = FirebaseAuth.getInstance().getUid(); //User's id
-    private String fileToDeleteID;
+    private String fileToDeleteID; //need to get this based on a text button with the file ID and name.
     private String TAG;
 
     List<PublicFile> thisUserFiles;
@@ -49,10 +51,10 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_file_manager);
         /*
-            Code to add
+            Code to add with regards to the UI and interaction
          */
 
-        deleteEntry(fileToDeleteID);
+
     }
 
     /*
@@ -76,13 +78,16 @@ public class PublicFileManagerActivity extends AppCompatActivity {
             }
         });
         if(userQuery.getResult().isEmpty()){
-            userEntryExists = false;
+            userEntryExists = false; //no results for this user and hence must be empty
         }
         userEntryExists = true; //since it is not empty for this user ID it must exist.
     }
+
+
+
     /*we will need some form of info retrieval so that the user can interact with his files.
-    this could include the people who have seen it and more.
-    however this should only be called should the user have a database set up.
+    this could include the people who have seen it and more. Should we choose to add that here.
+    However this should only be called should the user have a database set up.
     */
     // TODO: 2020/04/30 think of a way to use the file IDs to break up the data so that we can read the info in a reliable fashion. As this will be important for all queries
     public void getInfo(){
@@ -90,11 +95,11 @@ public class PublicFileManagerActivity extends AppCompatActivity {
           @Override
           public void onComplete(@NonNull Task<QuerySnapshot> task) {
               // check to see if there is data.
-              if(task.getResult().isEmpty()){
+              if(task.getResult().isEmpty()){ //no data
                   //Informing the user that there is no data contained
                   Toast.makeText(PublicFileManagerActivity.this, "You currently have no files", Toast.LENGTH_LONG).show();
               }
-              else{
+              else{ //inform user there is some data
                 Toast.makeText(PublicFileManagerActivity.this, "Loading files", Toast.LENGTH_SHORT);
               }
           }
@@ -107,11 +112,16 @@ public class PublicFileManagerActivity extends AppCompatActivity {
           }
       });
         //process the data, so here we need to decide what we wish to show the user
-        thisUserFiles = userQuery.getResult().toObjects(PublicFile.class);
+        // TODO: 2020/04/30 check that his actually works and ensure that it doesn't cause issues
+        if(!userQuery.getResult().isEmpty()) {
+            thisUserFiles = userQuery.getResult().toObjects(PublicFile.class); // if it is not empty then we should get the data from this query.
+            Toast.makeText(PublicFileManagerActivity.this, "Info retreived succesfully", Toast.LENGTH_SHORT).show(); //inform the user the info has loaded
+        }
     }
 
     /*
-        Code for deleting entries
+        Code for deleting an entry
+
      */
 
     public void deleteEntry(String fileID){
@@ -134,16 +144,29 @@ public class PublicFileManagerActivity extends AppCompatActivity {
 
     // TODO: 2020/04/30 figure out a good way of deleting all of these docs
     /*
-    Currently this might be storing an arrayList of all the fileID's and then deleting them
+       Currently what I am attempting to do is that you click a button which would just enact this method
+       this method's goal is to just get all file instances with your id attached and then delete them and hence deleting the files.
+       this would make storing the people who viewed my public files dangerous here since if the array contained a sub array with an element of some user deleting his files
+       your files would also get deleted.
+       A change that might prevent this would be having a viewer file, that has your id, a file id, its name and then an array of emails that have viewed your file.
+       However with such an email solution we could just delete like this...
      */
     public void deleteAllFiles(){
+        firebaseFirestore.collection("Public File").whereArrayContains("user_id", userID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for( DocumentSnapshot doc : task.getResult()){ //loop through the documents that contain that user's id and delete all his files based on their id
+                        deleteEntry(doc.getId()); //delete each specific entry
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
+            }
+        });
     }
-
-
-    /*
-        Code for getting this user's files and their info.
-        Will consist of doing queries on this user's ID in the public files database
-     */
 
 }
