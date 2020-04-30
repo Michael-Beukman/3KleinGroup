@@ -19,6 +19,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.PublicFile;
+import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
     private String fileToDeleteID; //need to get this based on a text button with the file ID and name.
     private String TAG = "Public File Manager Activity";
 
-    List<PublicFile> thisUserFiles;
+    List<dbPublicFiles> thisUserFiles;
 
     boolean userEntryExists = false; //assume false until proven true.
 
@@ -114,7 +115,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         //process the data, so here we need to decide what we wish to show the user
         // TODO: 2020/04/30 check that his actually works and ensure that it doesn't cause issues
         if(!userQuery.getResult().isEmpty()) {
-            thisUserFiles = userQuery.getResult().toObjects(PublicFile.class); // if it is not empty then we should get the data from this query.
+            thisUserFiles = userQuery.getResult().toObjects(dbPublicFiles.class); // if it is not empty then we should get the data from this query.
             Toast.makeText(PublicFileManagerActivity.this, "Info retrieved successfully", Toast.LENGTH_SHORT).show(); //inform the user the info has loaded
         }
     }

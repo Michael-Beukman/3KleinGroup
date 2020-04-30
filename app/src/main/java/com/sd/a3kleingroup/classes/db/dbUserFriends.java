@@ -5,38 +5,38 @@ import java.util.Map;
 import java.util.Vector;
 
 public class dbUserFriends implements dbObject {
-    private String userEmail;
-    private String friendName;
-    private String friendEmail;
+    private String userID;
+    private boolean accepted;
+    private String friendID;
 
     //Maybe possible later when you click on add a friend we can take some of that info from your fields for
     //add friend Guy ?
 
     /**
      *
-     * @param userEmail = this user's email
-     * @param friendName = the friend's name
-     * @param friendEmail = the friend's email
+     * @param userID= this user's ID
+     * @param accepted =  status of friends
+     * @param friendID = the friend's ID
      */
-    public dbUserFriends(String userEmail, String friendName, String friendEmail, String userName){
-        this.userEmail = userEmail;
-        this.friendName = friendName;
-        this.friendEmail = friendEmail;
+    public dbUserFriends(String userID, boolean accepted, String friendID){
+        this.userID = userID;
+        this.accepted = accepted;
+        this.friendID = friendID;
 
     }
 
-    public String getUserEmail(){ return userEmail; }
+    public String getUserID(){ return userID; }
 
-    public String getFriendName(){ return friendName; }
+    public boolean getAccepted(){ return accepted; }
 
-    public String getFriendEmail(){ return friendEmail; }
+    public String getFriendID(){ return friendID; }
 
     @Override
     public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{
-            put("temp name1", userEmail);
-            put("temp name2", friendName);
-            put("temp name3", friendName);
+            put("accepted", accepted);
+            put("temp name2", userID);
+            put("temp name3", friendID);
         }};
     }
 }

@@ -21,6 +21,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.UI.PublicFileReceiveAdapter;
+import com.sd.a3kleingroup.classes.db.dbUser;
+import com.sd.a3kleingroup.classes.db.dbUserFriends;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,8 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     String userID = FirebaseAuth.getInstance().getUid();
     boolean hasFriends = false; //assume false till proved
-    List<String> friends; // TODO: 2020/05/01 replace with friends class
+    List<dbUserFriends> friends; // TODO: 2020/05/01 replace with friends class
+    List<dbUser> dbUsers;
 
     String TAG = "Public File Receive Activity";
     // TODO: 2020/04/30 make a way to delete information, probably the best way to do this would be to have a public file manage activity 
@@ -78,15 +81,51 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 Log.d(TAG,"Success in retrieving friends");
-                friends = queryDocumentSnapshots.toObjects(String.class); // TODO: 2020/05/01 change to friends class
+                friends = queryDocumentSnapshots.toObjects(dbUserFriends.class); // TODO: 2020/05/01 change to friends class
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "Failure in retrieving friends");
-                Toast.makeText(PublicFileReceiveActivity.this, "Some error occured in getting friends", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PublicFileReceiveActivity.this, "Some error occurred in getting friends", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /*
+    Okay so assuming that the get friends functions have been done, this means that we have the info of our friends userIDs as well in the friend object
+    So what we should do is we should request files from there. Since we want all of our friends we need to display their usernames or their email and let people choose who to view
+    BUT we also need to see if they have a public file set up. So for now I assume that the following might be a good order but another does exist:
+    1) We get all our friends and show them, we let the user click on a friend and from there the public file will be shown or the user will be told that there is no public file set up
+    2) We could check to see if a user has a public file at current.
+
+    I will work with 1 for now and will use the dbUser
+     */
+    private void getFriendInfo(String friendID){//use passed friend id to get that friends's doc
+        firebaseFirestore.collection("Users").document(friendID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                //since it should not be empty based on the fact we know at least one friend exists
+                dbUsers.add(documentSnapshot.toObject(dbUser.class)); // TODO: 2020/05/01 check that this works
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PublicFileReceiveActivity.this, "Failed to get a friends info", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Failed in retrieving friend info");
+            }
+        });
+    }
+    //use this to allow us to use the getFriendinfo
+    private void getAllFriendsInfo(){
+        try {
+            for (dbUserFriends friend : friends) {
+                getFriendInfo(friend.getFriendID()); //just keep adding friends to the list
+            }
+        }
+        catch (Exception e){
+                Log.d(TAG, "Error in getAllFriendsInfo " + e);
+            }
     }
 
 }
