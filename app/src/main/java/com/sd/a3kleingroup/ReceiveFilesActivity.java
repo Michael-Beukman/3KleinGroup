@@ -1,6 +1,7 @@
 package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,10 +25,16 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.android.gms.common.util.IOUtils;
+import com.google.android.gms.internal.firebase_auth.zzew;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUserMetadata;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.zzy;
+import com.google.firebase.auth.zzz;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -58,6 +66,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ReceiveFilesActivity extends BaseActivity {
@@ -325,6 +334,135 @@ public class ReceiveFilesActivity extends BaseActivity {
 
     private void setUpRV() {
         user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            user = new FirebaseUser() {
+                @NonNull
+                @Override
+                public String getUid() {
+                    return "";
+                }
+
+                @NonNull
+                @Override
+                public String getProviderId() {
+                    return null;
+                }
+
+                @Override
+                public boolean isAnonymous() {
+                    return false;
+                }
+
+                @Nullable
+                @Override
+                public List<String> zza() {
+                    return null;
+                }
+
+                @NonNull
+                @Override
+                public List<? extends UserInfo> getProviderData() {
+                    return null;
+                }
+
+                @NonNull
+                @Override
+                public FirebaseUser zza(@NonNull List<? extends UserInfo> list) {
+                    return null;
+                }
+
+                @Override
+                public FirebaseUser zzb() {
+                    return null;
+                }
+
+                @NonNull
+                @Override
+                public FirebaseApp zzc() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public String getDisplayName() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public Uri getPhotoUrl() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public String getEmail() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public String getPhoneNumber() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public String zzd() {
+                    return null;
+                }
+
+                @NonNull
+                @Override
+                public zzew zze() {
+                    return null;
+                }
+
+                @Override
+                public void zza(@NonNull zzew zzew) {
+
+                }
+
+                @NonNull
+                @Override
+                public String zzf() {
+                    return null;
+                }
+
+                @NonNull
+                @Override
+                public String zzg() {
+                    return null;
+                }
+
+                @Nullable
+                @Override
+                public FirebaseUserMetadata getMetadata() {
+                    return null;
+                }
+
+                @NonNull
+                @Override
+                public zzz zzh() {
+                    return null;
+                }
+
+                @Override
+                public void zzb(List<zzy> list) {
+
+                }
+
+                @Override
+                public void writeToParcel(Parcel parcel, int i) {
+
+                }
+
+                @Override
+                public boolean isEmailVerified() {
+                    return false;
+                }
+            };
+        }
         Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);

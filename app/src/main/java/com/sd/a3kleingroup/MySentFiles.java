@@ -179,7 +179,7 @@ public class MySentFiles extends BaseActivity {
      * @param docID
      * @param cb
      */
-    protected void getAsync(String collectionName, String docID, Callback cb){
+    public void getAsync(String collectionName, String docID, Callback cb){
         System.out.println("REEE " + details.get(collectionName).containsKey(docID));
 
         if (details.get(collectionName).containsKey(docID)) cb.onSuccess((details.get(collectionName).get(docID)), "");

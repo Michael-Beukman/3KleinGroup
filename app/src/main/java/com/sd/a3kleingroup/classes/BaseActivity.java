@@ -110,7 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
 
-    protected void getAsync(String collectionName, String docID, Callback cb) {
+    public void getAsync(String collectionName, String docID, Callback cb) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
             Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
