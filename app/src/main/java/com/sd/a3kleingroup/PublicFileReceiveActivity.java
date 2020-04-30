@@ -12,14 +12,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.sd.a3kleingroup.classes.PublicFile;
 import com.sd.a3kleingroup.classes.UI.PublicFileReceiveAdapter;
 import com.sd.a3kleingroup.classes.db.dbUser;
 import com.sd.a3kleingroup.classes.db.dbUserFriends;
@@ -36,7 +39,7 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     String userID = FirebaseAuth.getInstance().getUid();
     boolean hasFriends = false; //assume false till proved
     List<dbUserFriends> friends; // TODO: 2020/05/01 replace with friends class
-    List<dbUser> dbUsers;
+    List<dbUser> userFriend;
 
     String TAG = "Public File Receive Activity";
     // TODO: 2020/04/30 make a way to delete information, probably the best way to do this would be to have a public file manage activity 
@@ -46,7 +49,7 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_public_file_recieve);
         setContentView(R.layout.public_recycler_view); // will require to be changed as super basic
-
+        // TODO: 2020/05/01 need to make a view for all your friends and then display them for you to choose who you would like to see 
     }
 
     /*
@@ -102,17 +105,17 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     I will work with 1 for now and will use the dbUser
      */
     private void getFriendInfo(String friendID){//use passed friend id to get that friends's doc
-        firebaseFirestore.collection("Users").document(friendID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("Users").document(friendID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                //since it should not be empty based on the fact we know at least one friend exists
-                dbUsers.add(documentSnapshot.toObject(dbUser.class)); // TODO: 2020/05/01 check that this works
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                userFriend.add(task.getResult().toObject(dbUser.class)); //use this info to display our friend(name and email, since it is our friend)
+                Log.d(TAG, "Getting friend was a success");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(PublicFileReceiveActivity.this, "Failed to get a friends info", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "Failed in retrieving friend info");
+                Log.d(TAG, "Failure to get friend info for: " + friendID + " error: " + e);
+                Toast.makeText(PublicFileReceiveActivity.this, "Error in receiving friend", Toast.LENGTH_SHORT).show();
             }
         });
     }
