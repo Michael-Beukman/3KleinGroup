@@ -57,7 +57,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
     public void sendInfoToFirestore(dbPublicFiles someFile){
         // TODO: 2020/04/30 decide if this should be the only collection or this should lead to a sub collection of user ids.
         //chose to add instead of set so that document ID will be generated
-        firebaseFirestore.collection("dbPublicFiles").add(someFile).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        firebaseFirestore.collection("Public Files").add(someFile).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Log.d(TAG, "Doc snapshot created, ID: " + documentReference.getId());
