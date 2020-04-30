@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/public_recieve_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="150sp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="8sp"
+    android:layout_margin="5sp">
+
+    <!--Pieces we want on our cards -->
+    <!--Name of the file-->
+
+    <TextView
+        android:id="@+id/public_file_text_view_name"
+        android:layout_gravity="center"
+        android:textStyle="normal"
+        android:textAlignment="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+</androidx.cardview.widget.CardView>
