@@ -40,7 +40,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
 
     private String userID = FirebaseAuth.getInstance().getUid(); //User's id
     private String fileToDeleteID; //need to get this based on a text button with the file ID and name.
-    private String TAG;
+    private String TAG = "Public File Manager Activity";
 
     List<PublicFile> thisUserFiles;
 
@@ -115,7 +115,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         // TODO: 2020/04/30 check that his actually works and ensure that it doesn't cause issues
         if(!userQuery.getResult().isEmpty()) {
             thisUserFiles = userQuery.getResult().toObjects(PublicFile.class); // if it is not empty then we should get the data from this query.
-            Toast.makeText(PublicFileManagerActivity.this, "Info retreived succesfully", Toast.LENGTH_SHORT).show(); //inform the user the info has loaded
+            Toast.makeText(PublicFileManagerActivity.this, "Info retrieved successfully", Toast.LENGTH_SHORT).show(); //inform the user the info has loaded
         }
     }
 
@@ -128,16 +128,19 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         //things we know for certain right now
         //userID, and the collection so we will delete using the fileID, so that will be the string we take.
         //The file ID should be unique to a document within this collection.
+
         firebaseFirestore.collection("Public Files").document(fileID).delete().
                 addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.d(TAG, "Document was deleted from public file");
+                //not going to toast here, will rather toast if it fails. Since this gets executed by the deleteAll as well
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "Document failed to delete");
+                Toast.makeText(PublicFileManagerActivity.this, "Document failed to delete", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -152,7 +155,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
        However with such an email solution we could just delete like this...
      */
     public void deleteAllFiles(){
-        firebaseFirestore.collection("Public File").whereArrayContains("user_id", userID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Public File").whereEqualTo("user_id", userID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
@@ -164,7 +167,8 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Log.d(TAG, "Failed in deleting all files");
+                Toast.makeText(PublicFileManagerActivity.this, "Failed in deleting all files", Toast.LENGTH_SHORT).show();
             }
         });
     }
