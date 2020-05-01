@@ -12,12 +12,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.Callback;
@@ -28,6 +32,16 @@ import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
+import com.sd.a3kleingroup.classes.PublicFile;
+import com.sd.a3kleingroup.classes.db.dbPublicFiles;
+
+import java.io.File;
+
+/**
+    This uses requestCode 10 - if someone else is currently using requestCode 10, I will change mine.
+    This uses Result Success code -10.
+
+>>>>>>> 05efa0b9bbfc40dabd648ffc5c3b98b43fd14d62
 
 /**
  * This uses requestCode 10 - if someone else is currently using requestCode 10, I will change mine.
@@ -45,6 +59,9 @@ public class PublicFileSendActivity extends FileChooseActivity {
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String TAG = "Public File Send Activity MY_";
     private MyFile fileToSend = new MyFile();
+    Uri downloadURL = null; // reset this to null after each upload and it's info no longer needed. That way we can tell if we got the URL
+    dbPublicFiles fileToAdd = null; //keep null an upload was successful, when it is successful get the dbPublic file info and set it's parameters and then upload.
+    // TODO: 2020/05/01 check to see if this user currently has an entry in the db for public files since we can pull some info from there.
 
     // Views
     private Button btnChooseFile;
@@ -149,6 +166,11 @@ public class PublicFileSendActivity extends FileChooseActivity {
          * fileToSend is the file data, with filename, uri, etc.
          * The firebase storage url can only be gotten after uploading it, by using chosenReference.getDownloadUrl().addOnCompleteListener
          */
+        /*
+         * The control flow is something like this:
+         * uploadFile() -> uploadFile(fileToSend) [this uploads the file] -> getDownloadURL [after uploading].
+         * You should add the call to addInfoToPublicFiles.
+         */
     }
 
     /*
@@ -211,18 +233,59 @@ public class PublicFileSendActivity extends FileChooseActivity {
         StorageReference chosenReference = storageReference.child(userID + "/" + fileToSend.getFilename().replace('/', '_')); //send this to this user's folder.
         UploadTask uploadTask = chosenReference.putStream(stream);
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            errorHandler.displaySuccess("File sucessfully uploaded");
+            errorHandler.displaySuccess("File successfully uploaded");
+
+            getDownloadURL(chosenReference); // to get the download URL of this file that was uploaded.
             cleanUI();
         }).addOnFailureListener(e -> {
             errorHandler.displayError("Failed to upload the file");
             cleanUI();
         })
-                .addOnProgressListener(taskSnapshot -> {
+        .addOnProgressListener(taskSnapshot -> {
                     // progress update
                     // just set the progress to be transferred/total
                     Log.d(LOG_TAG, "PROGRESS " + taskSnapshot.getBytesTransferred());
                     progressBar.setProgress((int) (100 * (float) taskSnapshot.getBytesTransferred() / totalSize));
                 });
+    }
+
+
+    public void getDownloadURL(StorageReference fileRef){
+        fileRef.getDownloadUrl()
+        .addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                downloadURL = task.getResult();
+
+                // TODO MATTHEW possibly set the file info now, and then call add infoToPublicFiles
+                Log.d(TAG, "Success in getting a download Uri");
+            }
+            else{
+                Log.d(TAG, "Failed to get the download Uri");
+            }
+        });
+    }
+
+    /*
+    add information the the firestore about this file that was just uploaded
+    call this if the downloadURL is not null.
+    and when the fileToAdd is not null - so it has info to add.
+     */
+
+    public void addInfoToPublicFiles(){
+        firebaseFirestore.collection("Public Files").add(fileToAdd).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Log.d(TAG, "Successfully added the file to database");
+                Toast.makeText(PublicFileSendActivity.this, "Successful addition to firebase", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Log.d(TAG, "Some failure occurred");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Some failure occurred");
+            }
+        });
     }
 
     /**
@@ -244,3 +307,4 @@ public class PublicFileSendActivity extends FileChooseActivity {
         btnChooseFile.setEnabled(true);
     }
 }
+
