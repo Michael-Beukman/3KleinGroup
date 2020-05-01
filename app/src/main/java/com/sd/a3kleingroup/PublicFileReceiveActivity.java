@@ -30,8 +30,12 @@ import com.sd.a3kleingroup.classes.db.dbUserFriends;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    The goal here is to show the user all his friends and then display their profiles - so name and username.
+    Then the user can choose who to view and see if they have a public file set up.
 
-//This class serves as a recycler adapter
+ */
+
 public class PublicFileReceiveActivity extends AppCompatActivity {
 
     Button fetchFile; //button to fetch the files
@@ -41,6 +45,7 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     List<dbUserFriends> friends; // TODO: 2020/05/01 replace with friends class
     List<dbUser> userFriend;
 
+
     String TAG = "Public File Receive Activity";
     // TODO: 2020/04/30 make a way to delete information, probably the best way to do this would be to have a public file manage activity 
 
@@ -49,7 +54,22 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_public_file_recieve);
         setContentView(R.layout.public_recycler_view); // will require to be changed as super basic
-        // TODO: 2020/05/01 need to make a view for all your friends and then display them for you to choose who you would like to see 
+        // TODO: 2020/05/01 need to make a view for all your friends and then display them for you to choose who you would like to see
+
+        hasAFriend();
+
+        if(hasFriends){
+            /*
+               Display friend info.
+             */
+        }
+
+        else{
+            /*
+            inform the user that at current they have no friends.
+             */
+        }
+
     }
 
     /*
