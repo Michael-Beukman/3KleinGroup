@@ -3,6 +3,7 @@ package com.sd.a3kleingroup.classes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -10,8 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -130,5 +134,31 @@ public abstract class BaseActivity extends AppCompatActivity {
                 System.out.println("NEEE");
             }
         });
+    }
+
+
+    /**
+     * Logs in with a temporary user and runs callback on that.
+     * @param cb
+     */
+    public void loginTempUser(Callback cb) {
+        // Log IN first
+        Log.d("REEEEEE", "HELLO1 " + FirebaseAuth.getInstance().getCurrentUser());
+        FirebaseAuth.getInstance().signInWithEmailAndPassword("abc@gmail.com", "abc123")
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(LOG_TAG, "signInWithEmail:success");
+                            cb.onSuccess(null, "signInWithEmail:success");
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(LOG_TAG, "signInWithEmail:failure", task.getException());
+                            cb.onFailure("signInWithEmail:failure", MyError.ErrorCode.TASK_FAILED);
+
+                        }
+                    }
+                });
     }
 }

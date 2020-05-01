@@ -97,8 +97,21 @@ public class ReceiveFilesActivity extends BaseActivity {
         setUpFireStore();
         mFirebaseFunctions = FirebaseFunctions.getInstance();
         //determineCurrentUser();
-        setUpRV();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            loginTempUser(new Callback() {
+                @Override
+                public void onSuccess(Map<String, Object> data, String message) {
+                    setUpRV();
+                }
 
+                @Override
+                public void onFailure(String error, MyError.ErrorCode errorCode) {
+                    // todo
+                }
+            });
+        }else{
+            setUpRV();
+        }
     }
 
 

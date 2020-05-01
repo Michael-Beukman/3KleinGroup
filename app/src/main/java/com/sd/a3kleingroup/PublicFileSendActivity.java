@@ -52,7 +52,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
 
     //Some FireStore stuff for the database.
     public void setFIleInfo(){ //can test
-        thisFile = new dbPublicFiles("userID", "", "", "", "" );
+        thisFile = new dbPublicFiles("", "", "", "", "userID");
     }
     public void sendInfoToFirestore(dbPublicFiles someFile){
         // TODO: 2020/04/30 decide if this should be the only collection or this should lead to a sub collection of user ids.

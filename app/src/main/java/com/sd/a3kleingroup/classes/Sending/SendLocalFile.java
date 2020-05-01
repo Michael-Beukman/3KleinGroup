@@ -4,6 +4,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -129,7 +131,7 @@ public class SendLocalFile {
             // If file is successfully uploaded, I should update the file DB collection and the agreements collection
 
             // Get DB instance
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
             // first add a record to the File collection TODO Make better
 
             Task<DocumentReference> fileDocRef = db.collection("Files").add(
@@ -167,12 +169,6 @@ public class SendLocalFile {
     }
 
     /* Failure handlers, i.e. what happens when stuff fails */
-
-    private void afterFailGetEmail(String error, MyError.ErrorCode errorCode) {
-
-        Log.d(LOG_TAG, "User Email failed with message (" + error + ") and code + (" + errorCode + ")");
-        callback.onFailure("That user does not exist. Please ask them to sign up first.", MyError.ErrorCode.TASK_FAILED);
-    }
 
     private void afterFailUploadFile(Exception exception) {
         // Handle unsuccessful uploads
