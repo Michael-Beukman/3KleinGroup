@@ -142,7 +142,7 @@ public class SendLocalFilesTest {
             @Override
             public void onFailure(String error, MyError.ErrorCode errorCode) {
                 Log.d(LOG_TAG, error + " error");
-                fail("We should not fail here!");
+                fail("We should not fail here! error= " + error);
             }
         },
                 "25MsMCqDk0TxwoQB5IjwExZnJHf2", // Guy,
