@@ -71,7 +71,7 @@ public class dbClassesTest {
         String fileStorage = "testUrl";
         String filePath = "testPath";
         String encryptionKey = " ";
-        dbPublicFiles publicFiles = new dbPublicFiles(userID, fileName, fileStorage, filePath, encryptionKey);
+        dbPublicFiles publicFiles = new dbPublicFiles(encryptionKey,fileName,  filePath,fileStorage,  userID);
         Assert.assertEquals(new HashMap<String, Object>(){{
             put("user_id",userID);
             put("file_name",fileName);
@@ -82,7 +82,7 @@ public class dbClassesTest {
     }
 
     //Test instance for other functions
-    private dbPublicFiles publicFiles = new dbPublicFiles("userID", "fileName", "fileStorage", "filePath", "encryptionKey");
+    private dbPublicFiles publicFiles = new dbPublicFiles("encryptionKey","fileName",  "filePath","fileStorage",  "userID" );
     @Test
     public void testDBPublicUserID(){
         String userID = "userID";
