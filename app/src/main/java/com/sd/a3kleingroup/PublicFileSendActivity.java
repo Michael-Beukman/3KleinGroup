@@ -21,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.sd.a3kleingroup.classes.PublicFile;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
 import java.io.File;
@@ -42,6 +43,8 @@ public class PublicFileSendActivity extends AppCompatActivity {
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String TAG = "Public File Send Activity";
     Uri downloadURL = null; // reset this to null after each upload and it's info no longer needed. That way we can tell if we got the URL
+    dbPublicFiles fileToAdd = null; //keep null an upload was successful, when it is successful get the dbPublic file info and set it's parameters and then upload.
+    // TODO: 2020/05/01 check to see if this user currently has an entry in the db for public files since we can pull some info from there.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +101,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "Succeeded to upload the file");
                 Toast.makeText(PublicFileSendActivity.this, "File successfully uploaded", Toast.LENGTH_SHORT).show();
+                getDownloadURL(fileChosen); // to get the download URL of this file that was uploaded.
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -140,4 +144,30 @@ public class PublicFileSendActivity extends AppCompatActivity {
         });
     }
 
+    /*
+    add information the the firestore about this file that was just uploaded
+    call this if the downloadURL is not null.
+    and when the fileToAdd is not null - so it has info to add.
+     */
+
+    public void addInfoToPublicFiles(){
+
+        firebaseFirestore.collection("Public Files").add(fileToAdd).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "Successfully added the file to database");
+                    Toast.makeText(PublicFileSendActivity.this, "Successful addition to firebase", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Log.d(TAG, "Some failure occurred");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Some failure occurred");
+            }
+        });
+    }
 }
