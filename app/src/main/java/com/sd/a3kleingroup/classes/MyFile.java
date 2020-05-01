@@ -51,4 +51,8 @@ public class MyFile {
     public Uri getUri() {
         return fileUri;
     }
+
+    public String getFilename(){
+        return filename;
+    }
 }

@@ -59,10 +59,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class SendFileActivity extends BaseActivity {
-    private final int FILE_RESULT_SUCCESS = -1;
-    private final int FILE_REQUEST_CODE = 1;
-    private final String LOG_TAG = "MY_SEND_FILE_ACTIVITY";
+public class SendFileActivity extends FileChooseActivity {
+
 
     // firebase storage reference
     private FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -100,21 +98,40 @@ public class SendFileActivity extends BaseActivity {
      */
     private dbUser userThatSentFile;
 
-    //what happens when the file is chosen
-    private class chooseFile implements View.OnClickListener {
+    private class afterGetFile extends Callback{
+
         @Override
-        public void onClick(View view) {
-            // set btn disabled, so it doesn't double click
-            view.setEnabled(false);
-            Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
-            // use pick instead to get a file URI.
-//            Intent chooseFile = new Intent(Intent.ACTION_PICK);
-            chooseFile.setType("*/*");
-            chooseFile = Intent.createChooser(chooseFile, "Choose a file");
-            startActivityForResult(chooseFile, FILE_REQUEST_CODE);
+        public void onSuccess(Map<String, Object> data, String message) {
+            if (!data.containsKey("Uri")){
+                this.onFailure("Cannot find Uri in map", MyError.ErrorCode.NOT_FOUND);
+                return;
+            }
+            Uri fileUri = (Uri)data.get("Uri");
+            Log.d(LOG_TAG, "URI: " + fileUri + " PATH: " + fileUri.getPath() + " Exists + " + new File(fileUri.getPath()).exists());
+
+            String filePath = fileUri.getPath();
+            file.setFilepath(filePath);
+            file.setUri(fileUri);
+
+            // make filename text visible.
+            txtFilename.setVisibility(View.VISIBLE);
+            lblFilename.setVisibility(View.VISIBLE);
+            txtFilename.setText(filePath);
+            // set this button enabled, since now you can send a file.
+            btnSend.setEnabled(true);
+
+            Log.d(LOG_TAG, "User chose File: " + filePath + " get path " + getPath(fileUri));
+            isSendFileLocalStorage = true;
+            updateFileShowUI();
+        }
+
+        @Override
+        public void onFailure(String error, MyError.ErrorCode errorCode) {
+            errorHandler.displayError(error);
+            // Failure. Handle Error
+            Log.e(LOG_TAG, error);
         }
     }
-
     // what happens when the user tries to send a received file.
     private class chooseReceivedFile implements View.OnClickListener {
         private ArrayList<GetAgreementsUsersFiles.FileUserAgreementTriple> myFiles;
@@ -440,63 +457,14 @@ public class SendFileActivity extends BaseActivity {
         }
     }
 
-    private class FilenameChange implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            // set the filename when the editText changes
-            file.setFilename(charSequence.toString());
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FILE_REQUEST_CODE) {
-            // then we know that this was the file choosing result.
-            if (resultCode == FILE_RESULT_SUCCESS) {
-                // Then it is a success
-                Uri fileUri = data.getData();
-                Log.d(LOG_TAG, "URI: " + fileUri + " PATH: " + fileUri.getPath() + " Exists + " + new File(fileUri.getPath()).exists());
-
-                String filePath = fileUri.getPath();
-                file.setFilepath(filePath);
-                file.setUri(fileUri);
-
-                // make filename text visible.
-                txtFilename.setVisibility(View.VISIBLE);
-                lblFilename.setVisibility(View.VISIBLE);
-                txtFilename.setText(filePath);
-                // set this button enabled, since now you can send a file.
-                btnSend.setEnabled(true);
-
-                Log.d(LOG_TAG, "User chose File: " + filePath + " get path " + getPath(fileUri));
-                isSendFileLocalStorage = true;
-                updateFileShowUI();
-            } else {
-
-                errorHandler.displayError("Choosing file failed with code (" + resultCode + ")");
-                // Failure. Handle Error
-                Log.e(LOG_TAG, "File Error with code " + resultCode);
-            }
-            // set enabled again, since we're done
-            btnChooseFile.setEnabled(true);
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        LOG_TAG = "MY_SEND_FILE_ACTIVITY";
+        afterLookAtFile = new afterGetFile();
+
         setContentView(R.layout.activity_send_file);
         super.onCreate(savedInstanceState);
         myChooseReceivedFile = new chooseReceivedFile();
-
         setElements();
         setEvents();
         file = new MyFile();
@@ -508,6 +476,8 @@ public class SendFileActivity extends BaseActivity {
 
         setChecked(1);
 
+
+
     }
 
     /**
@@ -516,7 +486,7 @@ public class SendFileActivity extends BaseActivity {
     private void setEvents() {
         btnChooseFile.setOnClickListener(new chooseFile());
         btnSend.setOnClickListener(new sendFile());
-        txtFilename.addTextChangedListener(new FilenameChange());
+        txtFilename.addTextChangedListener(new FilenameChange(file));
 
         btnChooseReceivedFile.setOnClickListener(myChooseReceivedFile);
     }
@@ -549,11 +519,4 @@ public class SendFileActivity extends BaseActivity {
 
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
-    }
 }

@@ -30,6 +30,7 @@ import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.sd.a3kleingroup.classes.Sending.PublicFileSend;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.net.URI;
@@ -125,8 +126,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
                         Log.d("MY_LOGIN ", acct.getIdToken());
-                        Intent intent2 = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
+                        Intent intent2 = new Intent(getApplicationContext(), PublicFileSendActivity.class);
                         startActivity(intent2);
+//                        Intent intent2 = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
+//                        startActivity(intent2);
                         return;
 //                         todo: This is a hack to go to sendfile after login
 //                        Intent intent = new Intent(getApplicationContext(), SendFileActivity.class);
