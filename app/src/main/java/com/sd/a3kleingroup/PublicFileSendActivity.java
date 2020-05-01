@@ -1,6 +1,7 @@
 package com.sd.a3kleingroup;
 
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,6 +14,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
 /**
@@ -25,9 +29,12 @@ import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 public class PublicFileSendActivity extends AppCompatActivity {
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance(); //to add info
+    FirebaseStorage firebaseStorage = FirebaseStorage.getInstance(); //storage
+    StorageReference storageReference = firebaseStorage.getReference();
+
     private dbPublicFiles thisFile; //so that have access to the constructor and the hash map for adding it to the firestore db
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    String TAG = "Success";
+    String TAG = "Public File Send Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
     public void setFIleInfo(){ //can test
         thisFile = new dbPublicFiles("", "", "", "", "userID");
     }
+
     public void sendInfoToFirestore(dbPublicFiles someFile){
         // TODO: 2020/04/30 decide if this should be the only collection or this should lead to a sub collection of user ids.
         //chose to add instead of set so that document ID will be generated
@@ -61,12 +69,36 @@ public class PublicFileSendActivity extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Log.d(TAG, "Doc snapshot created, ID: " + documentReference.getId());
+                Toast.makeText(PublicFileSendActivity.this, "File successfully sent to database", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "Error adding, exception", e);
+                Toast.makeText(PublicFileSendActivity.this, "Error in uploading to database", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    /*
+    Actually sending it to storage now - uploading
+     */
+    public void uploadFile(Uri fileChosen){
+        StorageReference chosenReference = storageReference.child(userID); //send this to this user's folder.
+        UploadTask uploadTask = chosenReference.putFile(fileChosen);
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, "Succeeded to upload the file");
+                Toast.makeText(PublicFileSendActivity.this, "File successfully uploaded", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Failed to upload the file");
+                Toast.makeText(PublicFileSendActivity.this, "File failed to upload", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
