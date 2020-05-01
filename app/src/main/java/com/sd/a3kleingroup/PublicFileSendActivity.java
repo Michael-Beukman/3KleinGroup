@@ -40,7 +40,7 @@ public class PublicFileSendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_file_send);
-
+        // TODO: 2020/05/01 add interface for user 
 
 
     }
