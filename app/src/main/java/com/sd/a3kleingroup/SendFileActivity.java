@@ -463,11 +463,12 @@ public class SendFileActivity extends FileChooseActivity {
         afterLookAtFile = new afterGetFile();
 
         setContentView(R.layout.activity_send_file);
+        file = new MyFile();
         super.onCreate(savedInstanceState);
         myChooseReceivedFile = new chooseReceivedFile();
         setElements();
         setEvents();
-        file = new MyFile();
+
         errorHandler = new MyError(getApplication());
         MyFirebaseMessagingService x = new MyFirebaseMessagingService();
         Log.d(LOG_TAG, String.valueOf(x));
