@@ -63,7 +63,6 @@ android {
     }
 
 
-
 // To inline the bytecode built with JVM target 1.8 into
 // bytecode that is being built with JVM target 1.6. (e.g. navArgs)
 
@@ -110,6 +109,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-functions:19.0.2'
 
     implementation 'com.google.android.material:material:1.1.0'
+
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
 
 }
 

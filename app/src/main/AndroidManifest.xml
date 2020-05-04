@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sd.a3kleingroup" >
+    package="com.sd.a3kleingroup">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_guydino"
@@ -11,21 +12,31 @@
         android:roundIcon="@drawable/ic_guydino"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design">
-        <activity android:name=".ReceiveFilesActivity"></activity>
-        <activity android:name=".MySentFiles"></activity>
+        <activity
+            android:name=".FriendListActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
+        <activity android:name=".ReceiveFilesActivity" />
+        <activity android:name=".MySentFiles" />
         <activity
             android:name=".SendFileActivity"
-            android:label="@string/title_activity_send_file" >
+            android:label="@string/title_activity_send_file">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" >
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +47,7 @@
         <service
             android:name=".classes.messaging.MyFirebaseMessagingService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -55,6 +66,8 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+
+        <!-- This is to allow external apps to open the files -->
         <provider
             android:name=".classes.GenericFileProvider"
             android:authorities="${applicationId}.provider"
@@ -62,7 +75,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
     </application>
 
