@@ -77,7 +77,7 @@ public class dbClassesTest {
             put("file_name",fileName);
             put("file_storage",fileStorage);
             put("file_path",filePath);
-            put("encryptionKey",encryptionKey);
+            put("encryption_key",encryptionKey);
         }}, publicFiles.getHashmap());
     }
 
