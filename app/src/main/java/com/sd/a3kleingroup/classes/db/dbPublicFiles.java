@@ -1,5 +1,7 @@
 package com.sd.a3kleingroup.classes.db;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +28,7 @@ public class dbPublicFiles implements dbObject{
     private String fileStorage;
     private String filePath;
     private String encryptionKey; //Check later for now just leave as "" to indicate no key just yet
+    private String ID=""; // the document ID.
 
     public dbPublicFiles(String encryptionKey, String fileName, String filePath, String fileStorage, String userID ){
         this.userID = userID;
@@ -35,6 +38,10 @@ public class dbPublicFiles implements dbObject{
         this.encryptionKey = encryptionKey;
     }
 
+    public dbPublicFiles (DocumentSnapshot d){
+        this((String)d.get("encryption_key"), (String)d.get("file_name"), (String)d.get("file_path"), (String)d.get("file_storage"), (String)d.get("user_id"));
+    }
+
     @Override
     public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{
@@ -42,7 +49,7 @@ public class dbPublicFiles implements dbObject{
             put("file_name", fileName);
             put("user_id", userID);
             put("file_storage", fileStorage);
-            put("encryptionKey", encryptionKey);
+            put("encryption_key", encryptionKey);
         }};
     }
 
@@ -57,4 +64,7 @@ public class dbPublicFiles implements dbObject{
     public String getEncryptionKey () { return encryptionKey; }
 
 
+    public void setID(String id) {
+        ID=id;
+    }
 }

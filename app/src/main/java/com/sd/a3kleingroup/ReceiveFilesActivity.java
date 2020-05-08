@@ -15,7 +15,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.IOUtils;
 import com.google.android.gms.internal.firebase_auth.zzew;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,7 +61,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -224,14 +221,6 @@ public class ReceiveFilesActivity extends BaseActivity {
          */
         public void onChangeDataset() {
             notifyDataSetChanged();
-        }
-
-        @Override
-        public void onViewAttachedToWindow(@NonNull RecyclerHolder holder) {
-            // TODO SOMEHOW FILTER/sort after recyclerview has been mounted, in case we get new data.
-            super.onViewAttachedToWindow(holder);
-            // after it's mounted, we filter now
-//            myFilter.onTextChanged(edtFilter.getText(), 0,1, 2);
         }
     }
 
