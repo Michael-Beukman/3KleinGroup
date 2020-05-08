@@ -22,4 +22,7 @@
     <string name="toolbar_title">Friends</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Type name…</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="send_friend_request">Send Request</string>
 </resources>

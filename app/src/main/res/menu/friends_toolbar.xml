@@ -9,4 +9,9 @@
         android:title="@string/action_search"
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_person_add_white_24dp"
+        android:title="Add Friend"
+        app:showAsAction="ifRoom"/>
 </menu>

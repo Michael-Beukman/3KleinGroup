@@ -3,12 +3,17 @@ package com.sd.a3kleingroup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.sd.a3kleingroup.classes.AddFriendDialogFragment;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.MyError;
@@ -40,7 +46,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class FriendListActivity extends BaseActivity {
+public class FriendListActivity extends BaseActivity implements AddFriendDialogFragment.AddFriendDialogListener {
 
     private static final String TAG = FriendListActivity.class.getSimpleName();
     private RecyclerView recyclerView;
@@ -55,10 +61,12 @@ public class FriendListActivity extends BaseActivity {
         setContentView(R.layout.activity_friend_list);
         super.onCreate(savedInstanceState);
 
+//        ActionBar bar = getActionBar();
+//        bar.setBackgroundDrawable(new ColorDrawable(1));
         //Toolbar stuff
         Toolbar toolbar = findViewById(R.id.toolbar);
+        //sets the toolbar as the app bar for the activity
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.toolbar_title);
 
         setupRV();
@@ -153,6 +161,7 @@ public class FriendListActivity extends BaseActivity {
 
     private void setupRV() {
         recyclerView = findViewById(R.id.recycler_view);
+        whiteNotificationBar(recyclerView);
         friendsList = new ArrayList<>();
         mAdapter = new RecyclerAdapter(this, friendsList, new FriendAdapterListener() {
             //Callback for when specific friend is selected
@@ -204,6 +213,7 @@ public class FriendListActivity extends BaseActivity {
         return true;
     }
 
+    //callback method for when user selects one of the app bar items
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -214,9 +224,38 @@ public class FriendListActivity extends BaseActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             return true;
+        }else if(id == R.id.action_add){
+            AddFriendDialogFragment dialog = new AddFriendDialogFragment();
+            dialog.show(getSupportFragmentManager(), "add friend dialog");
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(String input_email) {
+        // User touched the dialog's positive button (i.e. user wants to send a friend request to user with the email entered in the dialog)
+        //First validate inputted email
+
+        //write to Friends collection in Firestore which triggers a notification to be sent
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        return;
+    }
+
+    private void whiteNotificationBar(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = view.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.BLACK);
+        }
     }
 
     @Override
@@ -266,25 +305,7 @@ public class FriendListActivity extends BaseActivity {
                         listener.onFriendSelected(friendListFiltered.get(getAdapterPosition()));
                     }
                 });
-
-                //setCallBacks();
             }
-
-//            private void setCallBacks() {
-//                cbUser = new Callback() {
-//                    @Override
-//                    public void onSuccess(Map<String, Object> data, String message) {
-//                        userInfo = new dbUser((String)data.get("email"),(String)data.get("name"),(String)data.get("notificationToken"));
-//                        txtName.setText(userInfo.getName());
-//                        txtEmail.setText(userInfo.getEmail());
-//                    }
-//
-//                    @Override
-//                    public void onFailure(String error, MyError.ErrorCode errorCode) {
-//                        txtName.setText(error);
-//                    }
-//                };
-//            }
         }
 
         @Override

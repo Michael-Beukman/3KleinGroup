@@ -15,7 +15,7 @@
         <activity
             android:name=".FriendListActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"><!--prevents the app from using the native ActionBar class to provide the app bar, we want to use Toolbar widget -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
