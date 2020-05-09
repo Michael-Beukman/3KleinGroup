@@ -43,6 +43,7 @@ public class Utils {
                         final String userID = doc.getId();
                         cb.onSuccess(new HashMap<String, Object>(){{
                             put("userID", userID);
+                            put("notificationToken", doc.getData().get("notificationToken"));
                         }}, "Success");
                         // stop, since we got our user.
                         break;

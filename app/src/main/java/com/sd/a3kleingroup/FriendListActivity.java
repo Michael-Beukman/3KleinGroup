@@ -24,11 +24,14 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -39,6 +42,8 @@ import com.sd.a3kleingroup.classes.AddFriendDialogFragment;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.MyError;
+import com.sd.a3kleingroup.classes.Utils;
+import com.sd.a3kleingroup.classes.db.dbFriends;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.util.ArrayList;
@@ -55,6 +60,8 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
     private SearchView searchView;
     FirebaseFirestore db;
     FirebaseUser user;
+    int countFriends=-1;
+    boolean havePerformedQueries = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,6 +112,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
                     return;
                 }
 
+                countFriends+=value.size()+1;
                 //Manually perform a join with the Users collection
                 for (QueryDocumentSnapshot doc : value) {
                     getAsync("Users", (String) doc.get("senderID"), cbUser);
@@ -123,6 +131,10 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
                     Log.e(TAG, "Listen failed.", e);
                     return;
                 }
+
+                //Checked when pressing action bar add friend. Used to make sure all friends have been fetched
+                havePerformedQueries=true;
+                countFriends+=value.size();
 
                 //Manually perform a join with the Users collection
                 for (QueryDocumentSnapshot doc : value) {
@@ -225,8 +237,10 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         if (id == R.id.action_search) {
             return true;
         }else if(id == R.id.action_add){
-            AddFriendDialogFragment dialog = new AddFriendDialogFragment();
-            dialog.show(getSupportFragmentManager(), "add friend dialog");
+            if(friendsList!=null&&havePerformedQueries&&friendsList.size()==countFriends){
+                AddFriendDialogFragment dialog = new AddFriendDialogFragment();
+                dialog.show(getSupportFragmentManager(), "add friend dialog");
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -238,14 +252,65 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
     @Override
     public void onDialogPositiveClick(String input_email) {
         // User touched the dialog's positive button (i.e. user wants to send a friend request to user with the email entered in the dialog)
-        //First validate inputted email
+        //validate inputted email:
+        // first find user that the User wants to send to
+        Callback myUserCallback = new Callback() {
+            @Override
+            public void onSuccess(Map<String, Object> data, String message) {
+                //User with that email found
+                afterGetEmail(data, message);
+            }
 
-        //write to Friends collection in Firestore which triggers a notification to be sent
+            @Override
+            public void onFailure(String error, MyError.ErrorCode errorCode) {
+                //There is no user with that email
+                afterFailGetEmail(error, errorCode);
+            }
+        };
+        Utils instance = Utils.getInstance();
+        instance.getUserFromEmail(input_email, myUserCallback);
+    }
+
+    private void afterFailGetEmail(String error, MyError.ErrorCode errorCode) {
+        Toast.makeText(FriendListActivity.this, "That user does not exist. Please ask them to sign up first.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void afterGetEmail(Map<String, Object> data, String message) {
+        //Check if already friends
+        for(dbUser friend:friendsList){
+            //I use the notificationToken as the identifier for a user here since dbUser does not have a userID property :p NOTE: I also edited Utils.getUserFromEmail to put notificationToken in map.
+            if(friend.getNotificationToken().equals((String) data.get("notificationToken"))){
+                Toast.makeText(FriendListActivity.this, "you are already friends", Toast.LENGTH_SHORT).show();
+                //Nothing left to do
+                return;
+            }
+        }
+
+        //If we reached here, then not already friends
+        //write to Friends collection in Firestore which triggers a notification to be sent to the request recipient
+        db.collection("Friends")
+                .add(new dbFriends((String) data.get("userID"), user.getUid(), false).getHashmap())
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        Toast.makeText(FriendListActivity.this, "Request sent", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error adding document", e);
+                        Toast.makeText(FriendListActivity.this, "Failed to send request", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
+        //Just close the dialog
         return;
     }
 

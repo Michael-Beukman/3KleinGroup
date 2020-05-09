@@ -63,6 +63,8 @@ public class AddFriendDialogFragment extends DialogFragment {
                         AddFriendDialogFragment.this.getDialog().cancel();
                     }
                 });
+
+        //to change button colour see: https://stackoverflow.com/questions/4095758/change-button-color-in-alertdialog/29647126
         return builder.create();
 
     }
