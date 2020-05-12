@@ -23,18 +23,37 @@ Our current public_friend_recycler_items has 2 text views and a button
 
 public class PublicRecyclerViewAdapter extends RecyclerView.Adapter<PublicRecyclerViewAdapter.PublicViewHolder>{
 
-    private ArrayList<dbUser> userList;
+    private OnItemClickListener mlistener;
 
+    private ArrayList<dbUser> userList;
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mlistener = listener;
+    }
 
     public static class PublicViewHolder extends RecyclerView.ViewHolder {
         public TextView friendName;
         public TextView friendEmail;
-        public Button btn;
-        public PublicViewHolder(@NonNull View itemView) {
+
+        public PublicViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             friendName = itemView.findViewById(R.id.recycler_friend_friendName);
             friendEmail = itemView.findViewById(R.id.recycler_friend_friendEmail);
-            btn = itemView.findViewById(R.id.recycler_friend_view_button);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -47,7 +66,7 @@ public class PublicRecyclerViewAdapter extends RecyclerView.Adapter<PublicRecycl
     @Override
     public PublicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.public_friend_recycler_item, parent, false);
-        PublicViewHolder curr = new PublicViewHolder(v);
+        PublicViewHolder curr = new PublicViewHolder(v, mlistener);
         return curr;
     }
 
@@ -56,12 +75,6 @@ public class PublicRecyclerViewAdapter extends RecyclerView.Adapter<PublicRecycl
         dbUser currentUser = userList.get(position);
         holder.friendEmail.setText(currentUser.getEmail());
         holder.friendName.setText(currentUser.getName());
-        holder.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //start the intent for that user that is clicked here.
-            }
-        });
     }
 
     @Override

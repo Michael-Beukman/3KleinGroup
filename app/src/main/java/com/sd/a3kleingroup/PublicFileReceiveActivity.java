@@ -51,7 +51,7 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     String TAG = "Public File Receive Activity";
     // TODO: 2020/04/30 make a way to delete information, probably the best way to do this would be to have a public file manage activity 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private PublicRecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager; //will use linear layout
 
     @Override
@@ -63,23 +63,34 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
         hasAFriend();
 
         if(hasFriends){
-            friends = new ArrayList<dbUserFriends>(); //check
-            getFriends();
-            userFriend = new ArrayList<dbUser>(); //check
-            getAllFriendsInfo();
-            recyclerView = findViewById(R.id.public_friend_recyclerView);
-            recyclerView.setHasFixedSize(true);
-            layoutManager = new LinearLayoutManager(this);
-            ArrayList<dbUser> arrayListUserFriends = new ArrayList<dbUser>(userFriend);
-            adapter = new PublicRecyclerViewAdapter(arrayListUserFriends);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+            buildRecyclerView();
         }
 
         else{
             Toast.makeText(this, "Currently you have no friends", Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    public void buildRecyclerView(){
+        friends = new ArrayList<dbUserFriends>(); //check
+        getFriends();
+        userFriend = new ArrayList<dbUser>(); //check
+        getAllFriendsInfo();
+        recyclerView = findViewById(R.id.public_friend_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        ArrayList<dbUser> arrayListUserFriends = new ArrayList<dbUser>(userFriend);
+        adapter = new PublicRecyclerViewAdapter(arrayListUserFriends);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new PublicRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                //create the intent for viewing this user's public file info.
+                dbUser userToView = arrayListUserFriends.get(position);
+            }
+        });
     }
 
     /*
