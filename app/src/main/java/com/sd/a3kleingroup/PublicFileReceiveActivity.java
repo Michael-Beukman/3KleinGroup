@@ -59,9 +59,7 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
         hasAFriend();
 
         if(hasFriends){
-            /*
-               Display friend info.
-             */
+
         }
 
         else{
