@@ -1,9 +1,13 @@
 package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,12 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.IOUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.RecyclerViewClickListener;
@@ -26,6 +33,12 @@ import com.sd.a3kleingroup.classes.callbacks.CallbackGeneric;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,7 +191,17 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
             LayoutInflater layoutInflater = LayoutInflater.from(parentActivity.getBaseContext());
             View view = layoutInflater.inflate(R.layout.view_recycler_public_view_friend_files, null, false);
 
-            return new PublicFilesRecyclerHolder(view);
+            return new PublicFilesRecyclerHolder(view, new CallbackGeneric<dbPublicFiles>() {
+                @Override
+                public void onSuccess(dbPublicFiles param, String message) {
+                    downloadFile(param);
+                }
+
+                @Override
+                public void onFailure(String message, MyError.ErrorCode errorCode) {
+
+                }
+            });
         }
 
 
@@ -220,5 +243,46 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
                 Log.d(LOG_TAG, "We got an error at getting friend data "+ message);
             }
         });
+    }
+
+
+
+    /**
+     * Expropriated straight from Guy's code.
+     * @param myFile
+     */
+    public void downloadFile(dbPublicFiles myFile){
+        Context ctx = getBaseContext();
+        Log.d("MY_HOLDER", "Downloading File");
+        Toast.makeText(ctx, "Downloading File", Toast.LENGTH_SHORT).show();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference fileRef = storageRef.child(myFile.getFilePath());
+
+        final long ONE_MEGABYTE = 1024 * 1024 * 10;
+        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            //bytes is of type byte[]
+            InputStream stream = new ByteArrayInputStream(bytes);
+            try {
+                //Create temp file to store file so that external apps can be used to open it.
+                File tmpFile = File.createTempFile("tmp", ".pdf");
+                OutputStream outputStream = new FileOutputStream(tmpFile);
+                IOUtils.copyStream(stream, outputStream);
+                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(path, "application/pdf");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
+                tmpFile.deleteOnExit();
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
+        });
+
+
     }
 }
