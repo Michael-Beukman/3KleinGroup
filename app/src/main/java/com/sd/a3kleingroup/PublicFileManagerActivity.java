@@ -81,7 +81,9 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         if(userQuery.getResult().isEmpty()){
             userEntryExists = false; //no results for this user and hence must be empty
         }
-        userEntryExists = true; //since it is not empty for this user ID it must exist.
+        else {
+            userEntryExists = true; //since it is not empty for this user ID it must exist.
+        }
     }
 
 
