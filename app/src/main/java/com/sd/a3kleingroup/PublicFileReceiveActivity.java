@@ -53,7 +53,7 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_public_file_recieve);
-        setContentView(R.layout.public_recycler_view); // will require to be changed as super basic
+        setContentView(R.layout.activity_view_friend_public_files); // will require to be changed as super basic
         // TODO: 2020/05/01 need to make a view for all your friends and then display them for you to choose who you would like to see
 
         hasAFriend();

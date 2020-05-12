@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sd.a3kleingroup.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 //creating own custom adapter
@@ -36,7 +35,7 @@ public class PublicFileReceiveAdapter extends RecyclerView.Adapter<PublicFileRec
     //creating views for the recycler view items
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.public_recieve_items, parent, false); //the view for our items
+        View view = LayoutInflater.from(context).inflate(R.layout.public_friend_items, parent, false); //the view for our items
         return new ViewHolder(view);
     }
 
