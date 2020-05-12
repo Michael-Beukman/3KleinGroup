@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.Distribution;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.PublicFile;
 import com.sd.a3kleingroup.classes.UI.PublicFileReceiveAdapter;
+import com.sd.a3kleingroup.classes.UI.PublicRecyclerViewAdapter;
 import com.sd.a3kleingroup.classes.db.dbUser;
 import com.sd.a3kleingroup.classes.db.dbUserFriends;
 
@@ -48,24 +50,34 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
 
     String TAG = "Public File Receive Activity";
     // TODO: 2020/04/30 make a way to delete information, probably the best way to do this would be to have a public file manage activity 
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager; //will use linear layout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_public_file_recieve);
-        setContentView(R.layout.activity_view_friend_public_files); // will require to be changed as super basic
+        setContentView(R.layout.activity_main); // will require to be changed as super basic
         // TODO: 2020/05/01 need to make a view for all your friends and then display them for you to choose who you would like to see
-
         hasAFriend();
 
         if(hasFriends){
-
+            friends = new ArrayList<dbUserFriends>(); //check
+            getFriends();
+            userFriend = new ArrayList<dbUser>(); //check
+            getAllFriendsInfo();
+            recyclerView = findViewById(R.id.public_friend_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            layoutManager = new LinearLayoutManager(this);
+            ArrayList<dbUser> arrayListUserFriends = new ArrayList<dbUser>(userFriend);
+            adapter = new PublicRecyclerViewAdapter(arrayListUserFriends);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
         }
 
         else{
-            /*
-            inform the user that at current they have no friends.
-             */
+            Toast.makeText(this, "Currently you have no friends", Toast.LENGTH_LONG).show();
         }
 
     }
