@@ -9,24 +9,25 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp">
         <TextView
-            android:id="@+id/recycler_friend_friendName"
+            android:id="@+id/recycler_file_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="Friend name"
+            android:text="File name"
             android:textStyle="italic"
             android:textSize="20sp">
 
         </TextView>
-        <TextView
-            android:id="@+id/recycler_friend_friendEmail"
+        <Button
+            android:id="@+id/recycler_file_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recycler_friend_friendName"
-            android:textSize="10sp"
-            android:text="friend email">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="Delete File"
+            ></Button>
 
-        </TextView>
+
 
 
 
