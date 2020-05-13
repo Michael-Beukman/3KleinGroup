@@ -18,27 +18,28 @@
             android:textSize="20sp">
 
         </TextView>
-        <Button
-            android:id="@+id/recycler_file_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/recycler_delete_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_delete_red_24dp"
+            android:layout_centerHorizontal="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="Delete"
+
             >
 
-        </Button>
+        </ImageView>
 
-        <Button
-            android:id="@+id/recycler_file_view_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/recycler_file_delete"
-            android:layout_alignParentTop="true"
-            android:text="File info"
+        <ImageView
+            android:id="@+id/recycler_view_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_visibility_green_24dp"
+            android:layout_centerHorizontal="true"
+            android:layout_toLeftOf="@id/recycler_delete_image"
             >
 
-        </Button>
+        </ImageView>
 
 
 

@@ -2,6 +2,8 @@ package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.PublicFile;
+import com.sd.a3kleingroup.classes.UI.PublicFileManagerAdapter;
+import com.sd.a3kleingroup.classes.UI.PublicRecyclerViewAdapter;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
 import java.util.ArrayList;
@@ -43,7 +47,11 @@ public class PublicFileManagerActivity extends AppCompatActivity {
     private String fileToDeleteID; //need to get this based on a text button with the file ID and name.
     private String TAG = "Public File Manager Activity";
 
-    List<dbPublicFiles> thisUserFiles;
+    List<dbPublicFiles> thisUserFiles = new ArrayList<>();
+
+    private RecyclerView mRecyclerView;
+    private PublicFileManagerAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager; //will use linear layout
 
     boolean userEntryExists = false; //assume false until proven true.
 
@@ -51,7 +59,10 @@ public class PublicFileManagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        userExists();
         if(userEntryExists){
+            buildRecyclerView();
+
 
         }
         else{
@@ -59,6 +70,33 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void buildRecyclerView() {
+        getInfo();
+        mRecyclerView = findViewById(R.id.public_friend_recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        ArrayList<dbPublicFiles> files = new ArrayList<>(thisUserFiles);
+        mAdapter = new PublicFileManagerAdapter(files);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new PublicFileManagerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                //nothing for now
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                deleteEntry(files.get(position).getFileStorage()); // TODO: 2020/05/13 this needs to be the document ID not the file storage, change this later
+            }
+
+            @Override
+            public void onViewInfoClick(int position) {
+
+            }
+        });
     }
 
     /*
