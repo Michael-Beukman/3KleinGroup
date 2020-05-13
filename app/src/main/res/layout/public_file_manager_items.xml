@@ -24,8 +24,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="Delete File"
-            ></Button>
+            android:text="Delete"
+            >
+
+        </Button>
+
+        <Button
+            android:id="@+id/recycler_file_view_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/recycler_file_delete"
+            android:layout_alignParentTop="true"
+            android:text="File info"
+            >
+
+        </Button>
+
 
 
 

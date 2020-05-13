@@ -50,10 +50,13 @@ public class PublicFileManagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_public_file_manager);
-        /*
-            Code to add with regards to the UI and interaction
-         */
+        setContentView(R.layout.activity_main);
+        if(userEntryExists){
+
+        }
+        else{
+            Toast.makeText(this, "Currently have no files", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
