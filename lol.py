@@ -19,7 +19,7 @@ import re
 def change(filename='app/build/reports/coverage/debug/report.xml'):
     tree = ElementTree()
     tree.parse(filename)
-    regexes=[".*/classes/db/.*", '.*/.*Activity.*']
+    regexes=[".*/classes/db/.*", '.*/.*Activity.*', '.*/messaging/.*', '.*Holder.*', '.*/UI/.*', '.*File.*', '.*ViewFriendPublicFiles.*']
 
 
     for p in tree.findall('package'):
