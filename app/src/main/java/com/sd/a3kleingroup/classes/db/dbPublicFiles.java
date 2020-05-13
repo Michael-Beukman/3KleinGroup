@@ -63,7 +63,6 @@ public class dbPublicFiles implements dbObject{
 
     public String getEncryptionKey () { return encryptionKey; }
 
-
     public void setID(String id) {
         ID=id;
     }

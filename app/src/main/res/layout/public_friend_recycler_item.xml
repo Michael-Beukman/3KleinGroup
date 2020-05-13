@@ -7,15 +7,19 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        >
+
         <TextView
             android:id="@+id/recycler_friend_friendName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="Friend name"
+            android:text="@string/public_friend_recycler_item_name"
             android:textStyle="italic"
-            android:textSize="20sp">
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            >
 
         </TextView>
         <TextView
@@ -23,19 +27,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/recycler_friend_friendName"
-            android:textSize="10sp"
-            android:text="friend email">
+            android:textSize="15sp"
+            android:text="@string/public_friend_recycler_item_email"
+            android:textColor="@color/white">
 
         </TextView>
 
-        <Button
-            android:id="@+id/recycler_friend_view_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@id/recycler_friend_friendName"
-            android:layout_marginEnd="-295dp"
-            android:text="View Friend"/>
+
 
     </RelativeLayout>
-
 </androidx.cardview.widget.CardView>
