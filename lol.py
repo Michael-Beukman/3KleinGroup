@@ -38,6 +38,6 @@ def change(name='app/build/reports/coverage/debug/report.xml'):
                         p.remove(s);
                         print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
     # write again
-    # tree.write(name)
+    tree.write(name)
 
 change() #'app/build/reports/coverage/tmp/report.xml'
