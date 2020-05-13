@@ -24,5 +24,9 @@
     <string name="public_send_file_name">File Name</string>
     <string name="public_send_file_hint_name">File Name</string>
     <string name="public_send_file_info">Choose a file to upload to your public files</string>
-
+    <string name="public_friend_recycler_item_name">Friend Name</string>
+    <string name="public_friend_recycler_item_email">Friend email</string>
+    <string name="public_file_manager_item_file_name">File Name</string>
+    <string name="public_file_manager_item_delete">Delete file</string>
+    <string name="public_file_manager_item_view">View info</string>
 </resources>
