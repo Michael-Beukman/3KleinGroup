@@ -1,3 +1,4 @@
+"""
 import re
 with open('app/build/reports/coverage/debug/report.xml', 'r') as f:
     s = f.read()
@@ -11,3 +12,40 @@ with open('app/build/reports/coverage/debug/report.xml', 'r') as f:
     print(x)
     with open('app/build/reports/coverage/debug/report.xml', 'w') as f:
         f.write(x)
+"""
+from xml.etree.ElementTree import ElementTree
+import re
+# New
+def change(filename='app/build/reports/coverage/debug/report.xml'):
+    tree = ElementTree()
+    tree.parse(filename)
+    regexes=[".*/classes/db/.*", '.*/.*Activity.*', '.*/messaging/.*', '.*Holder.*', '.*/UI/.*', '.*File.*', '.*ViewFriendPublicFiles.*']
+
+
+    for p in tree.findall('package'):
+             name = p.attrib['name']; print (name)
+             for c in p.findall('class'):
+                #   print(c.attrib)
+                  #p.remove(c)
+                  for r in regexes:
+                      if re.match(r, c.attrib['name']):
+                          try:
+                            p.remove(c)
+                          except Exception as e:
+                               print ("ERROR at line 34" , e)
+                          print("removing ", c.attrib['name'])
+                          continue
+             for s in p.findall('sourcefile'):
+                # print(s.attrib['name'])
+                for r in regexes:
+                    if re.match(r, p.attrib['name'] + '/' + s.attrib['name']):
+                        try:
+                            p.remove(s);
+                        except Exception as e:
+                               print ("ERROR at line 45" , e)
+                        print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
+                        continue
+    # write again
+    tree.write(filename)
+
+change() #'app/build/reports/coverage/tmp/report.xml'
