@@ -29,14 +29,20 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
                   #p.remove(c)
                   for r in regexes:
                       if re.match(r, c.attrib['name']):
-                          p.remove(c);
+                          try:
+                            p.remove(c)
+                          except Exception as e:
+                               print ("ERROR at line 34" , e)
                           print("removing ", c.attrib['name'])
                           continue
              for s in p.findall('sourcefile'):
                 # print(s.attrib['name'])
                 for r in regexes:
                     if re.match(r, p.attrib['name'] + '/' + s.attrib['name']):
-                        p.remove(s);
+                        try:
+                            p.remove(s);
+                        except Exception as e:
+                               print ("ERROR at line 45" , e)
                         print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
                         continue
     # write again
