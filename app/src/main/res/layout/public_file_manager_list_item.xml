@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:drawableLeft="@drawable/ic_visibility_green_24dp"
+        android:padding="10dp"
+        android:layout_margin="4dp"
+        android:background="@color/fui_transparent"
+        android:id="@+id/file_manager_friendName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:text="   Friend Name"
+        >
+
+
+    </TextView>
+
+</LinearLayout>

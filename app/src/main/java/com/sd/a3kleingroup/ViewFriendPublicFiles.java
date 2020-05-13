@@ -68,6 +68,7 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
         super.onCreate(savedInstanceState);
         LOG_TAG = "MY_"+TAG;
         getUserName();
+
     }
 
     @Override
