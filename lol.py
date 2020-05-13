@@ -21,23 +21,23 @@ def change(name='app/build/reports/coverage/debug/report.xml'):
     tree.parse(name)
     regexes=[".*/classes/db/.*", '.*/.*Activity.*']
 
-    
+
     for p in tree.findall('package'):
              name = p.attrib['name']; print (name)
              for c in p.findall('class'):
                 #   print(c.attrib)
                   #p.remove(c)
                   for r in regexes:
-                      if re.fullmatch(r, c.attrib['name']): 
-                          p.remove(c); 
-                          print("removing ", c.attrib['name'], re.match(r, c.attrib['name']))
+                      if re.match(r, c.attrib['name']):
+                          p.remove(c);
+                          print("removing ", c.attrib['name'])
              for s in p.findall('sourcefile'):
                 # print(s.attrib['name'])
                 for r in regexes:
-                    if re.fullmatch(r, p.attrib['name'] + '/' + s.attrib['name']): 
-                        p.remove(s); 
-                        print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r, re.fullmatch(r, p.attrib['name'] + '/' + s.attrib['name']))
+                    if re.match(r, p.attrib['name'] + '/' + s.attrib['name']):
+                        p.remove(s);
+                        print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
     # write again
-    tree.write(name)
+    # tree.write(name)
 
-change() #
+change() #'app/build/reports/coverage/tmp/report.xml'
