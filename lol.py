@@ -16,9 +16,9 @@ with open('app/build/reports/coverage/debug/report.xml', 'r') as f:
 from xml.etree.ElementTree import ElementTree
 import re
 # New
-def change(name='app/build/reports/coverage/debug/report.xml'):
+def change(filename='app/build/reports/coverage/debug/report.xml'):
     tree = ElementTree()
-    tree.parse(name)
+    tree.parse(filename)
     regexes=[".*/classes/db/.*", '.*/.*Activity.*']
 
 
@@ -38,6 +38,6 @@ def change(name='app/build/reports/coverage/debug/report.xml'):
                         p.remove(s);
                         print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
     # write again
-    tree.write(name)
+    tree.write(filename)
 
 change() #'app/build/reports/coverage/tmp/report.xml'
