@@ -3,7 +3,6 @@
 - [Diagrams](#diagrams)
   - [Logical View](#logical-view)
     - [State Diagram](#state-diagram)
-    - [TODO **LOL**](#todo-lol)
     - [Class Diagram](#class-diagram)
   - [Development View](#development-view)
     - [Component Diagram](#component-diagram)
@@ -19,7 +18,9 @@
 
 ### State Diagram
 
-### TODO **LOL**
+![SD%20All%20diagrams/Untitled.png](SD%20All%20diagrams/FrontEndStateDiagram.png)
+
+**TODO: Backend State Diagram?**
 
 ### Class Diagram
 
@@ -64,6 +65,10 @@
 ### Sequence Diagram
 
 ![SD%20All%20diagrams/Untitled%2015.png](SD%20All%20diagrams/Untitled%2015.png)
+
+![SD%20All%20diagrams/Untitled%2014.png](SD%20All%20diagrams/ReceiveSeqDiag.png)
+
+![SD%20All%20diagrams/Untitled%2014.png](SD%20All%20diagrams/FriendListSeqDiag.png)
 
 ## Physical View
 
