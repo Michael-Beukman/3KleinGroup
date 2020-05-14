@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>432</x>
+      <y>368</y>
+      <w>128</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>dbObject
+--
++ Map&lt;String, Object&gt;:
++ getHashmap():</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>552</x>
+      <y>248</y>
+      <w>248</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>290.0;10.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>784</x>
+      <y>240</y>
+      <w>472</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>dbAgreement
+-
+-fileID: String
+-userID: String
+-ValidUntil: String
+-userSentID: String
+-
++ getDate20YearsInFuture(): Date
++ getDateInPast(): Date
++ getDateTomorrow(): Date
++ dbAgreement(fileID:String, userID:String, validUntil:Date, userSentID:String):
++ getFiledID(): String
++ getUserID(): String
++ getValidUntil: Date
++ getUserSentID(): String
++ getHashmap(): Map&lt;String, Object&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>72</y>
+      <w>248</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>290.0;10.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>552</x>
+      <y>392</y>
+      <w>304</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>360.0;220.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>504</y>
+      <w>320</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>dbUser
+-
+- email: String
+- name: String
+- notificationToken: String
+-
++ dbUser(email: String, name: String, notificationToken: String)
++ getEmail(): String
++ getName(): String
++ getNotificationToken(): String
++ getHashMap(): Map&lt;String, Object&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>80</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>SimpleClass</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1400</x>
+      <y>272</y>
+      <w>256</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>AESEncryption
+-
+- secretKey: SecretKey
+-
++ AESEncryption(length: int)
++ AESEncryption()
++ AESEncryption(key: String):
++ encrypt(stream: InputStream): InputStream
++ decrypt(stream: InputStream): InputStream 
++ getKey(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1408</x>
+      <y>432</y>
+      <w>256</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>RSA
+-
+- privateKey: PrivateKey
+- publicKey: PublicKey
+-
++ RSA(keylength: int):
++ RSA():
++ RSA(privateKey: String, publicKey: String):
++ encrypt(stream: InputStream): InputStream
++ decrypt(encrypted: InputStream): InputStream
++ getPrivateKey(): String
++ getPublicKey(): String
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

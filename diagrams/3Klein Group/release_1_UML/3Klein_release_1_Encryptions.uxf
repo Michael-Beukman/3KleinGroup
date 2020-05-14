@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>320</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>AESEncryption
+-
+- secretKey: SecretKey
+-
++ AESEncryption(length: int)
++ AESEncryption()
++ AESEncryption(key: String):
++ encrypt(stream: InputStream): InputStream
++ decrypt(stream: InputStream): InputStream 
++ getKey(): String
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>220</y>
+      <w>320</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>RSA
+-
+- privateKey: PrivateKey
+- publicKey: PublicKey
+-
++ RSA(keylength: int):
++ RSA():
++ RSA(privateKey: String, publicKey: String):
++ encrypt(stream: InputStream): InputStream
++ decrypt(encrypted: InputStream): InputStream
++ getPrivateKey(): String
++ getPublicKey(): String
+
+group=1</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>340</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Note..
+This kind of feels like it goes with the 
+any friend should be able to see my public file
+so long as you are friends yours should be available
+and theirs should be available.
+Will rather think of as a view dbs and select a friend
+if they have on load files otherwise notify empty.
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

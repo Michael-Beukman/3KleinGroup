@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>175</x>
+      <y>7</y>
+      <w>308</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends AppCompatActivity&gt;&gt;
+LoginActivity
+-
+- signInButton: SignInButton
+- mGoogleSignInClient: GoogleSignInClient
+- TAG: String
+- mAuth: FirebaseAuth
+- btnSignOut: Button
+- RC_SIGN_IN: int
+-
++ signIn():
+# onCreate(savedInstances Bundle):
+# onActivityResult(requestCode: int, data: Intent):
+- handleSignInResult(completedTask: Task&lt;GoogleSignInAccount&gt;):
+- FirebaseGoogleAuth(acct: GoogleSignInAccount):
+- updateUI(fUser: FirebaseUser):
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>483</x>
+      <y>203</y>
+      <w>350</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends AppCompatActivity&gt;&gt;
+MainActivity
+-
+-
++ onCreate(savedInstanceState: Bundle, persistentState: PersistableBundle):
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>483</x>
+      <y>259</y>
+      <w>560</w>
+      <h>420</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends BaseActivity&gt;&gt;
+MySentFiles
+-
+&lt;&lt;final&gt;&gt; USER_COLLECTION_NAME: String
+&lt;&lt;final&gt;&gt; FILE_COLLECTION_NAME: String
+- LOG_TAG: String
+- currentFileSelected: SingleSentFile
+- errorHandler: MyError
++ btnApproved: Button
++ btnAll: Button
++ btnPending:Button
++ adapter: MyRecyclerViewAdapter
+- details: HashMap&lt;String, HashMap&lt;String, Object&gt;&gt;&gt;()
+-
+# getAsync(collectionName: String, docID: String, cb: Callback): 
++ &lt;&lt;override&gt;&gt; onCreate(savedInstanceState: Bundle):
++ recyclerViewStuff(): 
++ showPopup(v: View):
++ colourButtons(clicked: Button):
++ doButtons():
++ changePermissions(d: Date, file: SingleSentFile):
++ revoke(file: SingleSentFile):
++ approveTilTomorrow(file: SingleSentFile):
++ approveIndefinitely(file: SingleSentFile: 
+
+{innerclass
+&lt;&lt;Extends RecyclerView.Adapter&lt;Holder&gt;&gt;
+MyRecyclerViewAdapter
+-
+-
++ MyRecyclerVIewAdapter(data: QuerySnapshot)
+_-&lt;&lt;final&gt;&gt; LOG_TAG: String_
+- mDataSet: ArrayList&lt;SingleSentFile&gt;
+- filtered: ArrayList&lt;SingleSentFile&gt;
+- currentFilter: Filter&lt;SingleSentFile&gt;
++ &lt;&lt;override&gt;&gt; onCreateViewHolder(group: ViewGroup, i: int): Holder
++ &lt;&lt;override&gt;&gt; onBindViewHolder(holder: Holderm position: int):
++ &lt;&lt;ovveride&gt;&gt; getItemCount(): int
++ filter(filter: Filter&lt;SingleSentFile&gt;):
++ filterWithCurrentFilter(): 
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>210</y>
+      <w>140</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>SayHello
+-
+-
+_+ hello(name: String): String_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>161</x>
+      <y>175</y>
+      <w>315</w>
+      <h>588</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends BaseActivity&gt;&gt;
+SendFileActivity
+-
+- &lt;&lt;final&gt;&gt; FILE_RESULT_SUCCESS: int
+- &lt;&lt;final&gt;&gt; FILE_REQUEST_CODE: int
+- &lt;&lt;final&gt;&gt; LOG_TAG: String
+- storage: FirebaseStorage
+- auth: FirebaseAuth
+- btnChooseFile: Button
+- btnChooseRecievedFile: Button
+- btnSend: Button
+- txtEmail: EditText
+- txtFilename: EditText
+- lblFilename: TextView
+- progressBar: ProgressBar
+- errorHandler: MyError
+- file: MyFile
+- isSendFileLocalStorage: boolean
+- fileToSend: dbFile
+- userThatSentFile: dbUser
+- determineCurrentUser()
+
+
+{innerclass
+&lt;&lt;Implements View.OnClickListener&gt;&gt;
+chooseReceivedFile
+-
+-
++ &lt;&lt;override&gt;&gt; onClick(view: View):
+- makeDialogBox():
+
+innerclass}
+{innerclass
+&lt;&lt;Implements View.onClickListener&gt;&gt;
+&lt;&lt;private&gt;&gt; sendFile
+-
+- filePathFirebase: String
+- filename: String
+- user: FirebaseUser
+- userToReceiveID: String
+- fileRef: StorageReference
+- 
++ &lt;&lt;override&gt;&gt; onSuccess(data: Map&lt;String, Object&gt;, message: String):
++ &lt;&lt;override&gt;&gt; onFailure(error: String, errorCode: MyError.ErrorCode):
+- afterGetEmail(data: Map&lt;String, Object&gt;, message: String):
+- afterUploadFile(taskSnapShot: UploadTask.TaskSnapshot, key: String):
+- afterUpdateDB():
+- afterFailGetEmail(error: String, errorCode: MyError.ErrorCode):
+- afterFailUpload(exception: Exception):
+- afterFailUpdateDB(e: Exception):
+- cleanUp():
+
+innerclass}
+{innerclass
+&lt;&lt;Implements TextWatcher&gt;&gt;
+FileNameChange
+-
+-
++ &lt;&lt;override&gt;&gt; beforeTextChanged( charSequence: CharSequence, i: int, i1: int, i2: int):
++ &lt;&lt;override&gt;&gt; onTextChanged(charSequence: CharSequence, i: int, i1: int, i2: int):
++ &lt;&lt;override&gt;&gt; afterTextChanged(editable: Editable):
+
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1050</x>
+      <y>259</y>
+      <w>364</w>
+      <h>553</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends BaseActivity&gt;&gt;
+RecieveFilesActivity
+-
++ &lt;&lt;final&gt;&gt; USER_COLLECTION_NAME: String
++ &lt;&lt;final&gt;&gt; FILE_COLLECTION_NAME: String
++ btnSort: Button
++ editFIlter: EditText
++ db: FirebaseFirestore
++ myAdapter: RecyclerAdapter
++ user: FirebaseUser
++ mFirebaseFunctions: FirebaseFunctions
+_+ &lt;&lt;final&gt;&gt; LOG_TAG: String_
++ &lt;&lt;override&gt;&gt; onCreate(savedInstanceState Bundle):
++ setEvents():
++ setElements():
+- determineCurrentUser():
+# getAsync(collectionName: String, docID: String, cb: Callback): 
+- setUpFireStore():
+- setUpRV():
+- sendNotificationRequestingPermission(fName: String, ownerToken: String):
+- showHamburgerPopUp(v: View, position: int, file: FileModel)
+# getAsync(collectionName: String, docID: String, cb: Callback):
+- setUpFireStore():
+- setUpRV():
+- showHamburgerPopUp(v: View, position: int, file: FileModel)
+{innerclass
+&lt;&lt;Implements View.OnClickListener&gt;&gt;
+Sorter
+-
+-
++ &lt;&lt;override&gt;&gt; onClick(v: View):
++ showSortPopup(v: View):
+
+innerclass}
+{innerclass
+&lt;&lt;Implements TextWatcher&gt;&gt;
+Filter
+-
+-
++ &lt;&lt;override&gt;&gt; beforeTextChanged( charSequence: CharSequence, i: int, i1: int, i2: int):
++ &lt;&lt;override&gt;&gt; onTextChanged(charSequence: CharSequence, i: int, i1: int, i2: int):
++ &lt;&lt;override&gt;&gt; afterTextChanged(editable: Editable):
+
+innerclass}
+{innerclass
+&lt;&lt;Extends RecyclerView.Adapter&lt;RecyclerHolder&gt; &gt;&gt;
+RecyclerAdapter
+-
+-
++ &lt;&lt;override&gt;&gt; onCreateViewHolder(group: ViewGroup, i: int): Holder
++ &lt;&lt;override&gt;&gt; onBindViewHolder(holder: Holderm position: int):
+
+innerclass}
+{innerclass
+&lt;&lt;Extends RecyckerView.Adapter&lt;RecyclerHolder&gt;&gt;
+RecyclerAdapter
+-
+(Variables) 
+-
+(Functions)</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

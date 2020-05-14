@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <help_text/>
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>250</x>
+      <y>50</y>
+      <w>900</w>
+      <h>610</h>
+    </coordinates>
+    <panel_attributes>                                                                                                           &lt;&lt;PLEASE READ&gt;&gt;
+Not too sure how would do currently
+If you do, please just add stuff to this diagram and export the pdf
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

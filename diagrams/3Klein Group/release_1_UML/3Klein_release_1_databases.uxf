@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>460</x>
+      <y>20</y>
+      <w>590</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>dbAgreement
+-
+-fileID: String
+-userID: String
+-ValidUntil: String
+-userSentID: String
+-
++ getDate20YearsInFuture(): Date
++ getDateInPast(): Date
++ getDateTomorrow(): Date
++ dbAgreement(fileID:String, userID:String, validUntil:Date, userSentID:String):
++ getFiledID(): String
++ getUserID(): String
++ getValidUntil: Date
++ getUserSentID(): String
++ getHashmap(): Map&lt;String, Object&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>460</x>
+      <y>510</y>
+      <w>400</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>dbUser
+-
+- email: String
+- name: String
+- notificationToken: String
+-
++ dbUser(email: String, name: String, notificationToken: String)
++ getEmail(): String
++ getName(): String
++ getNotificationToken(): String
++ getHashMap(): Map&lt;String, Object&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>170</x>
+      <y>210</y>
+      <w>310</w>
+      <h>400</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>290.0;380.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>170</x>
+      <y>30</y>
+      <w>310</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>290.0;10.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>180</y>
+      <w>160</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>dbObject
+--
++ Map&lt;String, Object&gt;:
++ getHashmap():</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>460</x>
+      <y>280</y>
+      <w>620</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>dbFile
+-
+- filepath: String
+- name: String
+- userID: String
+- storageURL: String
+- encryptionKey: String
+-
++ dbFile(filepath: String, name: String, userID: String, storageURL: String, encryptionKey: String):
++ &lt;&lt;override&gt;&gt; getHashmap(): Map&lt;String, Object</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>170</x>
+      <y>210</y>
+      <w>310</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+</panel_attributes>
+    <additional_attributes>290.0;180.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>

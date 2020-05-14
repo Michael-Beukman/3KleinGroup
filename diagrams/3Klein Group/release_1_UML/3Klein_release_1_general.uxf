@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>20</y>
+      <w>300</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends AppCompatActivity&gt;&gt;
+BaseActivity
+-
+# nav: BottomNavigationView
+-
++ onCreate(savedInstanceStateL Bundle):
++ goToLogin():
+# doNavigation():
+# setChecked(item: int):
+- goToMessages():
+- goToSendFiles():
+- goToRecvFiles():
+- goToMySentFiles():
+- goToHome():
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>340</x>
+      <y>20</y>
+      <w>380</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>/AbstractClass/
+CallBack
+-
+-
++ onSuccess(data: Map&lt;String, Object&gt;, message: String):
++ onFailure(error: String, errorCode: MyError.ErrorCode:
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>730</x>
+      <y>20</y>
+      <w>450</w>
+      <h>340</h>
+    </coordinates>
+    <panel_attributes>FileModel
+-
+fileName: String
+format: String
+path: String
+url: String
+agreement: dbAgreement
+owner: dbUser
+-
++ FileModel():
++ FileModel(fileName: String, format: String, path: String, url: String):
++ getPath(): String
++ setPath(path: String): 
++ serUrl(url: String):
++ getFormat(): String
++ setFormat(format: String):
++ getFileName(): String
++ setFileName(fileName: String):
++ setAgreement(agreement: dbAgreement):
++ getOwner(): dbUser
++ setOwner(owner: dbUser):
++ isAllDataRetrieved(): boolean
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>330</y>
+      <w>170</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>/AbstractClass/
+Filter&lt;T&gt;
+-
+-
++ filter(arr: ArrayList&lt;T&gt;:</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1190</x>
+      <y>140</y>
+      <w>250</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends RecyclerView.ViewHolder&gt;&gt;
+Holder
+-
++ main: TextView
++ imgButton: ImageButton
++ userName: TextView
++ cbUser: Callback
++ cbFile: Callback
+-
++ Holder(itemView: View):
++ setCallBacks(): 
++ setLoading():
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1190</x>
+      <y>30</y>
+      <w>240</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>MyError
+-
+-
++ ErrorCode: enum
++ MyError(ctx: Context):
++ displayError(message: String):
++ displaySuccess(message: String):</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>800</x>
+      <y>370</y>
+      <w>420</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>MyFile
+-
+- filePath: String
+- fileName: String
+- fileUri: Uri
+- file: File
+-
++ MyFile():
++ setFilepath(filepath: String):
++ setFilename(filename: String):
++ uploadToFirebase(userIDSent: String, userIDRecieve: String):
++ getFile(): File
++ setUri(Uri: fileUri): 
++ getUri(): Uri</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>370</y>
+      <w>760</w>
+      <h>260</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends RecyclerView.ViewHolder&gt;&gt;
+RecyclerHolder
+-
++ mTextBtnListener: RecyclerViewClickListener
++ mPopUpListener: RecyclerViewClickListener
++ joinedFileInfo: FileModel
++ txtbtnFileName: TextView
++ btnHamburger: ImageButton
++ txtOwner: TextView
++ txtDate: TextView
++ cbOwner: CallBack
++ cbFile: CallBack
+-
++ RecyclerHolder(itemView: View, txtbtnlistner: RecyclerViewClickListener, popuplistener: RecyclerViewClickListener):
++ onClock(view: View):
++ setLoading():
+- setCallbacks():</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>640</y>
+      <w>580</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>SingleSentFile
+-
+- docID: String
+- fileID: String
+- userID: String
+- validUntil: Date
+- ownerID: String
+-
++ getFileID(): String
++ setFileID(fileID: String):
++ getUserID(): String
++ setUserID(userID: String):
++ getValidUntil(): Date
++ setValidUntil(validUntil: Date):
++ getOwnerID(): String
++ setOwnerID(ownerID: String):
++ SingleSentFile():
++ SingleSentFile(fileID: String, userID: String, validUntil: Date, ownerID: String, docID: String):
++ getDocID(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>110</y>
+      <w>340</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>/AbstractClass/
+StringCallBack
+-
+-
++ onSuccess(data: String, message: String)"
++ onFailure(error: String, errorCode: MyErrorCode):</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>370</x>
+      <y>220</y>
+      <w>340</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Extends dbUser&gt;&gt;
+User
+-
+- id: String
+-
++ User(email: String, name: String, notificationToken: String, id: String):
++ getId(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>10</x>
+      <y>240</y>
+      <w>350</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Utils
+-
+- instance: Utils
+- 
++ getInstance(): Utils
++ getUserFromEmail(email: String, cb: Callback):
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
