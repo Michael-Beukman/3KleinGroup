@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FileManagerViewFileInfoActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:srcCompat="@drawable/ic_guydino"
+        android:contentDescription="@string/project_id"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+
+        >
+    </ImageView>
+
+
+    <ListView
+        android:id="@+id/file_manager_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="-1dp" />
+
+
+</RelativeLayout>

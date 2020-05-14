@@ -73,6 +73,10 @@ public class PublicFileReceiveActivity extends AppCompatActivity {
     }
 
     public void buildRecyclerView(){
+        /*
+        Shows a list of your friends for you to choose who to click on and view their file.
+         */
+
         friends = new ArrayList<dbUserFriends>(); //check
         getFriends();
         userFriend = new ArrayList<dbUser>(); //check

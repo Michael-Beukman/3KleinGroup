@@ -94,7 +94,8 @@ public class PublicFileManagerActivity extends AppCompatActivity {
 
             @Override
             public void onViewInfoClick(int position) {
-
+                // TODO: 2020/05/13 start an activity to specifically view this file's info
+                
             }
         });
     }

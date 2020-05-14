@@ -12,7 +12,8 @@
         android:roundIcon="@drawable/ic_guydino"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design">
-        <activity android:name=".ViewFriendPublicFiles"></activity>
+        <activity android:name=".FileManagerViewFileInfoActivity"></activity>
+        <activity android:name=".ViewFriendPublicFiles" />
         <activity android:name=".PublicFileManagerActivity" />
         <activity android:name=".PublicFileReceiveActivity" />
         <activity android:name=".PublicFileSendActivity" />
