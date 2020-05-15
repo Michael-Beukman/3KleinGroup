@@ -31,4 +31,5 @@
     <string name="public_file_manager_item_file_name">File Name</string>
     <string name="public_file_manager_item_delete">Delete file</string>
     <string name="public_file_manager_item_view">View info</string>
+    <string name="public_file_manager_list_item_friend_name">&#160;&#160;Friend Name</string>
 </resources>
