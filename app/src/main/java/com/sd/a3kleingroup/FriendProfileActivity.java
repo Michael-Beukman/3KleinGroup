@@ -43,8 +43,7 @@ public class FriendProfileActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //TODO: Unfriend by removing doc in Friends agreement and exit activity
             }
         });
     }
@@ -58,6 +57,7 @@ public class FriendProfileActivity extends BaseActivity {
 
         //We need to query Firestore before this can be set
         txtNumPublic = findViewById(R.id.txtNumPublicFiles);
-
     }
+
+    //TODO: recycler view with public files
 }
