@@ -10,10 +10,11 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:background="@drawable/rounded_corner_text"
         android:drawableStart="@drawable/ic_visibility_grey_24dp"
         android:padding="10dp"
         android:layout_margin="4dp"
-        android:background="@color/fui_transparent"
+
         android:id="@+id/file_manager_friendName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
