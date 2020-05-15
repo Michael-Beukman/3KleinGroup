@@ -25,4 +25,15 @@
         android:id="@+id/navigation_mysentfiles"
         android:icon="@drawable/ic_persons_24dp"
         android:title="My Sent Files" />
+
+    <item
+        android:id="@+id/public_recieve_files"
+        android:icon="@drawable/ic_persons_24dp"
+        android:title="@string/title_public_receive_files" />
+
+    <item
+        android:id="@+id/public_manage_files"
+        android:icon="@drawable/ic_persons_24dp"
+        android:title="@string/title_public_manage_files" />
+
 </menu>
