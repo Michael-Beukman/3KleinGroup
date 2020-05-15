@@ -232,3 +232,72 @@ exports.changeAgreement = functions.firestore
         console.log("Error at getAll", e);
       });
   });
+
+
+  exports.createFriends = functions.firestore
+  .document("Friends/{friendID}")
+  .onCreate((snap, context) => {
+    console.log("starting onCreate for Friends");
+    // get the data from the agreement
+
+    // Get an object representing the document
+    // e.g. {'recipientID': '..', 'senderID': '...', accepted: ...}
+    const newValue = snap.data();
+    console.log("got data from snap ", { newValue });
+    // the user that should get the notification
+    const recipientID = newValue.recipientID;
+    console.log("got recipient id ", { recipientID });
+    const db = admin.firestore();
+
+    // the user that receives the request
+    const docRecipient = db.collection("Users").doc(recipientID);
+    // the user that sent the request
+    const docSender = db.collection("Users").doc(newValue.senderID);
+
+    admin
+      .firestore()
+      .getAll(docRecipient, docSender)
+      .then((docs) => {
+        const recipientData = docs[0].data();
+        const senderData = docs[1].data();
+        console.log("Got data from recipient, sender ", {
+          recipientData,
+          senderData
+        });
+
+        const recipientNotifToken = recipientData.notificationToken;
+        const senderName = senderData.name;
+
+        const notifToken = recipientNotifToken;
+        
+        // Notification details.
+        console.log("got snapshot from recipient's notifToken ", { notifToken });
+        const payload = {
+          notification: {
+            title: "Friend Request Received",
+            body: `You received a friend request from ${senderName}`
+          }
+        };
+        console.log("payload ", { payload });
+
+        // Listing all tokens as an array.
+        // tokens = Object.keys(tokensSnapshot.val());
+        // Send notifications to all tokens.
+        admin
+          .messaging()
+          .sendToDevice(notifToken, payload)
+          .then((r) => {
+            console.log('Successfully sent message:', r);
+          })
+          .catch((xx) => {
+            console.log('Error sending message:', xx);
+          });
+      })
+      .catch((error) => {
+        console.log(
+          "We got an error at getAll in the createFriends function. ",
+          { error }
+        );
+      });
+    console.log("done");
+  });

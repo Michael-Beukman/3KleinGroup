@@ -250,6 +250,7 @@ public class ReceiveFilesActivity extends BaseActivity {
                 IOUtils.copyStream(stream, outputStream);
 
                 //Open file with external app
+                //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
                 Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(path, "application/pdf");
