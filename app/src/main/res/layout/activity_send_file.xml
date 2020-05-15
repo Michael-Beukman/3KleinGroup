@@ -35,48 +35,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Choose a File and user to send it to"
-        app:layout_constraintBottom_toTopOf="@+id/sf_btnChooseFile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.214" />
-
-    <EditText
-        android:id="@+id/sf_txtRecipientEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/sf_txtFilename"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
-        app:layout_constraintStart_toEndOf="@+id/sf_lblEmail" />
-
-    <EditText
-        android:id="@+id/sf_txtFilename"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="FileName"
-        app:layout_constraintBottom_toTopOf="@+id/sf_btnChooseFile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.934"
-        app:layout_constraintStart_toEndOf="@+id/sf_lblFilename"
-        tools:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/sf_lblFilename"
-        android:layout_width="59dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="File Name"
-        app:layout_constraintBottom_toBottomOf="@+id/sf_txtFilename"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/sf_txtFilename"
-        app:layout_constraintVertical_bias="0.653" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/sf_btnSend"
@@ -88,25 +49,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sf_btnChooseFile" />
 
-    <TextView
-        android:id="@+id/sf_lblEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="User Email"
-        app:layout_constraintBottom_toBottomOf="@+id/sf_txtRecipientEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/sf_txtRecipientEmail"
-        app:layout_constraintVertical_bias="0.423" />
-
     <ProgressBar
         android:id="@+id/sf_prgbProgress"
         style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="264dp"
+        android:layout_height="18dp"
+        android:layout_marginBottom="80dp"
+        app:layout_constraintBottom_toTopOf="@+id/sf_btnChooseFile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/sf_txtProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/sf_prgbProgress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:text="Uploading..." />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
@@ -117,4 +79,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/navigation"
         tools:layout_editor_absoluteX="0dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:hint="User Email Address"
+        app:layout_constraintBottom_toTopOf="@+id/sf_lblFilename"
+        app:layout_constraintTop_toBottomOf="@+id/sf_txtHeader"
+        tools:layout_editor_absoluteX="1dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sf_txtRecipientEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/sf_lblFilename"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:hint="File Name"
+        app:layout_constraintBottom_toTopOf="@+id/sf_txtProgressBar"
+        tools:layout_editor_absoluteX="1dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sf_txtFilename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

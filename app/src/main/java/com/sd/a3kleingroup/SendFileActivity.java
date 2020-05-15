@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,7 +73,8 @@ public class SendFileActivity extends FileChooseActivity {
     private Button btnSend;
     private EditText txtEmail;
     private EditText txtFilename;
-    private TextView lblFilename;
+    private TextInputLayout lblFilename;
+    private TextView sf_txtProgressBar;
     private ProgressBar progressBar;
 
     // this is my choosefile. We need an instance, so that we can preload the required data and cache it.
@@ -273,7 +275,9 @@ public class SendFileActivity extends FileChooseActivity {
      */
     private void updateFileShowUI() {
         // todo
+        Log.d(LOG_TAG, "Hello at update UI");
         txtFilename.setVisibility(View.VISIBLE);
+        lblFilename.setVisibility(View.VISIBLE);
         btnSend.setEnabled(true);
         if (isSendFileLocalStorage) {
             // then we show the local file
@@ -382,6 +386,7 @@ public class SendFileActivity extends FileChooseActivity {
                 return;
             }
             progressBar.setVisibility(View.VISIBLE);
+            sf_txtProgressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
             SendLocalFile sender = new SendLocalFile(cb, user.getUid(), userToReceiveID, txtFilename.getText().toString(), stream, FirebaseFirestore.getInstance(), FirebaseStorage.getInstance(), progressCallback);
             sender.send();
@@ -393,6 +398,7 @@ public class SendFileActivity extends FileChooseActivity {
                 @Override
                 public void onSuccess(Map<String, Object> data, String message) {
                     Log.d(LOG_TAG, "Succeeded in sending a received file !  (" + message + ")");
+                    errorHandler.displaySuccess("Succeeded in sending a received file!");
                     cleanUp();
                 }
 
@@ -410,7 +416,11 @@ public class SendFileActivity extends FileChooseActivity {
             }
             Log.d(LOG_TAG, "Sending the following data " + myChooseReceivedFile.selectedFile.user + " - " + myChooseReceivedFile.selectedFile.agreement + " - " + myChooseReceivedFile.selectedFile.file);
             SendReceivedFile sender = new SendReceivedFile(cb, myChooseReceivedFile.selectedFile, userToReceiveID, FirebaseFirestore.getInstance());
-            sender.send();
+            try {
+                sender.send();
+            }catch (Exception e){
+                cb.onFailure("An unknown error occurred " + e.getMessage(), MyError.ErrorCode.TASK_FAILED);
+            }
         }
 
         /**
@@ -444,7 +454,7 @@ public class SendFileActivity extends FileChooseActivity {
         private void cleanUp() {
 
             //enable btn again
-            btnSend.setEnabled(true);
+            btnSend.setEnabled(false);
 
             // set views default again
             txtFilename.setVisibility(View.INVISIBLE);
@@ -453,6 +463,7 @@ public class SendFileActivity extends FileChooseActivity {
             lblFilename.setVisibility(View.INVISIBLE);
 
             progressBar.setVisibility(View.INVISIBLE);
+            sf_txtProgressBar.setVisibility(View.INVISIBLE);
             progressBar.setProgress(0);
         }
     }
@@ -502,6 +513,8 @@ public class SendFileActivity extends FileChooseActivity {
         txtEmail = findViewById(R.id.sf_txtRecipientEmail);
         txtFilename = findViewById(R.id.sf_txtFilename);
         lblFilename = findViewById(R.id.sf_lblFilename);
+
+        sf_txtProgressBar = findViewById(R.id.sf_txtProgressBar);
         progressBar = findViewById(R.id.sf_prgbProgress);
 
 
@@ -509,6 +522,8 @@ public class SendFileActivity extends FileChooseActivity {
         txtFilename.setVisibility(View.INVISIBLE);
         lblFilename.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
+        sf_txtProgressBar.setVisibility(View.INVISIBLE);
+        sf_txtProgressBar.setText("Uploading...");
 
         // make send button false, since you cannot send nothing xD
         btnSend.setEnabled(false);
