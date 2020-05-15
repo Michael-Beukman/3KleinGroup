@@ -60,9 +60,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (nav != null){
             nav.setOnNavigationItemSelectedListener(item -> {
                 switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        goToHome();
-                        return true;
+//                    case R.id.navigation_home:
+//                        goToHome();
+//                        return true;
                     case R.id.navigation_mysentfiles:
                         goToMySentFiles();
                         return true;
@@ -72,15 +72,15 @@ public abstract class BaseActivity extends AppCompatActivity {
                     case R.id.navigation_sendfiles:
                         goToSendFiles();
                         return true;
-                    case R.id.navigation_message:
-                        goToMessages();
+//                    case R.id.navigation_message:
+//                        goToMessages();
+//                        return true;
+                    case R.id.navigation_public_receive_files:
+                        goToPublicReceiveFiles();
                         return true;
-//                    case R.id.navigation_public_receive_files:
-//                        goToPublicReceiveFiles();
-//                        return true;
-//                    case R.id.navigation_public_manage_files:
-//                        goToPublicManageFiles();
-//                        return true;
+                    case R.id.navigation_public_manage_files:
+                        goToPublicManageFiles();
+                        return true;
                 }
                 return false;
             });
