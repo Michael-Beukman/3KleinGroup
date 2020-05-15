@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- NOTE THAT THIS IS MEANT TO SHOW THE FRIENDS WHO HAVE SEEN YOUR SPECIFIC FILE INSIDE
+     THE PUBLIC FILE MANAGER: SO THIS WILL BE GENERATED UPON CLICKING ON A FILE
+     USERS WHO HAVE SEEN IT GET GREEN AND THOSE WHO HAVE NOT GET RED OR MAYBE
+     GREY, THIS COLOUR CHANGE WILL OCCUR IN THE ACTIVITY -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:drawableLeft="@drawable/ic_visibility_green_24dp"
+        android:background="@drawable/rounded_corner_text"
+        android:drawableStart="@drawable/ic_visibility_grey_24dp"
         android:padding="10dp"
         android:layout_margin="4dp"
-        android:background="@color/fui_transparent"
+
         android:id="@+id/file_manager_friendName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="21sp"
         android:textStyle="bold"
-        android:text="   Friend Name"
+        android:text="@string/public_file_manager_list_item_friend_name"
         >
 
 

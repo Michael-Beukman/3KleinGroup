@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sd.a3kleingroup.LoginActivity;
 import com.sd.a3kleingroup.MySentFiles;
+import com.sd.a3kleingroup.PublicFileManagerActivity;
+import com.sd.a3kleingroup.PublicFileReceiveActivity;
 import com.sd.a3kleingroup.R;
 import com.sd.a3kleingroup.ReceiveFilesActivity;
 import com.sd.a3kleingroup.SendFileActivity;
@@ -73,6 +75,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                     case R.id.navigation_message:
                         goToMessages();
                         return true;
+                    case R.id.navigation_public_receive_files:
+                        goToPublicReceiveFiles();
+                        return true;
+                    case R.id.navigation_public_manage_files:
+                        goToPublicManageFiles();
+                        return true;
                 }
                 return false;
             });
@@ -101,6 +109,16 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void goToHome() {
         //todo
+    }
+
+    private void goToPublicManageFiles(){
+        Intent I = new Intent(getApplicationContext(), PublicFileManagerActivity.class);
+        startActivity(I);
+    }
+
+    private void goToPublicReceiveFiles(){
+        Intent I = new Intent(getApplicationContext(), PublicFileReceiveActivity.class);
+        startActivity(I);
     }
 
     /**

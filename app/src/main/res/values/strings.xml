@@ -18,6 +18,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_public_receive_files">Receive Public Files</string>
+    <string name="title_public_manage_files">Manage Public Files</string>
 
     <string name="public_send_file_upload">Upload</string>
     <string name="public_send_file_choose_file">Choose File</string>
@@ -29,4 +31,5 @@
     <string name="public_file_manager_item_file_name">File Name</string>
     <string name="public_file_manager_item_delete">Delete file</string>
     <string name="public_file_manager_item_view">View info</string>
+    <string name="public_file_manager_list_item_friend_name">&#160;&#160;Friend Name</string>
 </resources>
