@@ -12,15 +12,18 @@
         android:roundIcon="@drawable/ic_guydino"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design">
+        <activity android:name=".FriendProfileActivity"></activity>
         <activity
             android:name=".FriendListActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"><!--prevents the app from using the native ActionBar class to provide the app bar, we want to use Toolbar widget -->
+            android:theme="@style/AppTheme.NoActionBar"> <!-- prevents the app from using the native ActionBar class to provide the app bar, we want to use Toolbar widget -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".ReceiveFilesActivity" />
         <activity android:name=".MySentFiles" />
@@ -65,9 +68,7 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-
-        <!-- This is to allow external apps to open the files -->
+            android:resource="@color/colorAccent" /> <!-- This is to allow external apps to open the files -->
         <provider
             android:name=".classes.GenericFileProvider"
             android:authorities="${applicationId}.provider"

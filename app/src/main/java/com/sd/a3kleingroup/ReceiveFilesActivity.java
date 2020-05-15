@@ -148,7 +148,6 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            // TODO: filter based off ownerID, update recyclerview
             charSequence.toString();
         }
 
@@ -286,7 +285,6 @@ public class ReceiveFilesActivity extends BaseActivity {
 
 //        File localFile = null;
 //        try {
-//            //TODO check that filename is valid
 //            localFile = File.createTempFile("temp", null,null);
 //        } catch (IOException e) {
 //            Log.e(LOG_TAG, e.getMessage());

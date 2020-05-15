@@ -192,6 +192,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
 
     private void gotoFriend() {
         //TODO: open friend's profile activity
+
     }
 
     @Override

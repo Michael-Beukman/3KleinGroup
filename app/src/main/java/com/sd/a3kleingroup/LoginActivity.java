@@ -125,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                         Log.d("MY_LOGIN ", acct.getIdToken());
-                        Intent intent2 = new Intent(getApplicationContext(), FriendListActivity.class);
+                        Intent intent2 = new Intent(getApplicationContext(), SendFileActivity.class);
                         startActivity(intent2);
                         return;
 //                         todo: This is a hack to go to sendfile after login
