@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                         Log.d("MY_LOGIN ", acct.getIdToken());
-                        Intent intent2 = new Intent(getApplicationContext(), SendFileActivity.class);
+                        Intent intent2 = new Intent(getApplicationContext(), FriendListActivity.class);
                         startActivity(intent2);
 //                        Intent intent2 = new Intent(getApplicationContext(), ReceiveFilesActivity.class);
 //                        startActivity(intent2);

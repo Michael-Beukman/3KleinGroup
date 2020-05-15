@@ -12,12 +12,19 @@
         android:roundIcon="@drawable/ic_guydino"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design">
-        <activity android:name=".FileManagerViewFileInfoActivity"></activity>
+        <activity
+            android:name=".FriendProfileActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:parentActivityName=".FriendListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FriendListActivity" />
+        </activity>
+        <activity android:name=".FileManagerViewFileInfoActivity" />
         <activity android:name=".ViewFriendPublicFiles" />
         <activity android:name=".PublicFileManagerActivity" />
         <activity android:name=".PublicFileReceiveActivity" />
         <activity android:name=".PublicFileSendActivity" />
-        <activity android:name=".FriendProfileActivity"></activity>
         <activity
             android:name=".FriendListActivity"
             android:label="@string/app_name"

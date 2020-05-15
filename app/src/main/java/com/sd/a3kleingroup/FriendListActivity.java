@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ActionBar;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -88,7 +89,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         Callback cbUser = new Callback() {
             @Override
             public void onSuccess(Map<String, Object> data, String message) {
-                dbUser u = new dbUser((String)data.get("email"),(String)data.get("name"),(String)data.get("notificationToken"));
+                dbUser u = new dbUser((String) data.get("id"),(String)data.get("email"),(String)data.get("name"),(String)data.get("notificationToken"));
                 friendsList.add(u);
                 mAdapter.notifyDataSetChanged();
             }
@@ -146,31 +147,6 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
     }
 
 
-    protected void getAsync(String collectionName, String docID, Callback cb){
-
-        System.out.println("REEE " + db);
-        db.collection(collectionName).document(docID).get().addOnSuccessListener(documentSnapshot -> {
-            Log.d(TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
-            if (documentSnapshot.getData() == null){
-                cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
-                System.out.println("NEEE");
-
-            }
-            else {
-                cb.onSuccess(documentSnapshot.getData(), "");
-                System.out.println("NEEE");
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                cb.onFailure(e.getMessage(), MyError.ErrorCode.TASK_FAILED);
-                System.out.println("NEEE");
-            }
-        });
-    }
-
-
     private void setupRV() {
         recyclerView = findViewById(R.id.recycler_view);
         whiteNotificationBar(recyclerView);
@@ -180,7 +156,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
             @Override
             public void onFriendSelected(dbUser friend) {
                 Log.d(TAG, "selected " + friend.getName());
-                gotoFriend();
+                gotoFriend(friend);
             }
         });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -190,9 +166,17 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         recyclerView.setAdapter(mAdapter);
     }
 
-    private void gotoFriend() {
-        //TODO: open friend's profile activity
+    private void gotoFriend(dbUser friend) {
+        Intent intent = new Intent(getBaseContext(), FriendProfileActivity.class);
 
+        //Pass stuff to the profile activity so it doesn't have to look for it in Firebase
+        intent.putExtra("name", friend.getName());
+        intent.putExtra("docID", friend.getDocID());
+        intent.putExtra("email", friend.getEmail());
+        intent.putExtra("notificationToken", friend.getNotificationToken());
+        intent.putExtra("myID", user.getUid());
+
+        startActivity(intent);
     }
 
     @Override

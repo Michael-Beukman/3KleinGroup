@@ -28,6 +28,8 @@ import com.sd.a3kleingroup.ReceiveFilesActivity;
 import com.sd.a3kleingroup.SendFileActivity;
 import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
 
+import java.util.Map;
+
 public abstract class BaseActivity extends AppCompatActivity {
 //    @Override
     protected String LOG_TAG;
@@ -141,7 +143,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 System.out.println("NEEE");
 
             } else {
-                cb.onSuccess(documentSnapshot.getData(), "");
+                Map<String, Object> data = documentSnapshot.getData();
+                data.put("id", docID);
+                cb.onSuccess(data, "");
                 System.out.println("NEEE");
 
             }

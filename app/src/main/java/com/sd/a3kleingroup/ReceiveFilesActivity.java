@@ -119,7 +119,6 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            // TODO: filter based off ownerID, update recyclerview
             Log.d(LOG_TAG, "In filter " + charSequence.toString());
             String toFind = charSequence.toString().toLowerCase();
             if (myAdapter == null) return;
