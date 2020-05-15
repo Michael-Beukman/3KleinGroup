@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.Utils;
+import com.sd.a3kleingroup.classes.callbacks.CallbackGeneric;
+import com.sd.a3kleingroup.classes.db.dbUser;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -15,7 +17,7 @@ import org.junit.runner.RunWith;
 import java.util.HashMap;
 import java.util.Map;
 
-//@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4.class)
 public class UtilsTest {
     @Rule
     public ActivityScenarioRule<MainActivity>  activityScenarioRule = new ActivityScenarioRule<MainActivity>(MainActivity.class);
@@ -60,4 +62,25 @@ public class UtilsTest {
 
         Thread.sleep(2000);
     }
+
+
+    @Test
+    public void testGetUserFromID() throws InterruptedException {
+        CallbackGeneric<dbUser> cb = new CallbackGeneric<dbUser>() {
+            @Override
+            public void onSuccess(dbUser param, String message) {
+                Assert.assertEquals("wurkez@gmail.com", param.getEmail());
+            }
+
+            @Override
+            public void onFailure(String message, MyError.ErrorCode errorCode) {
+                Assert.fail("This shouldnt happen onFailure");
+                // Assert.assertEquals(data.get("userID"), "En8fRBqxPiZ13HvOabUx7uOXN2T2");
+            }
+        };
+        Utils.getInstance().getUserFromID("En8fRBqxPiZ13HvOabUx7uOXN2T2", cb);
+
+        Thread.sleep(2000);
+    }
+
 }
