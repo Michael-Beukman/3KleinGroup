@@ -73,6 +73,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                     case R.id.navigation_message:
                         goToMessages();
                         return true;
+                    case R.id.navigation_public_receive_files:
+                        goToPublicReceiveFiles();
+                        return true;
+                    case R.id.navigation_public_manage_files:
+                        goToPublicManageFiles();
+                        return true;
                 }
                 return false;
             });
@@ -101,6 +107,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private void goToHome() {
         //todo
+    }
+
+    private void goToPublicManageFiles(){
+
+    }
+
+    private void goToPublicReceiveFiles(){
+
     }
 
     /**
