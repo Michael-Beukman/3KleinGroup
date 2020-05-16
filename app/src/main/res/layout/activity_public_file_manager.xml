@@ -6,4 +6,132 @@
     android:layout_height="match_parent"
     tools:context=".PublicFileManagerActivity">
 
+    <ImageView
+        android:id="@+id/guy_dino"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/ic_guydino"
+        android:contentDescription="@string/app_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023">
+
+    </ImageView>
+
+    <Button
+        android:id="@+id/public_manager_send_file_button"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gradient_button_rounded"
+        android:text="@string/public_file_manager_go_to_send_file"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guy_dino" />
+
+    <Button
+        android:id="@+id/public_manager_receive_file_button"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gradient_button_rounded"
+        android:text="@string/public_file_manager_go_to_receive_file"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/public_manager_send_file_button"
+        app:layout_constraintVertical_bias="0.054" />
+
+    <Button
+        android:id="@+id/public_file_manager_manage_files"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:background="@drawable/gradient_button_rounded"
+        android:text="@string/public_file_manager_go_to_manage_files"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/public_manager_receive_file_button"
+        app:layout_constraintVertical_bias="0.061" />
+
+    <TextView
+        android:id="@+id/public_file_manager_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/public_file_manager_title"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/robotrock"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guy_dino"
+        app:layout_constraintVertical_bias="0.033" />
+
+    <TextView
+        android:id="@+id/public_file_manager_slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/public_files_slogan"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/public_file_manager_manage_files" />
+
+    <TextView
+        android:id="@+id/public_file_manager_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/robotrock"
+        android:lines="9"
+        android:maxLines="8"
+        android:text="@string/public_files_info_one"
+        android:textSize="12sp"
+        android:textStyle="normal"
+
+        app:layout_constraintBottom_toTopOf="@+id/public_manager_send_file_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/public_file_manager_title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/public_file_soldier_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/binary_soldiers"
+        android:lines="5"
+        android:text="@string/public_files_bin_soldier"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.143"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.684" />
+
+    <TextView
+        android:id="@+id/public_file_soldier_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/binary_soldiers"
+        android:lines="5"
+        android:text="@string/public_files_bin_soldier"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.861"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.684" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

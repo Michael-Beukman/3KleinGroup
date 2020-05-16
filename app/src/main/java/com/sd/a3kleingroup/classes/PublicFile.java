@@ -3,6 +3,7 @@ package com.sd.a3kleingroup.classes;
 import android.net.Uri;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import kotlin.NotImplementedError;
 
@@ -16,7 +17,6 @@ public class PublicFile {
     private Uri fileuri;
     private String userid;
 
-
     // actual File contents and everything
     private File file;
 
@@ -27,6 +27,7 @@ public class PublicFile {
         this.filepath = filepath;
         this.fileuri = fileuri;
         this.userid = userid;
+
     }
 
     /**
@@ -73,5 +74,6 @@ public class PublicFile {
     public void setUserid(String userid) {
         this.userid = userid;
     }
+
 }
 

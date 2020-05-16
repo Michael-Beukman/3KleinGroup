@@ -2,6 +2,7 @@ package com.sd.a3kleingroup.classes.db;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,13 +30,15 @@ public class dbPublicFiles implements dbObject{
     private String filePath;
     private String encryptionKey; //Check later for now just leave as "" to indicate no key just yet
     private String ID=""; // the document ID.
+    //Do not add a viewers here, instead when users view add their user ID or their user name to the viewers array.
 
-    public dbPublicFiles(String encryptionKey, String fileName, String filePath, String fileStorage, String userID ){
+    public dbPublicFiles(String encryptionKey, String fileName, String filePath, String fileStorage, String userID){
         this.userID = userID;
         this.fileName = fileName;
         this.fileStorage = fileStorage;
         this.filePath = filePath;
         this.encryptionKey = encryptionKey;
+
     }
 
     public dbPublicFiles (DocumentSnapshot d){
@@ -50,6 +53,7 @@ public class dbPublicFiles implements dbObject{
             put("user_id", userID);
             put("file_storage", fileStorage);
             put("encryption_key", encryptionKey);
+
         }};
     }
 

@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sd.a3kleingroup.R;
+import com.sd.a3kleingroup.classes.PublicFile;
+import com.sd.a3kleingroup.classes.db.dbPublicFileManager;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
@@ -27,7 +29,7 @@ public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileMan
 
     private OnItemClickListener mlistener;
 
-    private ArrayList<dbPublicFiles> files;
+    private ArrayList<dbPublicFileManager> files;
     public interface OnItemClickListener{
         void onItemClick(int position);
         void onDeleteClick(int position);
@@ -69,7 +71,7 @@ public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileMan
         }
     }
 
-    public PublicFileManagerAdapter(ArrayList<dbPublicFiles> filesList){
+    public PublicFileManagerAdapter(ArrayList<dbPublicFileManager> filesList){
         files = filesList;
     }
 
@@ -84,7 +86,7 @@ public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileMan
 
     @Override
     public void onBindViewHolder(@NonNull PublicViewAdapterFM holder, int position) {
-        dbPublicFiles currentUser = files.get(position);
+        dbPublicFileManager currentUser = files.get(position);
         holder.fileName.setText(currentUser.getFileName());
 
     }

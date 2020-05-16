@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">KleinGroup</string>
+    <string name="app_logo">Guy Dino</string>
     <string name="title_activity_send_file">SendFileActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -20,8 +21,17 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_public_receive_files">Receive Public Files</string>
     <string name="title_public_manage_files">Manage Public Files</string>
-
     <string name="public_send_file_upload">Upload</string>
+
+    <string name="public_file_manager_go_to_send_file">Send</string>
+    <string name="public_file_manager_go_to_receive_file">Receive</string>
+    <string name="public_file_manager_go_to_manage_files">Manage</string>
+    <string name="public_file_manager_title">INFO</string>
+    <string name="public_files_slogan">Keeping privacy in your hands</string>
+    <string name="public_files_info_one">All you need to know about Public Files \n\nSend files lets you choose files to upload \n\nReceive files shows you your friends and their files \n\nManage files lets you delete and view info for your files</string>
+    <string name="public_files_bin_soldier">H\n\nE\n\nY</string>
+
+
     <string name="public_send_file_choose_file">Choose File</string>
     <string name="public_send_file_name">File Name</string>
     <string name="public_send_file_hint_name">File Name</string>
