@@ -21,6 +21,7 @@
             android:id="@+id/msf_txtHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/robotrock"
             android:text="My Sent Files"
             android:textAlignment="center"
             android:textSize="24sp" />
@@ -35,6 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/gradient_button_rounded"
+                android:fontFamily="@font/robotrock"
                 android:text="All" />
 
             <Button
@@ -42,6 +45,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/gradient_button_rounded"
+                android:fontFamily="@font/robotrock"
                 android:text="Approved" />
 
             <Button
@@ -49,6 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/gradient_button_rounded"
+                android:fontFamily="@font/robotrock"
                 android:text="Pending" />
         </LinearLayout>
 
