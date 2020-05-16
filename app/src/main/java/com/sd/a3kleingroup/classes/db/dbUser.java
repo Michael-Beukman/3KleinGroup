@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class dbUser implements dbObject{
-    private String email, name, notificationToken;
+    private String email, name, notificationToken, docID;
 
     public dbUser(String email, String name) {
         this.email = email;
@@ -13,6 +13,13 @@ public class dbUser implements dbObject{
     }
 
     public dbUser(String email, String name, String notificationToken){
+        this.email = email;
+        this.name = name;
+        this.notificationToken = notificationToken;
+    }
+
+    public dbUser(String docID, String email, String name, String notificationToken){
+        this.docID = docID;
         this.email = email;
         this.name = name;
         this.notificationToken = notificationToken;
@@ -28,6 +35,10 @@ public class dbUser implements dbObject{
 
     public String getNotificationToken() {
         return notificationToken;
+    }
+
+    public String getDocID() {
+        return docID;
     }
 
     @Override

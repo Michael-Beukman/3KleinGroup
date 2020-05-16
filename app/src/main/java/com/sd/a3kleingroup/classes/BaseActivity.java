@@ -2,13 +2,9 @@ package com.sd.a3kleingroup.classes;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.telecom.Call;
 import android.util.Log;
-import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +15,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.sd.a3kleingroup.FriendListActivity;
 import com.sd.a3kleingroup.LoginActivity;
 import com.sd.a3kleingroup.MySentFiles;
 import com.sd.a3kleingroup.PublicFileManagerActivity;
@@ -27,6 +24,8 @@ import com.sd.a3kleingroup.R;
 import com.sd.a3kleingroup.ReceiveFilesActivity;
 import com.sd.a3kleingroup.SendFileActivity;
 import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
+
+import java.util.Map;
 
 public abstract class BaseActivity extends AppCompatActivity {
 //    @Override
@@ -76,7 +75,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 //                        goToMessages();
 //                        return true;
                     case R.id.navigation_public_receive_files:
-                        goToPublicReceiveFiles();
+                        goToFriendsList();
                         return true;
                     case R.id.navigation_public_manage_files:
                         goToPublicManageFiles();
@@ -116,8 +115,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         startActivity(I);
     }
 
-    private void goToPublicReceiveFiles(){
-        Intent I = new Intent(getApplicationContext(), PublicFileReceiveActivity.class);
+    private void goToFriendsList(){
+        Intent I = new Intent(getApplicationContext(), FriendListActivity.class);
         startActivity(I);
     }
 
@@ -141,7 +140,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 System.out.println("NEEE");
 
             } else {
-                cb.onSuccess(documentSnapshot.getData(), "");
+                Map<String, Object> data = documentSnapshot.getData();
+                data.put("id", docID);
+                cb.onSuccess(data, "");
                 System.out.println("NEEE");
 
             }

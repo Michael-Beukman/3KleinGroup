@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.util.IOUtils;
 import com.google.android.gms.internal.firebase_auth.zzew;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +41,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
@@ -59,6 +62,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -119,7 +123,6 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            // TODO: filter based off ownerID, update recyclerview
             Log.d(LOG_TAG, "In filter " + charSequence.toString());
             String toFind = charSequence.toString().toLowerCase();
             if (myAdapter == null) return;
@@ -234,35 +237,54 @@ public class ReceiveFilesActivity extends BaseActivity {
 
     public void downloadFile(FileModel file) {
 
+        //TODO: This is broken now even just with pdf even though didn't really change anything. Getting error java.io.IOException: javax.crypto.BadPaddingException: pad block corrupted
+        //Does this mean the key is getting corrupted?
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
         StorageReference fileRef = storageRef.child(file.getPath());
+        fileRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                String mime = storageMetadata.getContentType();
+                Log.d(LOG_TAG, mime);
 
-        final long ONE_MEGABYTE = 1024 * 1024 * 10;
-        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-            //bytes is of type byte[]
-            AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
-            InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
-            try {
-                //Create temp file to store file so that external apps can be used to open it.
-                File tmpFile = File.createTempFile("tmp", ".pdf");
-                OutputStream outputStream = new FileOutputStream(tmpFile);
-                IOUtils.copyStream(stream, outputStream);
+                final long ONE_MEGABYTE = 1024 * 1024 * 10;
+                fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                    //bytes is of type byte[]
+                    AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
+                    InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
+                    try {
+                        //Create temp file to store file so that external apps can be used to open it.
+                        File tmpFile = File.createTempFile("tmp", "");
+                        //OutputStream outputStream = new FileOutputStream(tmpFile);
+                        java.nio.file.Files.copy(
+                                stream,
+                                tmpFile.toPath(),
+                                StandardCopyOption.REPLACE_EXISTING);
+                        //IOUtils.copyStream(stream, outputStream);
 
-                //Open file with external app
-                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(path, "application/pdf");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(intent);
-                tmpFile.deleteOnExit();
-                outputStream.flush();
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                        //Open file with external app
+                        //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
+                        Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setDataAndType(path, mime);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(intent);
+                        tmpFile.deleteOnExit();
+                        //outputStream.flush();
+                        //outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).addOnFailureListener(exception -> {
+                    // Handle any errors
+                });
             }
-        }).addOnFailureListener(exception -> {
-            // Handle any errors
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+            }
         });
     }
 
