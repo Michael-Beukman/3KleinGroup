@@ -16,19 +16,18 @@ public class PublicFile {
     private String filepath;
     private Uri fileuri;
     private String userid;
-    private ArrayList<String> viewers = new ArrayList<>();
 
     // actual File contents and everything
     private File file;
 
     //done in the same order as it is in firebase currently
-    public PublicFile(String encryptionkey, String filename, String filepath, Uri fileuri, String userid, ArrayList<String> viewers) {
+    public PublicFile(String encryptionkey, String filename, String filepath, Uri fileuri, String userid) {
         this.encryptionkey = encryptionkey;
         this.filename = filename;
         this.filepath = filepath;
         this.fileuri = fileuri;
         this.userid = userid;
-        this.viewers = viewers;
+
     }
 
     /**
@@ -76,8 +75,5 @@ public class PublicFile {
         this.userid = userid;
     }
 
-    public ArrayList<String> getViewers() { return viewers; }
-
-    public void setViewers(ArrayList<String> viewers) { this.viewers = viewers; } //get this from the database when managing files, it is one of the only differences between this and dbPublicFiles in what they contain.
 }
 

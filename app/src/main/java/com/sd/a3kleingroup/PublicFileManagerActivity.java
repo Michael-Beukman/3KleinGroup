@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.PublicFile;
 import com.sd.a3kleingroup.classes.UI.PublicFileManagerAdapter;
 import com.sd.a3kleingroup.classes.UI.PublicRecyclerViewAdapter;
+import com.sd.a3kleingroup.classes.db.dbPublicFileManager;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
     private String fileToDeleteID; //need to get this based on a text button with the file ID and name.
     private String TAG = "Public File Manager Activity";
 
-    List<dbPublicFiles> thisUserFiles = new ArrayList<>();
+    List<dbPublicFileManager> thisUserFiles = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private PublicFileManagerAdapter mAdapter;
@@ -77,7 +78,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.public_friend_recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        ArrayList<dbPublicFiles> files = new ArrayList<>(thisUserFiles);
+        ArrayList<dbPublicFileManager> files = new ArrayList<>(thisUserFiles);
         mAdapter = new PublicFileManagerAdapter(files);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
@@ -89,7 +90,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
 
             @Override
             public void onDeleteClick(int position) {
-                deleteEntry(files.get(position).getFileStorage()); // TODO: 2020/05/13 this needs to be the document ID not the file storage, change this later
+                deleteEntry(files.get(position).getFileName()); // TODO: 2020/05/13 this needs to be the document ID not the file storage, change this later
             }
 
             @Override
@@ -159,7 +160,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         //process the data, so here we need to decide what we wish to show the user
         // TODO: 2020/04/30 check that his actually works and ensure that it doesn't cause issues
         if(!userQuery.getResult().isEmpty()) {
-            thisUserFiles = userQuery.getResult().toObjects(dbPublicFiles.class); // if it is not empty then we should get the data from this query.
+            thisUserFiles = userQuery.getResult().toObjects(dbPublicFileManager.class); // if it is not empty then we should get the data from this query.
             Toast.makeText(PublicFileManagerActivity.this, "Info retrieved successfully", Toast.LENGTH_SHORT).show(); //inform the user the info has loaded
         }
     }
