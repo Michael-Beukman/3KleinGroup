@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+
+    <!-- when using this to make sure that it forms a cirlce just
+    make sure the width and height of the button are equal - square -->
+    <solid android:color="@color/off_grey"/>
+    <corners android:radius="999dp"/>
+
+
+</shape>
