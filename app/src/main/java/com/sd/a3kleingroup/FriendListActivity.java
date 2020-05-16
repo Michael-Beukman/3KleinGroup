@@ -89,7 +89,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         Callback cbUser = new Callback() {
             @Override
             public void onSuccess(Map<String, Object> data, String message) {
-                dbUser u = new dbUser((String) data.get("id"),(String)data.get("email"),(String)data.get("name"),(String)data.get("notificationToken"));
+                dbUser u = new dbUser(message,(String)data.get("email"),(String)data.get("name"),(String)data.get("notificationToken"));
                 friendsList.add(u);
                 mAdapter.notifyDataSetChanged();
             }

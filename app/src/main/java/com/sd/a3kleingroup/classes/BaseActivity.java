@@ -140,9 +140,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 System.out.println("NEEE");
 
             } else {
-                Map<String, Object> data = documentSnapshot.getData();
-                data.put("id", docID);
-                cb.onSuccess(data, "");
+                cb.onSuccess(documentSnapshot.getData(), docID);
                 System.out.println("NEEE");
 
             }

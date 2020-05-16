@@ -247,6 +247,7 @@ public class ReceiveFilesActivity extends BaseActivity {
             public void onSuccess(StorageMetadata storageMetadata) {
                 String mime = storageMetadata.getContentType();
                 Log.d(LOG_TAG, mime);
+                //We're just gonna assume it's a pdf or an image
 
                 final long ONE_MEGABYTE = 1024 * 1024 * 10;
                 fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
@@ -255,7 +256,7 @@ public class ReceiveFilesActivity extends BaseActivity {
                     InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
                     try {
                         //Create temp file to store file so that external apps can be used to open it.
-                        File tmpFile = File.createTempFile("tmp", "");
+                        File tmpFile = File.createTempFile("tmp", ".pdf");
                         //OutputStream outputStream = new FileOutputStream(tmpFile);
                         java.nio.file.Files.copy(
                                 stream,
@@ -267,7 +268,7 @@ public class ReceiveFilesActivity extends BaseActivity {
                         //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
                         Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(path, mime);
+                        intent.setDataAndType(path, "application/pdf");
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivity(intent);
                         tmpFile.deleteOnExit();
