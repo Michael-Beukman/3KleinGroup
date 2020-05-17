@@ -12,10 +12,11 @@
         android:roundIcon="@drawable/ic_guydino"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design">
+        <activity android:name=".classes.UI.PublicFilesHomeActivity"></activity>
         <activity
             android:name=".FriendProfileActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".FriendListActivity">
+            android:parentActivityName=".FriendListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FriendListActivity" />

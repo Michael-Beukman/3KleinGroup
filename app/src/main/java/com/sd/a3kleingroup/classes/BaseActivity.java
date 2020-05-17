@@ -29,6 +29,7 @@ import com.sd.a3kleingroup.PublicFileReceiveActivity;
 import com.sd.a3kleingroup.R;
 import com.sd.a3kleingroup.ReceiveFilesActivity;
 import com.sd.a3kleingroup.SendFileActivity;
+import com.sd.a3kleingroup.classes.UI.PublicFilesHomeActivity;
 import com.sd.a3kleingroup.classes.db.dbFile;
 import com.sd.a3kleingroup.classes.encryption.AESEncryption;
 import com.sd.a3kleingroup.classes.messaging.MyFirebaseMessagingService;
@@ -124,7 +125,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void goToPublicManageFiles(){
-        Intent I = new Intent(getApplicationContext(), PublicFileManagerActivity.class);
+        Intent I = new Intent(getApplicationContext(), PublicFilesHomeActivity.class);
         startActivity(I);
     }
 
