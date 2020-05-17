@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dimen_8dp"
-                android:fontFamily="sans-serif"
+                android:fontFamily="@font/robotrock"
                 android:letterSpacing="0.1"
                 android:text="Name"
                 android:textColor="@android:color/white"
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:fontFamily="sans-serif"
+                android:fontFamily="@font/robotrock"
                 android:letterSpacing="0.1"
                 android:text="Email"
                 android:textColor="@android:color/white"
@@ -102,6 +102,7 @@
                     android:id="@+id/txtNumPublicFiles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotrock"
                     android:textSize="@dimen/profile_meta_label" />
 
             </LinearLayout>
@@ -111,7 +112,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
     </LinearLayout>
 
 </RelativeLayout>
