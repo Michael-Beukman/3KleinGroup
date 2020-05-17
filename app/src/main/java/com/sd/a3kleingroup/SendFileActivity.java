@@ -177,7 +177,7 @@ public class SendFileActivity extends FileChooseActivity {
                 @Override
                 public String apply(@NullableDecl GetAgreementsUsersFiles.FileUserAgreementTriple input) {
                     if (input == null) return "null";
-                    return input.file.getName() + " (from " + input.user.getName() + ")";
+                    return input.file.getFileName() + " (from " + input.user.getName() + ")";
                 }
             });
 
@@ -285,9 +285,9 @@ public class SendFileActivity extends FileChooseActivity {
             GetAgreementsUsersFiles.FileUserAgreementTriple x = myChooseReceivedFile.selectedFile;
             String name;
             if (x != null) {
-                name = x.file.getName() + "(From " + x.user.getName() + ")";
+                name = x.file.getFileName() + "(From " + x.user.getName() + ")";
             } else {
-                name = fileToSend.getName();
+                name = fileToSend.getFileName();
             }
             txtFilename.setText(name);
         }
@@ -486,11 +486,7 @@ public class SendFileActivity extends FileChooseActivity {
         Log.d(LOG_TAG, String.valueOf(x));
         x.getToken();
         new GoogleApiAvailability().makeGooglePlayServicesAvailable(this);
-
-        setChecked(1);
-
-
-
+        setChecked(0);
     }
 
     /**

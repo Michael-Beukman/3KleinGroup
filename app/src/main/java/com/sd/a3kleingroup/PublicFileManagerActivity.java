@@ -61,14 +61,7 @@ public class PublicFileManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         userExists();
-        if(userEntryExists){
-            buildRecyclerView();
 
-
-        }
-        else{
-            Toast.makeText(this, "Currently have no files", Toast.LENGTH_SHORT).show();
-        }
 
 
     }
@@ -106,12 +99,26 @@ public class PublicFileManagerActivity extends AppCompatActivity {
      */
     public void userExists(){
         // TODO: 2020/04/30 check against the receive files activity that this is fine
-
+        PublicFileManagerActivity self = this;
         Task<QuerySnapshot> userQuery = publicFilesRef.whereEqualTo("user_id", userID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(PublicFileManagerActivity.this, "Success, user exists", Toast.LENGTH_LONG).show();
+                    if (task.getResult().isEmpty()){
+                        userEntryExists = false; //no results for this user and hence must be empty
+                    }
+                    else {
+                        userEntryExists = true; //since it is not empty for this user ID it must exist.
+                    }
+
+                    // Need to do this in the callback
+                    if(userEntryExists){
+                        buildRecyclerView();
+                    }
+                    else{
+                        Toast.makeText(self, "Currently have no files", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -121,12 +128,12 @@ public class PublicFileManagerActivity extends AppCompatActivity {
                 return; //leave here then
             }
         });
-        if(userQuery.getResult().isEmpty()){
-            userEntryExists = false; //no results for this user and hence must be empty
-        }
-        else {
-            userEntryExists = true; //since it is not empty for this user ID it must exist.
-        }
+//        if(userQuery.getResult().isEmpty()){
+//            userEntryExists = false; //no results for this user and hence must be empty
+//        }
+//        else {
+//            userEntryExists = true; //since it is not empty for this user ID it must exist.
+//        }
     }
 
 

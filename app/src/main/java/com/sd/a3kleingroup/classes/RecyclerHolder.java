@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sd.a3kleingroup.R;
+import com.sd.a3kleingroup.classes.db.dbFile;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.io.IOException;
@@ -85,10 +86,7 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
             @Override
             public void onSuccess(Map<String, Object> data, String message) {
                 txtbtnFileName.setText((String)data.get("filename"));
-                joinedFileInfo.setFileName((String)data.get("filename"));
-                joinedFileInfo.setUrl((String)data.get("storageURL"));
-                joinedFileInfo.setPath((String)data.get("filepath"));
-                joinedFileInfo.setEncryptionKey((String)data.get("encryptionKey"));
+                joinedFileInfo.setFile(new dbFile(data));
                 afterGetPieceOfData();
             }
 
@@ -122,7 +120,7 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
      */
     public void populateViews(FileModel fileModel) {
         this.joinedFileInfo = fileModel;
-        txtbtnFileName.setText((String)fileModel.getFileName());
+        txtbtnFileName.setText((String)fileModel.getFile().getFileName());
         txtOwner.setText(fileModel.owner.getName());
     }
 }

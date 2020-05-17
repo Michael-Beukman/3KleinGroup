@@ -80,6 +80,7 @@ public class dbClassesTest {
             put("file_storage",fileStorage);
             put("file_path",filePath);
             put("encryption_key",encryptionKey);
+            put("fileType", dbFile.PDF_TYPE);
         }}, publicFiles.getHashmap());
     }
 

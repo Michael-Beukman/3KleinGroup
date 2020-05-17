@@ -59,9 +59,13 @@ public class ReceiveFilesSorter implements View.OnClickListener {
         // now we sort filtered agreements on whatever
         adapter.filteredAgreements.sort((a, b) -> {
             if (RecyclerHolder.cache.containsKey(a.getId()) && RecyclerHolder.cache.containsKey(b.getId())){
-                String nameA = RecyclerHolder.cache.get(a.getId()).getFileName();
-                String nameB = RecyclerHolder.cache.get(b.getId()).getFileName();
-                return nameA.compareTo(nameB) * directionName;
+                try {
+                    String nameA = RecyclerHolder.cache.get(a.getId()).getFile().getFileName();
+                    String nameB = RecyclerHolder.cache.get(b.getId()).getFile().getFileName();
+                    return nameA.compareTo(nameB) * directionName;
+                }catch (Exception e){
+                    return directionName;
+                }
             }
             return 0;
         });

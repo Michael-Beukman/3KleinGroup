@@ -132,8 +132,8 @@ public class ReceiveFilesActivity extends BaseActivity {
                 if (RecyclerHolder.cache.containsKey(a.getId())) {
                     // then we can possibly filter on this.
                     FileModel f = RecyclerHolder.cache.get(a.getId());
-                    if (f.getOwner().getName().toLowerCase().contains(toFind) || f.getFileName().toLowerCase().contains(toFind)) {
-                        Log.d(LOG_TAG, "user is " + f.getOwner().getName() + " USER " + f.getOwner().getName().contains(charSequence) + " file " + f.getFileName().contains(charSequence) + " File name is " + f.getFileName());
+                    if (f.getOwner().getName().toLowerCase().contains(toFind) || f.getFile().getFileName().toLowerCase().contains(toFind)) {
+                        Log.d(LOG_TAG, "user is " + f.getOwner().getName() + " USER " + f.getOwner().getName().contains(charSequence) + " file " + f.getFile().getFileName().contains(charSequence) + " File name is " + f.getFile().getFileName());
                         myAdapter.filteredAgreements.add(a);
                     }
                 }
@@ -235,68 +235,14 @@ public class ReceiveFilesActivity extends BaseActivity {
 
     /* FILE THINGS */
 
-    public void downloadFile(FileModel file) {
-
-        //TODO: This is broken now even just with pdf even though didn't really change anything. Getting error java.io.IOException: javax.crypto.BadPaddingException: pad block corrupted
-        //Does this mean the key is getting corrupted?
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference fileRef = storageRef.child(file.getPath());
-        fileRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-            @Override
-            public void onSuccess(StorageMetadata storageMetadata) {
-                String mime = storageMetadata.getContentType();
-                Log.d(LOG_TAG, mime);
-                //We're just gonna assume it's a pdf or an image
-
-                final long ONE_MEGABYTE = 1024 * 1024 * 10;
-                fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                    //bytes is of type byte[]
-                    AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
-                    InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
-                    try {
-                        //Create temp file to store file so that external apps can be used to open it.
-                        File tmpFile = File.createTempFile("tmp", ".pdf");
-                        //OutputStream outputStream = new FileOutputStream(tmpFile);
-                        java.nio.file.Files.copy(
-                                stream,
-                                tmpFile.toPath(),
-                                StandardCopyOption.REPLACE_EXISTING);
-                        //IOUtils.copyStream(stream, outputStream);
-
-                        //Open file with external app
-                        //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
-                        Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(path, "application/pdf");
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        startActivity(intent);
-                        tmpFile.deleteOnExit();
-                        //outputStream.flush();
-                        //outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).addOnFailureListener(exception -> {
-                    // Handle any errors
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Uh-oh, an error occurred!
-            }
-        });
-    }
-
     private void checkPermission(FileModel file) {
         //Check if permission expired
         if (file.getAgreement().getValidUntil().before(new Date())) {
             //permission expired, request new permission
             Toast.makeText(ReceiveFilesActivity.this, "Permission Expired. Request Sent", Toast.LENGTH_SHORT).show();
-            sendNotificationRequestingPermission(file.getFileName(), file.getOwner().getNotificationToken());
+            sendNotificationRequestingPermission(file.getFile().getFileName(), file.getOwner().getNotificationToken());
         } else {
-            downloadFile(file);
+            downloadFile(file.getFile());
         }
     }
 
@@ -340,13 +286,13 @@ public class ReceiveFilesActivity extends BaseActivity {
             switch (item.getItemId()) {
                 case R.id.menu_share:
                     //TODO: share file
-                    Toast.makeText(ReceiveFilesActivity.this, "share file " + file.getFileName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReceiveFilesActivity.this, "share file " + file.getFile().getFileName(), Toast.LENGTH_SHORT).show();
                     Log.d(LOG_TAG, "Tried to Share and clicked the following position " + position + " " + file);
                     shareFile(file);
                     return true;
                 case R.id.menu_details:
                     //TODO: show file details in pop up
-                    Toast.makeText(ReceiveFilesActivity.this, "show details of file " + file.getFileName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReceiveFilesActivity.this, "show details of file " + file.getFile().getFileName(), Toast.LENGTH_SHORT).show();
                     return true;
                 default:
                     return false;
@@ -614,7 +560,7 @@ public class ReceiveFilesActivity extends BaseActivity {
             private void sendFile() {
                 // first we convert a filemodel to a triple of file, agreement and user
                 GetAgreementsUsersFiles.FileUserAgreementTriple toSend = new GetAgreementsUsersFiles.FileUserAgreementTriple(
-                        new dbFile(file.getPath(), file.getFileName(), "", file.getUrl(), file.getEncryptionKey()),
+                        file.getFile(),
                         file.getAgreement(), file.getOwner()
                 );
                 Callback cb = new Callback() {

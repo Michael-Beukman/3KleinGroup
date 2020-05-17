@@ -252,38 +252,38 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
      * Expropriated straight from Guy's code.
      * @param myFile
      */
-    public void downloadFile(dbPublicFiles myFile){
-        Context ctx = getBaseContext();
-        Log.d("MY_HOLDER", "Downloading File");
-        Toast.makeText(ctx, "Downloading File", Toast.LENGTH_SHORT).show();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference fileRef = storageRef.child(myFile.getFilePath());
-
-        final long ONE_MEGABYTE = 1024 * 1024 * 10;
-        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-            //bytes is of type byte[]
-            InputStream stream = new ByteArrayInputStream(bytes);
-            try {
-                //Create temp file to store file so that external apps can be used to open it.
-                File tmpFile = File.createTempFile("tmp", ".pdf");
-                OutputStream outputStream = new FileOutputStream(tmpFile);
-                IOUtils.copyStream(stream, outputStream);
-                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(path, "application/pdf");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(intent);
-                tmpFile.deleteOnExit();
-                outputStream.flush();
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).addOnFailureListener(exception -> {
-            // Handle any errors
-        });
-
-
-    }
+//    public void downloadFile(dbPublicFiles myFile){
+//        Context ctx = getBaseContext();
+//        Log.d("MY_HOLDER", "Downloading File");
+//        Toast.makeText(ctx, "Downloading File", Toast.LENGTH_SHORT).show();
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference storageRef = storage.getReference();
+//        StorageReference fileRef = storageRef.child(myFile.getFilePath());
+//
+//        final long ONE_MEGABYTE = 1024 * 1024 * 10;
+//        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+//            //bytes is of type byte[]
+//            InputStream stream = new ByteArrayInputStream(bytes);
+//            try {
+//                //Create temp file to store file so that external apps can be used to open it.
+//                File tmpFile = File.createTempFile("tmp", ".pdf");
+//                OutputStream outputStream = new FileOutputStream(tmpFile);
+//                IOUtils.copyStream(stream, outputStream);
+//                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setDataAndType(path, "application/pdf");
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                startActivity(intent);
+//                tmpFile.deleteOnExit();
+//                outputStream.flush();
+//                outputStream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).addOnFailureListener(exception -> {
+//            // Handle any errors
+//        });
+//
+//
+//    }
 }
