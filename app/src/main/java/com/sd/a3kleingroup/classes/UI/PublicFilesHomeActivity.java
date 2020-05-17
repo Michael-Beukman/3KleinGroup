@@ -10,11 +10,12 @@ import com.sd.a3kleingroup.PublicFileManagerActivity;
 import com.sd.a3kleingroup.PublicFileReceiveActivity;
 import com.sd.a3kleingroup.PublicFileSendActivity;
 import com.sd.a3kleingroup.R;
+import com.sd.a3kleingroup.classes.BaseActivity;
 
-public class PublicFilesHomeActivity extends AppCompatActivity {
+public class PublicFilesHomeActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_file_manager);
 
@@ -36,5 +37,6 @@ public class PublicFilesHomeActivity extends AppCompatActivity {
             Intent I = new Intent(getApplicationContext(), PublicFileManagerActivity.class);
             startActivity(I);
         });
+        doNavigation();
     }
 }
