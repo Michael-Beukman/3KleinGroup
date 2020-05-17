@@ -114,7 +114,6 @@ public class SendFileActivity extends FileChooseActivity {
             String filePath = fileUri.getPath();
             file.setFilepath(filePath);
             file.setUri(fileUri);
-
             // make filename text visible.
             txtFilename.setVisibility(View.VISIBLE);
             lblFilename.setVisibility(View.VISIBLE);
@@ -340,6 +339,8 @@ public class SendFileActivity extends FileChooseActivity {
             // gets the input stream
             InputStream stream;
             int totalSize;
+            String mimeType = getContentResolver().getType(file.getUri());
+            Log.d(LOG_TAG, "Got the following mime type " + mimeType);
             try {
                 stream = getContentResolver().openInputStream(file.getUri());
                 totalSize = stream.available();
@@ -388,7 +389,7 @@ public class SendFileActivity extends FileChooseActivity {
             progressBar.setVisibility(View.VISIBLE);
             sf_txtProgressBar.setVisibility(View.VISIBLE);
             progressBar.setProgress(0);
-            SendLocalFile sender = new SendLocalFile(cb, user.getUid(), userToReceiveID, txtFilename.getText().toString(), stream, FirebaseFirestore.getInstance(), FirebaseStorage.getInstance(), progressCallback);
+            SendLocalFile sender = new SendLocalFile(cb, user.getUid(), userToReceiveID, txtFilename.getText().toString(), mimeType, stream, FirebaseFirestore.getInstance(), FirebaseStorage.getInstance(), progressCallback);
             sender.send();
         }
 

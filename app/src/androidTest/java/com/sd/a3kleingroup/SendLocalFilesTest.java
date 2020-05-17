@@ -86,7 +86,7 @@ public class SendLocalFilesTest {
                     assertEquals("An Error occured (" + err + ")", error);
 
             }
-        }, "sending", "receiving", "filename", null, null, null, null);
+        }, "sending", "receiving", "filename","application/pdf", null, null, null, null);
 
         Method privateStringMethod = SendLocalFile.class.
                 getDeclaredMethod("afterFailUploadFile", new Class[]{Exception.class});
@@ -146,6 +146,7 @@ public class SendLocalFilesTest {
                 "25MsMCqDk0TxwoQB5IjwExZnJHf2", // Guy,
                 "MxTtBm9zkTaesi86UH5uaqGKvlA2", // Mike
                 "tmpTestFileName",
+                "application/pdf",
                 toSendStream, // what to send
                 FirebaseFirestore.getInstance(),
                 FirebaseStorage.getInstance(),

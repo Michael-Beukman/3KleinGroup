@@ -41,13 +41,15 @@ public class dbClassesTest {
         String name = "filename";
         String url = "url";
         String key = "key";
-        dbFile f = new dbFile(filepath, name, userID, url, key);
+        dbFile f = new dbFile(filepath, name, userID, url, key, "images/jpeg");
         Assert.assertEquals(new HashMap<String, Object>(){{
             put("userID", userID);
             put("filepath", filepath);
             put("filename", name);
             put("storageURL", url);
             put("encryptionKey", key);
+            put("fileType", "images/jpeg");
+
         }},  f.getHashmap());
     }
 

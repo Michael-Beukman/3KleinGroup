@@ -10,6 +10,7 @@ public class dbFile implements dbObject{
     private String storageURL;
 
     private String encryptionKey;
+    private String fileType;
 
     /**
      *
@@ -19,12 +20,20 @@ public class dbFile implements dbObject{
      * @param storageURL The url that the file can be downloaded from.
      * @param encryptionKey The key used for encryption
      */
-    public dbFile(String filepath, String name, String userID, String storageURL, String encryptionKey) {
+    public dbFile(String filepath, String name, String userID, String storageURL, String encryptionKey, String fileType) {
         this.filepath = filepath;
         this.name = name;
         this.userID = userID;
         this.storageURL = storageURL;
         this.encryptionKey = encryptionKey;
+        this.fileType = fileType;
+    }
+
+    /**
+     * Same as the above, with filetype="application/pdf"
+     */
+    public dbFile(String filepath, String name, String userID, String storageURL, String encryptionKey) {
+        this(filepath, name, userID, storageURL, encryptionKey, "application/pdf");
     }
 
     @Override
@@ -35,6 +44,7 @@ public class dbFile implements dbObject{
             put("userID", userID);
             put("storageURL", storageURL);
             put("encryptionKey", encryptionKey);
+            put("fileType", fileType);
         }};
     }
 

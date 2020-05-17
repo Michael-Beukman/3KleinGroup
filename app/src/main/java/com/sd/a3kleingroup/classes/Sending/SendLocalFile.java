@@ -37,7 +37,7 @@ public class SendLocalFile {
     FirebaseFirestore db;
     private FirebaseStorage storage;
     private Callback progressCallback;
-
+    private String fileType;
 
     //
     private StorageReference fileRef;
@@ -48,18 +48,20 @@ public class SendLocalFile {
      * @param userSending
      * @param userReceiving
      * @param filename
+     * @param fileType application/pdf, or images/jpeg or such
      * @param fileToSend
      * @param db
      * @param storage
      * @param progressCallback Gets called with data: {transferred: sizeTransferred} on a progress listener
      */
-    public SendLocalFile(Callback callback, String userSending, String userReceiving, String filename, InputStream fileToSend, FirebaseFirestore db, FirebaseStorage storage, Callback progressCallback) {
+    public SendLocalFile(Callback callback, String userSending, String userReceiving, String filename,String fileType, InputStream fileToSend, FirebaseFirestore db, FirebaseStorage storage, Callback progressCallback) {
         this.callback = callback;
         this.userSending = userSending;
         this.userReceiving = userReceiving;
         this.filename = filename;
         this.fileToSend = fileToSend;
         this.db = db;
+        this.fileType = fileType;
         this.storage = storage;
         this.progressCallback = progressCallback;
     }
@@ -135,7 +137,7 @@ public class SendLocalFile {
             // first add a record to the File collection TODO Make better
 
             Task<DocumentReference> fileDocRef = db.collection("Files").add(
-                    new dbFile(filePathFirebase, filename, userSending, uriTask.getResult().toString(), key).getHashmap()
+                    new dbFile(filePathFirebase, filename, userSending, uriTask.getResult().toString(), key, fileType).getHashmap()
             );
 
             fileDocRef.addOnCompleteListener(task -> {
