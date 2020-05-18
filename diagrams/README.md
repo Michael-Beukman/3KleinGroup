@@ -64,11 +64,21 @@
 
 ### Sequence Diagram
 
+Send Files
+
 ![SD%20All%20diagrams/Untitled%2015.png](SD%20All%20diagrams/Untitled%2015.png)
+
+Receive Files
 
 ![SD%20All%20diagrams/Untitled%2014.png](SD%20All%20diagrams/ReceiveSeqDiag.png)
 
+FriendsList
+
 ![SD%20All%20diagrams/Untitled%2014.png](SD%20All%20diagrams/FriendListSeqDiag.png)
+
+My Sent Files
+
+![SD%20All%20diagrams/MySentFilesSeqDiag.png](SD%20All%20diagrams/MySentFilesSeqDiag.png)
 
 ## Physical View
 
