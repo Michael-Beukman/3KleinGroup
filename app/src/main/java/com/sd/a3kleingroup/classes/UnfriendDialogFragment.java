@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.DialogFragment;
 
 import com.sd.a3kleingroup.R;
@@ -40,7 +41,7 @@ public class UnfriendDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), android.R.style.Theme_Material_Dialog));
         builder.setMessage("If you remove this user from your list of friends you will no longer be able to view their public files.")
                 .setTitle("Unfriend?");
         // Add action buttons

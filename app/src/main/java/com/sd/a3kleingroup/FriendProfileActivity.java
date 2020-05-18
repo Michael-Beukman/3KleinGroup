@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -150,6 +152,7 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
 
     private void setupRV() {
         recyclerView = findViewById(R.id.recycler_view);
+        blackNotificationBar(recyclerView);
         publicFiles = new ArrayList<>();
         mAdapter = new FriendProfileActivity.RecyclerAdapter(this, publicFiles, new FriendProfileActivity.AdapterListener() {
             //Callback for when specific public file is selected
@@ -165,6 +168,15 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //recyclerView.addItemDecoration(new MyDividerItemDecoration(this, DividerItemDecoration.VERTICAL, 36));
         recyclerView.setAdapter(mAdapter);
+    }
+
+    private void blackNotificationBar(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = view.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.BLACK);
+        }
     }
 
     private void getFileDataFromFirestore() {

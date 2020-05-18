@@ -102,7 +102,7 @@
                     android:id="@+id/txtNumPublicFiles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/robotrock"
+                    android:textColor="@color/profile_meta"
                     android:textSize="@dimen/profile_meta_label" />
 
             </LinearLayout>
