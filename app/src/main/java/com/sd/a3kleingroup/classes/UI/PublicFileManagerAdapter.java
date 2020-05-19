@@ -25,70 +25,37 @@ import java.util.ArrayList;
 Our current public_friend_recycler_items has 2 text views and a button
  */
 
-public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileManagerAdapter.PublicViewAdapterFM>{
+public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileManagerAdapter.pubFileManagerViewHolder>{
 
-    private OnItemClickListener mlistener;
+    private ArrayList<dbPublicFiles> files = new ArrayList<>();
+    public PublicFileManagerAdapter(ArrayList<dbPublicFiles> Files){ this.files = Files;}
 
-    private ArrayList<dbPublicFileManager> files;
-    public interface OnItemClickListener{
-        void onItemClick(int position);
-        void onDeleteClick(int position);
-        void onViewInfoClick(int position);
-    }
+    public static class pubFileManagerViewHolder extends RecyclerView.ViewHolder{
 
-    public void setOnItemClickListener(OnItemClickListener listener){
-        mlistener = listener;
-    }
-
-    public static class PublicViewAdapterFM extends RecyclerView.ViewHolder {
         public TextView fileName;
         public ImageView viewInfo;
-        public ImageView deleteFile;
+        public ImageView deleteInfo;
 
-        public PublicViewAdapterFM(@NonNull View itemView, OnItemClickListener listener) {
-            super(itemView);
-            fileName = itemView.findViewById(R.id.recycler_file_name);
-            viewInfo = itemView.findViewById(R.id.recycler_view_image);
-            deleteFile = itemView.findViewById(R.id.recycler_delete_image);
-
-            viewInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
-                            listener.onViewInfoClick(position);
-                        }
-                    }
-                }
-            });
-            deleteFile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+        public pubFileManagerViewHolder(View view){
+            super(view);
+            viewInfo = view.findViewById(R.id.recycler_view_image);
+            deleteInfo = view.findViewById(R.id.recycler_delete_image);
+            fileName = view.findViewById(R.id.recycler_file_name);
         }
     }
 
-    public PublicFileManagerAdapter(ArrayList<dbPublicFileManager> filesList){
-        files = filesList;
-    }
-
-
     @NonNull
     @Override
-    public PublicViewAdapterFM onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.public_friend_recycler_item, parent, false);
-        PublicViewAdapterFM curr = new PublicViewAdapterFM(v, mlistener);
-        return curr;
+    public pubFileManagerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.public_file_manager_items, parent, false);
+        pubFileManagerViewHolder newView = new pubFileManagerViewHolder(v);
+        return  newView;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PublicViewAdapterFM holder, int position) {
-        dbPublicFileManager currentUser = files.get(position);
-        holder.fileName.setText(currentUser.getFileName());
-
+    public void onBindViewHolder(@NonNull pubFileManagerViewHolder holder, int position) {
+        dbPublicFiles currFile = files.get(position);
+        holder.fileName.setText(currFile.getFileName());
     }
 
     @Override
