@@ -218,7 +218,7 @@ public class MySentFiles extends BaseActivity {
 //        x.getToken();
         doButtons();
         recyclerViewStuff();
-        setChecked(4);
+        setChecked(2);
 
 
     }

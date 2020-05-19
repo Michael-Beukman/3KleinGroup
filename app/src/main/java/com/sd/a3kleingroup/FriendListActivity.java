@@ -87,6 +87,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         user = FirebaseAuth.getInstance().getCurrentUser();
         getFriendDataFromFireStore();
         setFab();
+        setChecked(3);
     }
 
     private void setFab() {

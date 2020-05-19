@@ -19,7 +19,7 @@ import re
 def change(filename='app/build/reports/coverage/debug/report.xml'):
     tree = ElementTree()
     tree.parse(filename)
-    regexes=['.*/.*Activity.*', '.*/messaging/.*', '.*Holder.*', '.*/UI/.*', '.*File.*', '.*ViewFriendPublicFiles.*', '.*DialogFragment.*']
+    regexes=['.*/.*Activity.*', '.*/messaging/.*', '.*Holder.*', '.*/UI/.*', '.*File.*', '.*ViewFriendPublicFiles.*', '.*DialogFragment.*', '.*Callback.*']
     to_ignore='.*MySentFiles.*'
 
     for p in tree.findall('package'):

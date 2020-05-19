@@ -98,6 +98,8 @@ public class ReceiveFilesActivity extends BaseActivity {
         setUpFireStore();
         mFirebaseFunctions = FirebaseFunctions.getInstance();
         //determineCurrentUser();
+        setChecked(1);
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null){
             loginTempUser(new Callback() {
                 @Override
