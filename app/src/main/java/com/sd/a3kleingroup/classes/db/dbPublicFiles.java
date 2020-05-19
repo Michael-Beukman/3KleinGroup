@@ -1,11 +1,13 @@
 package com.sd.a3kleingroup.classes.db;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+@IgnoreExtraProperties
 public class dbPublicFiles extends dbFile{
     /**
      * Need the following info:

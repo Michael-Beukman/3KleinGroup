@@ -21,7 +21,11 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_public_receive_files">Receive Public Files</string>
     <string name="title_public_manage_files">Manage Public Files</string>
+
     <string name="public_send_file_upload">Upload</string>
+    <string name="public_file_send_hint">File Name</string>
+    <string name="public_file_send_text">You choose a file on your device \n\nThis file is then uploaded to the cloud\n\nAll your friends will be able to see this file</string>
+    <string name="public_file_send_progress">Progress</string>
 
     <string name="public_file_manager_go_to_send_file">Send</string>
     <string name="public_file_manager_go_to_receive_file">Receive</string>
@@ -42,6 +46,7 @@
     <string name="public_file_manager_item_delete">Delete file</string>
     <string name="public_file_manager_item_view">View info</string>
     <string name="public_file_manager_list_item_friend_name">&#160;&#160;Friend Name</string>
+
 
     <string name="toolbar_title">Friends</string>
     <string name="action_search">Search</string>
