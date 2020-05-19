@@ -19,9 +19,9 @@ public class Holder extends RecyclerView.ViewHolder {
     public Callback cbFile;
     public Holder(View itemView) {
         super(itemView);
-        main = itemView.findViewById(R.id.msf_li_txtTitle);
-        imgButton = itemView.findViewById(R.id.msf_li_imgBtn);
-        userName = itemView.findViewById(R.id.msf_li_txtUserName);
+        main = itemView.findViewById(R.id.msf2_li_txtTitle);
+        imgButton = itemView.findViewById(R.id.msf2_li_imgBtn);
+        userName = itemView.findViewById(R.id.msf2_li_txtUserName);
         setCallbacks();
     }
 
