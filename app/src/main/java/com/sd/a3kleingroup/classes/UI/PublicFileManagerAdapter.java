@@ -1,65 +1,83 @@
 package com.sd.a3kleingroup.classes.UI;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.sd.a3kleingroup.R;
-import com.sd.a3kleingroup.classes.PublicFile;
-import com.sd.a3kleingroup.classes.db.dbPublicFileManager;
-import com.sd.a3kleingroup.classes.db.dbPublicFiles;
-import com.sd.a3kleingroup.classes.db.dbUser;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 
 
 /*
 Our current public_friend_recycler_items has 2 text views and a button
  */
 
-public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileManagerAdapter.pubFileManagerViewHolder>{
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-    private ArrayList<dbPublicFiles> files = new ArrayList<>();
-    public PublicFileManagerAdapter(ArrayList<dbPublicFiles> Files){ this.files = Files;}
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-    public static class pubFileManagerViewHolder extends RecyclerView.ViewHolder{
+import com.sd.a3kleingroup.FileManagerViewFileInfoActivity;
+import com.sd.a3kleingroup.R;
+import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
-        public TextView fileName;
-        public ImageView viewInfo;
-        public ImageView deleteInfo;
+import java.util.ArrayList;
 
-        public pubFileManagerViewHolder(View view){
-            super(view);
-            viewInfo = view.findViewById(R.id.recycler_view_image);
-            deleteInfo = view.findViewById(R.id.recycler_delete_image);
-            fileName = view.findViewById(R.id.recycler_file_name);
+
+/**
+ * Recyclerview.Adapter to binding the data to the view
+ * RecyclerView.ViewHolder to holding the view
+ */
+public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileManagerAdapter.PubViewHolder>{
+
+    Context context;
+    ArrayList<dbPublicFiles> files;
+    OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+        void onDeleteClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener = listener;
+    }
+
+    public PublicFileManagerAdapter(Context con, ArrayList<dbPublicFiles> filesArrayList){
+        this.context = con;
+        this.files = filesArrayList;
+    }
+
+    public class PubViewHolder extends RecyclerView.ViewHolder{
+        TextView filename;
+        ImageView delete;
+        ImageView viewInfo;
+        public PubViewHolder(@NonNull View itemView, OnItemClickListener listener) {
+            super(itemView);
+            filename = itemView.findViewById(R.id.recycler_file_name);
+            delete = itemView.findViewById(R.id.recycler_delete_image);
+            viewInfo = itemView.findViewById(R.id.recycler_view_image);
         }
     }
 
     @NonNull
     @Override
-    public pubFileManagerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.public_file_manager_items, parent, false);
-        pubFileManagerViewHolder newView = new pubFileManagerViewHolder(v);
-        return  newView;
+    public PubViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.public_file_manager_items, parent, false);
+        return new PubViewHolder(view, mListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull pubFileManagerViewHolder holder, int position) {
-        dbPublicFiles currFile = files.get(position);
-        holder.fileName.setText(currFile.getFileName());
+    public void onBindViewHolder(@NonNull PubViewHolder holder, int position) {
+        holder.filename.setText(files.get(position).getFileName());
+
     }
 
     @Override
     public int getItemCount() {
         return files.size();
     }
+
 }

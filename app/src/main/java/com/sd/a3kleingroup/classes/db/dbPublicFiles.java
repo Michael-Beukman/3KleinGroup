@@ -68,7 +68,7 @@ public class dbPublicFiles extends dbFile{
 
     public String getFileStorage() { return storageURL; }
 
-    public String getFilePath() { return filepath; }
+    public String getFilepath() { return filepath; }
 
     public String getUserID() { return userID; }
 

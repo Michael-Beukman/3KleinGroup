@@ -9,6 +9,6 @@ public class FileManagerViewFileInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_file_manager_view_file_info);
+        setContentView(R.layout.activity_file_manager_file_info);
     }
 }
