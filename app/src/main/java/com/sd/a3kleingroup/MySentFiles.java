@@ -109,7 +109,7 @@ public class MySentFiles extends BaseActivity {
         @Override
         public Holder onCreateViewHolder(ViewGroup group, int i) {
             View view = LayoutInflater.from(group.getContext())
-                    .inflate(R.layout.msf_list_item, group, false);
+                    .inflate(R.layout.msf_list_item_v2, group, false);
             return new Holder(view);
         }
 
@@ -218,7 +218,7 @@ public class MySentFiles extends BaseActivity {
 //        x.getToken();
         doButtons();
         recyclerViewStuff();
-        setChecked(4);
+        setChecked(2);
 
 
     }

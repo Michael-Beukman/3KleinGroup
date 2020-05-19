@@ -38,5 +38,6 @@ public class PublicFilesHomeActivity extends BaseActivity {
             startActivity(I);
         });
         doNavigation();
+        setChecked(4);
     }
 }

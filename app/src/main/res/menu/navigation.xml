@@ -23,7 +23,7 @@
 
     <item
         android:id="@+id/navigation_mysentfiles"
-        android:icon="@drawable/ic_persons_24dp"
+        android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="My Sent Files" />
 
     <item
@@ -33,7 +33,7 @@
 
     <item
         android:id="@+id/navigation_public_manage_files"
-        android:icon="@drawable/ic_persons_24dp"
+        android:icon="@drawable/ic_explore_black_24dp"
         android:title="@string/title_public_manage_files" />
 
 </menu>

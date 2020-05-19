@@ -1,9 +1,12 @@
 package com.sd.a3kleingroup;
 
+import com.sd.a3kleingroup.classes.FriendRequest;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
+import com.sd.a3kleingroup.classes.db.dbFriends;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import com.sd.a3kleingroup.classes.db.dbUser;
+import com.sd.a3kleingroup.classes.db.dbUserFriends;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +35,11 @@ public class dbClassesTest {
         x.put("ownerID", owner);
         Assert.assertEquals(x
                 ,ag.getHashmap());
+
+        ag.setID("ID");
+        Assert.assertEquals("ID", ag.getId());
+        Assert.assertEquals(userID, ag.getUserID());
+        Assert.assertEquals(ValidUntil, ag.getValidUntil());
     }
 
     @Test
@@ -63,6 +71,10 @@ public class dbClassesTest {
             put("name", name);
             put("notificationToken",null);
         }}, user.getHashmap());
+
+        Assert.assertEquals(name, user.getName());
+        Assert.assertEquals(null, user.getNotificationToken());
+        Assert.assertEquals(null, user.getDocID());
     }
 
     //Welcome to the Matthew zone
@@ -112,4 +124,50 @@ public class dbClassesTest {
         Assert.assertEquals(publicFiles.getEncryptionKey(), encryptionKey);
     }
 
+    @Test
+    public void testFriendRequest(){
+        FriendRequest r = new FriendRequest();
+        Assert.assertEquals(null, r.getPotentialFriend());
+        Assert.assertEquals(null, r.getRequestID());
+
+        dbUser u = new dbUser("", "", "", "");
+        r.setPotentialFriend(u);
+        Assert.assertEquals(u, r.getPotentialFriend());
+
+        r.setRequestID("1");
+        Assert.assertEquals("1", r.getRequestID());
+    }
+
+    @Test
+    public void testDBFriend(){
+        String rID = "r", sID = "s";
+        boolean accepted = false;
+        dbFriends friend = new dbFriends(rID, sID, accepted);
+
+        Assert.assertEquals(
+                new HashMap<String, Object>(){{
+                    put("recipientID", rID);
+                    put("senderID", sID);
+                    put("accepted", accepted);
+                }}, friend.getHashmap()
+        );
+
+    }
+
+
+    @Test
+    public void testDBUserFriends(){
+        String rID = "r", sID = "s";
+        boolean accepted = false;
+        dbUserFriends friend = new dbUserFriends(rID, accepted, sID);
+        Assert.assertEquals(rID, friend.getUserID());
+        Assert.assertEquals(sID, friend.getFriendID());
+        Assert.assertEquals(accepted, friend.getAccepted());
+        Assert.assertEquals(
+                    new HashMap<String, Object>(){{
+                        put("accepted", accepted);
+                        put("temp name2", rID);
+                        put("temp name3", sID);
+                    }}, friend.getHashmap());
+    }
 }
