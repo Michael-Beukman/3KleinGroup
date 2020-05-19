@@ -1,5 +1,6 @@
 package com.sd.a3kleingroup;
 
+import com.sd.a3kleingroup.classes.FriendRequest;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
@@ -110,6 +111,20 @@ public class dbClassesTest {
     public void testDBPublicFileEncryptionKey(){
         String encryptionKey = "encryptionKey";
         Assert.assertEquals(publicFiles.getEncryptionKey(), encryptionKey);
+    }
+
+    @Test
+    public void testFriendRequest(){
+        FriendRequest r = new FriendRequest();
+        Assert.assertEquals(null, r.getPotentialFriend());
+        Assert.assertEquals(null, r.getRequestID());
+
+        dbUser u = new dbUser("", "", "", "");
+        r.setPotentialFriend(u);
+        Assert.assertEquals(u, r.getPotentialFriend());
+
+        r.setRequestID("1");
+        Assert.assertEquals("1", r.getRequestID());
     }
 
 }

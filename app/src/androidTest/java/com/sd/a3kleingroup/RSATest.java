@@ -1,7 +1,9 @@
 package com.sd.a3kleingroup;
 
+import com.sd.a3kleingroup.classes.encryption.AESEncryption;
 import com.sd.a3kleingroup.classes.encryption.RSA;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -54,6 +56,18 @@ public class RSATest {
         InputStream decrypted = newRSA.decrypt(encrypted);
 
         assertArrayEquals(arr, getByteArrayFromIS(decrypted));
+    }
+
+    @Test
+    public void testBad(){
+        RSA bad = new RSA("badKey", "badkey2");
+
+        byte[] initialArray = { 0, 1, 2, 3, 4, 5 };
+        InputStream targetStream = new ByteArrayInputStream(initialArray);
+        InputStream answer = bad.encrypt(targetStream);
+        assertEquals(targetStream, answer);
+        answer = bad.decrypt(targetStream);
+        assertEquals(targetStream, answer);
     }
 
     byte[] getByteArrayFromIS(InputStream is){

@@ -3,6 +3,7 @@ package com.sd.a3kleingroup;
 
 import com.sd.a3kleingroup.classes.encryption.AESEncryption;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -55,6 +56,18 @@ public class AESTest {
         InputStream decrypted = aes2.decrypt(encrypted);
 
         assertArrayEquals(arr, getByteArrayFromIS(decrypted));
+    }
+
+    @Test
+    public void testErrors(){
+            AESEncryption bad = new AESEncryption("badKey");
+
+            byte[] initialArray = { 0, 1, 2, 3, 4, 5 };
+            InputStream targetStream = new ByteArrayInputStream(initialArray);
+            InputStream answer = bad.encrypt(targetStream);
+            assertEquals(targetStream, answer);
+            answer = bad.decrypt(targetStream);
+            assertEquals(targetStream, answer);
     }
 
     byte[] getByteArrayFromIS(InputStream is){
