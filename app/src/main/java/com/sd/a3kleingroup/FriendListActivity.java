@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -42,11 +43,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.AddFriendDialogFragment;
 import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.Callback;
+import com.sd.a3kleingroup.classes.FriendRequest;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.Utils;
 import com.sd.a3kleingroup.classes.db.dbFriends;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -59,10 +62,12 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
     private RecyclerAdapter mAdapter;
     private ArrayList<dbUser> friendsList;
     private SearchView searchView;
+    private FloatingActionButton fab;
     FirebaseFirestore db;
     FirebaseUser user;
     int countFriends=-1;
     boolean havePerformedQueries = false;
+    ArrayList<String> friendRequestIDs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,25 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         getFriendDataFromFireStore();
+        setFab();
+    }
+
+    private void setFab() {
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoFriendRequests();
+            }
+        });
+    }
+
+    private void gotoFriendRequests() {
+        Intent intent = new Intent(getBaseContext(), FriendRequestsActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST",(Serializable) friendRequestIDs);
+        intent.putExtra("BUNDLE",args);
+        startActivity(intent);
     }
 
     private void getFriendDataFromFireStore() {
@@ -90,8 +114,12 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
             @Override
             public void onSuccess(Map<String, Object> data, String message) {
                 dbUser u = new dbUser(message,(String)data.get("email"),(String)data.get("name"),(String)data.get("notificationToken"));
-                friendsList.add(u);
-                mAdapter.notifyDataSetChanged();
+                boolean isFriend = false;
+                for(dbUser f:friendsList) if (u.getDocID().equals(f.getDocID())) isFriend = true;
+                if(!isFriend){
+                    friendsList.add(u);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -103,7 +131,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         CollectionReference collection = db.collection("Friends");
 
         //Query for friends that we have accepted (i.e where we were recipient of friend request)
-        Query query = collection.whereEqualTo("recipientID", user.getUid()).whereEqualTo("accepted", true);
+        Query query = collection.whereEqualTo("recipientID", user.getUid());
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value,
@@ -113,10 +141,16 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
                     return;
                 }
 
+                friendRequestIDs = new ArrayList<>();
                 countFriends+=value.size()+1;
                 //Manually perform a join with the Users collection
                 for (QueryDocumentSnapshot doc : value) {
-                    getAsync("Users", (String) doc.get("senderID"), cbUser);
+                    if(!doc.getBoolean("accepted")){
+                        countFriends--;
+                        friendRequestIDs.add(doc.getId());
+                    }else{
+                        getAsync("Users", (String) doc.get("senderID"), cbUser);
+                    }
                 }
             }
         });
@@ -220,13 +254,18 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
         if (id == R.id.action_search) {
             return true;
         }else if(id == R.id.action_add){
-            if(friendsList!=null&&havePerformedQueries&&friendsList.size()==countFriends){
+            if(isAllDataChecked()){
                 AddFriendDialogFragment dialog = new AddFriendDialogFragment();
                 dialog.show(getSupportFragmentManager(), "add friend dialog");
             }
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //This is very hacky and not nice but yeah...
+    private boolean isAllDataChecked(){
+        return friendsList!=null&&havePerformedQueries&&friendsList.size()==countFriends;
     }
 
     // The dialog fragment receives a reference to this Activity through the

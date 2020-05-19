@@ -21,6 +21,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FriendListActivity" />
         </activity>
+        <activity
+            android:name=".FriendRequestsActivity"
+            android:parentActivityName=".FriendListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FriendListActivity" />
+        </activity>
         <activity android:name=".FileManagerViewFileInfoActivity" />
         <activity android:name=".ViewFriendPublicFiles" />
         <activity android:name=".PublicFileManagerActivity" />

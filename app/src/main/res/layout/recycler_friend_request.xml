@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#E4434343"
+    app:cardCornerRadius="8dp">
+
+    <RelativeLayout
+        android:id="@+id/rltl"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:layout_margin="10dp"
+        android:background="#E4434343">
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="@string/public_friend_recycler_item_name"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="italic">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/txt_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_name"
+            android:text="@string/public_friend_recycler_item_email"
+            android:textColor="@color/white"
+            android:textSize="15sp">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/btnDecline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_email"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="180dp"
+            android:layout_marginLeft="51dp"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/gradient_button_rounded"
+            android:backgroundTint="#FD9696"
+            android:text="Decline" />
+
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/btnDecline"
+            android:layout_alignParentRight="false"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/btnDecline"
+            android:background="@drawable/gradient_button_rounded"
+            android:backgroundTint="#B6E481"
+            android:text="Accept" />
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
