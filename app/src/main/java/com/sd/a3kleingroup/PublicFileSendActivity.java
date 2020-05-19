@@ -147,7 +147,8 @@ public class PublicFileSendActivity extends FileChooseActivity {
            //notify the user of success
 
            Toast.makeText(PublicFileSendActivity.this, "Successfully uploaded file", Toast.LENGTH_SHORT).show();
-           taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> success = true).addOnFailureListener(e ->
+           taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri ->
+                   success = true).addOnFailureListener(e ->
                    Toast.makeText(PublicFileSendActivity.this, "Failed in getting the uri", Toast.LENGTH_SHORT).show()
            ).addOnCompleteListener(task -> {
                String s = task.getResult().getPath().toString();
@@ -170,6 +171,7 @@ public class PublicFileSendActivity extends FileChooseActivity {
                     throw task.getException();
                 }
                 return ref.getDownloadUrl();
+
             }
         }).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
@@ -203,7 +205,7 @@ public class PublicFileSendActivity extends FileChooseActivity {
 
     public void databaseInfo(String downloadURL) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance(); //to add info
-        dbPublicFiles file = new dbPublicFiles("", fileToSend.getFilename()+"", "test path", downloadURL+"", userID+"");
+        dbPublicFiles file = new dbPublicFiles("", fileToSend.getFilename()+"", filepath(fileToSend.getFilename(), userID)+"", downloadURL+"", userID+"");
         firebaseFirestore.collection("Public Files").add(file.getHashmap()).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -212,6 +214,24 @@ public class PublicFileSendActivity extends FileChooseActivity {
                 }
             }
         });
+    }
+
+    public String filepath(String filename, String userID){
+        String toReturn = userID.concat("/");
+        toReturn = toReturn.concat(changeName(filename));
+        return toReturn;
+    }
+    public String changeName(String filename){
+        String name = "";
+        for(int i = 0 ; i < filename.length(); i++){
+            if(filename.charAt(i) == '/'){
+                name = name.concat("_");
+            }
+            else{
+                name = name.concat(filename.charAt(i) +"");
+            }
+        }
+        return name;
     }
 }
 
