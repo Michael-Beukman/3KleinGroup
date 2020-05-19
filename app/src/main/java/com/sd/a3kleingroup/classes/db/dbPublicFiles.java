@@ -77,4 +77,8 @@ public class dbPublicFiles extends dbFile{
     public void setID(String id) {
         ID=id;
     }
+
+    public String getID() {
+        return ID;
+    }
 }

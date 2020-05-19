@@ -23,7 +23,7 @@ public class dbFile implements dbObject{
      * @param encryptionKey The key used for encryption
      */
     public dbFile(String filepath, String name, String userID, String storageURL, String encryptionKey, String fileType) {
-        this.filepath = filepath;
+        this.filepath = (filepath!=null)? filepath : PDF_TYPE;
         this.name = name;
         this.userID = userID;
         this.storageURL = storageURL;

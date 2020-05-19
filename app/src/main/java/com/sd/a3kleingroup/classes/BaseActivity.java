@@ -209,47 +209,38 @@ public abstract class BaseActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
         StorageReference fileRef = storageRef.child(file.getFilepath());
-        fileRef.getMetadata().addOnSuccessListener(storageMetadata -> {
-//            String mime = storageMetadata.getContentType();
-//            Log.d(LOG_TAG, mime);
-            //We're just gonna assume it's a pdf or an image
 
-            final long ONE_MEGABYTE = 1024 * 1024 * 10;
-            fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                //bytes is of type byte[]
-                AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
-                InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
-                try {
-                    //Create temp file to store file so that external apps can be used to open it.
-                    File tmpFile = File.createTempFile("tmp", ".pdf");
-                    //OutputStream outputStream = new FileOutputStream(tmpFile);
-                    java.nio.file.Files.copy(
-                            stream,
-                            tmpFile.toPath(),
-                            StandardCopyOption.REPLACE_EXISTING);
-                    //IOUtils.copyStream(stream, outputStream);
+        final long ONE_MEGABYTE = 1024 * 1024 * 10;
+        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            //bytes is of type byte[]
+            AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
+            InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
+            try {
+                //Create temp file to store file so that external apps can be used to open it.
+                String suffix = "." + file.getFileType().substring(file.getFileType().indexOf("/")+1);
+                File tmpFile = File.createTempFile("tmp", suffix);
+                //OutputStream outputStream = new FileOutputStream(tmpFile);
+                java.nio.file.Files.copy(
+                        stream,
+                        tmpFile.toPath(),
+                        StandardCopyOption.REPLACE_EXISTING);
+                //IOUtils.copyStream(stream, outputStream);
 
-                    //Open file with external app
-                    //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
-                    Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(path, file.getFileType());
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
-                    tmpFile.deleteOnExit();
-                    //outputStream.flush();
-                    //outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).addOnFailureListener(exception -> {
-                // Handle any errors
-            });
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Uh-oh, an error occurred!
+                //Open file with external app
+                //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
+                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(path, file.getFileType());
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
+                tmpFile.deleteOnExit();
+                //outputStream.flush();
+                //outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
         });
     }
 }

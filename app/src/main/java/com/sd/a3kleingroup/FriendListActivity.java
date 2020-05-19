@@ -118,7 +118,6 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
                 for (QueryDocumentSnapshot doc : value) {
                     getAsync("Users", (String) doc.get("senderID"), cbUser);
                 }
-                //Log.d(TAG, "Current cites in CA: " + cities);
             }
         });
 
@@ -141,7 +140,6 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
                 for (QueryDocumentSnapshot doc : value) {
                     getAsync("Users", (String) doc.get("recipientID"), cbUser);
                 }
-                //Log.d(TAG, "Current cites in CA: " + cities);
             }
         });
     }
