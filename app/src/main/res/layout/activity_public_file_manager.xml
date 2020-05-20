@@ -28,23 +28,15 @@
         android:layout_marginTop="10dp"/>
 
     <Button
-        android:id="@+id/public_manager_receive_file_button"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:background="@drawable/gradient_button_rounded"
-        android:text="@string/public_file_manager_go_to_receive_file"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/public_manager_send_file_button"
-        android:layout_margin="40dp"/>
-
-    <Button
         android:id="@+id/public_file_manager_manage_files_button"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:background="@drawable/gradient_button_rounded"
         android:text="@string/public_file_manager_go_to_manage_files"
         android:layout_centerInParent="true"
-        android:layout_below="@id/public_manager_receive_file_button"
+        android:layout_below="@id/public_manager_send_file_button"
+        android:layout_marginTop="125dp"
+        android:layout_marginBottom="10dp"
         />
 
     <TextView
@@ -82,6 +74,7 @@
         android:textAlignment="center"
         android:layout_below="@id/public_file_manager_title"
         android:layout_centerInParent="true"
+        android:layout_marginBottom="40dp"
         />
 
     <TextView
@@ -92,6 +85,7 @@
         android:lines="5"
         android:text="@string/public_files_bin_soldier"
         android:textSize="50sp"
+        android:layout_marginTop="10dp"
         android:layout_toStartOf="@id/public_file_manager_manage_files_button"
         android:layout_alignBottom="@id/public_file_manager_manage_files_button"
         android:layout_marginEnd="20dp"
@@ -101,7 +95,9 @@
         android:id="@+id/public_file_soldier_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/public_manager_receive_file_button"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@id/public_manager_send_file_button"
+        android:layout_marginStart="20dp"
         android:layout_alignBottom="@id/public_file_manager_manage_files_button"
         android:fontFamily="@font/binary_soldiers"
         android:lines="5"

@@ -29,42 +29,41 @@ import java.util.ArrayList;
  * Recyclerview.Adapter to binding the data to the view
  * RecyclerView.ViewHolder to holding the view
  */
-public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileManagerAdapter.PubViewHolder>{
+public class PublicFileInfoAdapter extends RecyclerView.Adapter<PublicFileInfoAdapter.PubViewHolder>{
 
     Context context;
     ArrayList<dbPublicFiles> files;
 
 
-    public PublicFileManagerAdapter(Context con, ArrayList<dbPublicFiles> filesArrayList){
+    public PublicFileInfoAdapter(Context con, ArrayList<dbPublicFiles> filesArrayList){
         this.context = con;
         this.files = filesArrayList;
     }
 
     public class PubViewHolder extends RecyclerView.ViewHolder {
-        TextView filename;
-        ImageView viewInfo;
+        TextView friendName;
+
 
 
         public PubViewHolder(@NonNull View itemView) {
             super(itemView);
-            filename = itemView.findViewById(R.id.recycler_file_name);
-            viewInfo = itemView.findViewById(R.id.recycler_view_image);
+            friendName = itemView.findViewById(R.id.recycler_friend_friendName);
 
         }
     }
+
 
     @NonNull
     @Override
     public PubViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.public_file_manager_items, parent, false);
+        View view = inflater.inflate(R.layout.public_friend_recycler_item, parent, false);
         return new PubViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PubViewHolder holder, int position) {
-        holder.filename.setText(files.get(position).getFileName());
-
+        holder.friendName.setText(files.get(position).getFileName()); // TODO: 2020/05/20 public files needs to have a friends array...
     }
 
     @Override

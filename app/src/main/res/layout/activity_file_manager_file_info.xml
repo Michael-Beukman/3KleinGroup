@@ -20,13 +20,23 @@
     </ImageView>
 
 
-    <ListView
-        android:id="@+id/file_manager_listview"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/file_manager_info_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
+        android:layout_height="match_parent"
         android:layout_below="@+id/imageView"
-        android:layout_marginTop="-1dp" />
+         />
+
+    <Button
+        android:id="@+id/public_file_delete_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/public_file_manager_item_delete"
+        android:background="@drawable/gradient_button_rounded"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"/>
 
 
 </RelativeLayout>

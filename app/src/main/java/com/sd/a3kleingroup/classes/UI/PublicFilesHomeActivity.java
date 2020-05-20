@@ -19,14 +19,9 @@ public class PublicFilesHomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_file_manager);
 
-        Button receiveBtn = findViewById(R.id.public_manager_receive_file_button); //for guy's side
+
         Button sendBtn = findViewById(R.id.public_manager_send_file_button);
         Button manageBtn = findViewById(R.id.public_file_manager_manage_files_button);
-
-        receiveBtn.setOnClickListener(v -> {
-            Intent I = new Intent(getApplicationContext(), PublicFileReceiveActivity.class);
-            startActivity(I); //for guy's side
-        });
 
         sendBtn.setOnClickListener(v -> {
             Intent I = new Intent(getApplicationContext(), PublicFileSendActivity.class);

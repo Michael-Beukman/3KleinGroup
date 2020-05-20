@@ -30,6 +30,7 @@
     <string name="public_file_manager_go_to_send_file">Send</string>
     <string name="public_file_manager_go_to_receive_file">Receive</string>
     <string name="public_file_manager_go_to_manage_files">Manage</string>
+    <string name="manage_files_title">Manage Files</string>
     <string name="public_file_manager_title">INFO</string>
     <string name="public_files_slogan">Keeping privacy in your hands</string>
     <string name="public_files_info_one">All you need to know about Public Files \n\nSend files lets you choose files to upload \n\nReceive files shows you your friends and their files \n\nManage files lets you delete and view info for your files</string>
