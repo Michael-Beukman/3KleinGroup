@@ -28,6 +28,9 @@ import java.util.ArrayList;
 /**
  * Recyclerview.Adapter to binding the data to the view
  * RecyclerView.ViewHolder to holding the view
+ * display the user's files using this adapter
+ * make sure that each view is clickable and that it sends you to the FileManagerViewFileInfoActivity
+ * from there they can delete the file and see the friends who have currently seen it
  */
 public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileManagerAdapter.PubViewHolder>{
 
@@ -42,7 +45,7 @@ public class PublicFileManagerAdapter extends RecyclerView.Adapter<PublicFileMan
 
     public class PubViewHolder extends RecyclerView.ViewHolder {
         TextView filename;
-        ImageView viewInfo;
+        ImageView viewInfo; //redundant at this point but is there
 
 
         public PubViewHolder(@NonNull View itemView) {

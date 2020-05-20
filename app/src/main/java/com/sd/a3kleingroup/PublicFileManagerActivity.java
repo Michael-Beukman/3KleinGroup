@@ -36,9 +36,10 @@ import java.util.List;
 public class PublicFileManagerActivity extends AppCompatActivity {
 
     /*goal of this activity:
-    get your friends userIDs
-    Populate the screen with a list of friends and their public databases
-    If a friend doesn't have a database do not show them or inform the user in that area (text/button) no database.
+    Get your files info from the firestore database
+    Show the file names and have each file name as clickable - i.e the cardview itself is clickable
+    When you click on the file it takes you to a new activity which just shows the people who viewed the file
+    As well as lets you delete that file there.
     */
 
 

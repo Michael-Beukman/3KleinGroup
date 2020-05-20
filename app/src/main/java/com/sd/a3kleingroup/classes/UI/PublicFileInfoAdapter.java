@@ -28,6 +28,10 @@ import java.util.ArrayList;
 /**
  * Recyclerview.Adapter to binding the data to the view
  * RecyclerView.ViewHolder to holding the view
+ * This class is meant to get the file's information but specifically display the friends who viewed the file
+ * The friend receive side should be appending you to a the viewed Arraylist for those who viewed it
+ * At current dbPublic files doesn't have a Viewed Arraylist. so getting those names and populating them requires it
+ * Friends do not need to be clickable
  */
 public class PublicFileInfoAdapter extends RecyclerView.Adapter<PublicFileInfoAdapter.PubViewHolder>{
 
