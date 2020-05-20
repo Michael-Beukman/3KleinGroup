@@ -213,8 +213,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         final long ONE_MEGABYTE = 1024 * 1024 * 10;
         fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             //bytes is of type byte[]
-            AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
-            InputStream stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
+            InputStream stream;
+            if (file.getEncryptionKey().equals("")){
+                stream = new ByteArrayInputStream(bytes);
+            }else{
+                AESEncryption decryptor = new AESEncryption(file.getEncryptionKey());
+                 stream = decryptor.decrypt(new ByteArrayInputStream(bytes));
+            }
+
             try {
                 //Create temp file to store file so that external apps can be used to open it.
                 String suffix = "." + file.getFileType().substring(file.getFileType().indexOf("/")+1);

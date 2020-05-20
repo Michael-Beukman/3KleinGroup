@@ -2,6 +2,7 @@ package com.sd.a3kleingroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -20,8 +21,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sd.a3kleingroup.classes.MyError;
+import com.sd.a3kleingroup.classes.UI.PublicFileInfoAdapter;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class FileManagerViewFileInfoActivity extends AppCompatActivity {
@@ -29,7 +33,7 @@ public class FileManagerViewFileInfoActivity extends AppCompatActivity {
     Button deletefile;
     RecyclerView recyclerView;
     TextView txtHeader;
-
+    TextView txtFriendsHeader;
 
     String LOG_TAG = "MY_FileManagerViewFileInfoActivity";
     /**
@@ -48,12 +52,18 @@ public class FileManagerViewFileInfoActivity extends AppCompatActivity {
         setElements();
         getData();
         setEvents();
+
+        getWhoViewedData();
     }
+
 
     public void setElements() {
         deletefile = findViewById(R.id.public_file_delete_file);
         recyclerView = findViewById(R.id.file_manager_info_recycler);
         txtHeader = findViewById(R.id.fmi_txtHeader);
+        txtFriendsHeader = findViewById(R.id.fmi_txtHeaderViewFiles);
+        txtHeader.setText("Loading...");
+        txtFriendsHeader.setText("Loading...");
     }
 
     public void setEvents() {
@@ -95,12 +105,12 @@ public class FileManagerViewFileInfoActivity extends AppCompatActivity {
         numDeleted = 0;
         try {
             deleteFileFirestore();
-        }catch (Exception e){
+        } catch (Exception e) {
             errorhandler.displayError("Some error occurred while deleting the file");
         }
         try {
             deleteFileStorage();
-        }catch (Exception e){
+        } catch (Exception e) {
             errorhandler.displayError("Some error occurred while deleting the file");
 
         }
@@ -128,24 +138,59 @@ public class FileManagerViewFileInfoActivity extends AppCompatActivity {
         FirebaseFirestore.getInstance().collection("Public Files")
                 .document(currentFile.getID())
                 .delete().addOnCompleteListener(t -> {
-                    if (t.isSuccessful()){
-                        errorhandler.displaySuccess("Successfully deleted the file from the database");
-                        numDeleted++;
-                        checkAfterDelete();
-                    }else{
-                        errorhandler.displayError("Some error occurred while deleting the file");
-                    }
-            });
+            if (t.isSuccessful()) {
+                errorhandler.displaySuccess("Successfully deleted the file from the database");
+                numDeleted++;
+                checkAfterDelete();
+            } else {
+                errorhandler.displayError("Some error occurred while deleting the file");
+            }
+        });
     }
 
     /**
      * This function gets called after deleting from firestore, and from storage.
      * if numDeleted == 2, we go to the file manage activity, because there's nothing left to be done here
      */
-    private void checkAfterDelete(){
-        if (numDeleted ==2){
+    private void checkAfterDelete() {
+        if (numDeleted == 2) {
             Intent i = new Intent(getApplicationContext(), PublicFileManagerActivity.class);
             startActivity(i);
         }
+    }
+
+    /**
+     * This checks the WhoViewedPublicFiles collection and checks who viewed this file.
+     * It also then populates the recyclerview and stuff.
+     */
+    private void getWhoViewedData() {
+        if (currentFile == null) {
+            errorhandler.displayError("Something went wrong with the file. Please exit and try again later");
+            return;
+        }
+        FirebaseFirestore.getInstance().collection("WhoViewedPublicFiles")
+                .document(currentFile.getID())
+                .get().addOnCompleteListener(t -> {
+            ArrayList<String> values = new ArrayList<>();
+            if (t.isSuccessful() && t.getResult() != null && t.getResult().exists()) {
+                Log.d(LOG_TAG, " The get whoViewed succeeded and the document exists");
+                try {
+                    values = (ArrayList<String>) t.getResult().get("Users");
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, " We failed to set the values array because of " + e.getMessage());
+                }
+            } else {
+                Log.d(LOG_TAG, " The whoViewed either doesn't exist or failed.");
+            }
+
+            if (values.size() == 0) {
+                values.add("No Friends have viewed this file");
+            }
+            Log.d(LOG_TAG, "Populating recyclerview " + Arrays.toString(values.toArray()));
+            // now we make the recyclerview do things
+            recyclerView.setAdapter(new PublicFileInfoAdapter(getApplicationContext(), values));
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            txtFriendsHeader.setText("Friends who have viewed this file");
+        });
     }
 }

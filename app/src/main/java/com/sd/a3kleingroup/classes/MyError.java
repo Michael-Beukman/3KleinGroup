@@ -32,5 +32,7 @@ public class MyError {
 
     public void displaySuccess(String message){
         Toast.makeText(context,message, Toast.LENGTH_LONG).show();
+        Log.d("MY_ERROR", "Succeeded with " + message);
+
     }
 }

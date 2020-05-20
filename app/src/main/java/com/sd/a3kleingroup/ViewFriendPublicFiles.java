@@ -18,7 +18,10 @@ import android.widget.Toast;
 import com.google.android.gms.common.util.IOUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /*
@@ -54,10 +59,11 @@ import java.util.List;
 public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
+    MyError errorHandler;
 
     public boolean hasFiles = false; //assume false until proven otherwise.
-    public String friendID="MxTtBm9zkTaesi86UH5uaqGKvlA2";
+//    public String friendID="MxTtBm9zkTaesi86UH5uaqGKvlA2";
+    public String friendID= "eR1HwsAKAifArcER3CACMIzMxkF3";
     private dbUser friend;
     public String TAG = "View Friend Public Files";
     RecyclerAdapter myAdapter;
@@ -66,6 +72,7 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_view_friend_public_files);
         super.onCreate(savedInstanceState);
+        errorHandler = new MyError(ViewFriendPublicFiles.this);
         LOG_TAG = "MY_"+TAG;
         getUserName();
 
@@ -179,6 +186,7 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
 
             for (DocumentSnapshot d : data.getDocuments()) {
                 dbPublicFiles toAdd = new dbPublicFiles(d);
+                toAdd.setID(d.getId());
                 // sets the Id, to make sure we have a reference to the agreement
                 toAdd.setID(d.getId());
                 publicFiles.add(toAdd);
@@ -195,6 +203,14 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
             return new PublicFilesRecyclerHolder(view, new CallbackGeneric<dbPublicFiles>() {
                 @Override
                 public void onSuccess(dbPublicFiles param, String message) {
+                    // we must update the who viewed public files.
+                    if (!param.getID().equals("")){
+                        Log.d(LOG_TAG, "This file has a good ID, we will update whoViewed Now. " +param.getHashmap());
+                        updateWhoViewed(param.getID());
+
+                    }else{
+                        Log.d(LOG_TAG, "This file has a bad ID, we cannot update whoViewed " +param.getHashmap());
+                    }
                     downloadFile(param);
                 }
 
@@ -204,6 +220,7 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
                 }
             });
         }
+
 
 
         //Provides a means to handle each view holder in the list
@@ -247,43 +264,48 @@ public class ViewFriendPublicFiles extends RecyclerViewFilesActivity {
     }
 
 
-
     /**
-     * Expropriated straight from Guy's code.
-     * @param myFile
+     * This updates the whoviewedPublicFiles array thing and adds the current user's name.
+     * @param id
      */
-//    public void downloadFile(dbPublicFiles myFile){
-//        Context ctx = getBaseContext();
-//        Log.d("MY_HOLDER", "Downloading File");
-//        Toast.makeText(ctx, "Downloading File", Toast.LENGTH_SHORT).show();
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        StorageReference storageRef = storage.getReference();
-//        StorageReference fileRef = storageRef.child(myFile.getFilePath());
-//
-//        final long ONE_MEGABYTE = 1024 * 1024 * 10;
-//        fileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-//            //bytes is of type byte[]
-//            InputStream stream = new ByteArrayInputStream(bytes);
-//            try {
-//                //Create temp file to store file so that external apps can be used to open it.
-//                File tmpFile = File.createTempFile("tmp", ".pdf");
-//                OutputStream outputStream = new FileOutputStream(tmpFile);
-//                IOUtils.copyStream(stream, outputStream);
-//                Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
-//                Intent intent = new Intent(Intent.ACTION_VIEW);
-//                intent.setDataAndType(path, "application/pdf");
-//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                startActivity(intent);
-//                tmpFile.deleteOnExit();
-//                outputStream.flush();
-//                outputStream.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).addOnFailureListener(exception -> {
-//            // Handle any errors
-//        });
-//
-//
-//    }
+    private void updateWhoViewed(String id) {
+        DocumentReference ref = FirebaseFirestore.getInstance().collection("WhoViewedPublicFiles")
+                .document(id);
+        String userName = "unknown";
+        try {
+         userName  =FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }catch (Exception e){
+
+        }
+        String finalUserName = userName;
+        ref.get().addOnCompleteListener(t->{
+                    if (t.isSuccessful()){
+                        DocumentSnapshot r = t.getResult();
+                        if (r!=null && r.exists()){
+                            Log.d(LOG_TAG, "Document Who viewed exists, so we can update");
+                            ref.update("Users", FieldValue.arrayRemove(finalUserName)).addOnCompleteListener(task2 -> {
+                                // now we
+                                Log.d(LOG_TAG, "Removing " +finalUserName +" was "+(task2.isSuccessful() ? "successful" : "unsuccessful") );
+                                ref.update("Users", FieldValue.arrayUnion(finalUserName)).addOnCompleteListener(task3 -> {
+                                    Log.d(LOG_TAG, "Adding " +finalUserName +" was "+(task3.isSuccessful() ? "successful" : "unsuccessful") );
+                                });
+                            });
+                        }else{
+                            Log.d(LOG_TAG, "Document Who viewed doesnt exist, so we have to set");
+                            ArrayList<String> sss = new ArrayList<String>();
+                            sss.add(finalUserName);
+                            ref.set(new HashMap<String, Object>(){{
+                                put("Users", sss);
+                            }}).addOnCompleteListener(task3 -> {
+                                Log.d(LOG_TAG, "Setting " + finalUserName +" was "+(task3.isSuccessful() ? "successful" : "unsuccessful") );
+                            });
+                        }
+                    }else{
+                        // too bad so sad
+                        errorHandler.displayError("Could not update Who Viewed files.");
+
+                    }
+        });
+    }
+
 }

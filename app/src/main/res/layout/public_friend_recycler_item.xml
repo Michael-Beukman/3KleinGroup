@@ -16,23 +16,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:text="@string/public_friend_recycler_item_name"
-            android:textStyle="italic"
+            android:textColor="@color/design_default_color_on_secondary"
             android:textSize="20sp"
-            android:textColor="@color/white"
-            >
+            android:textStyle="italic">
 
         </TextView>
-        <TextView
-            android:id="@+id/recycler_friend_friendEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/recycler_friend_friendName"
-            android:textSize="15sp"
-            android:text="@string/public_friend_recycler_item_email"
-            android:textColor="@color/white">
-
-        </TextView>
-
 
 
     </RelativeLayout>

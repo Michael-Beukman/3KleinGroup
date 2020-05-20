@@ -41,7 +41,7 @@ public class PublicRecyclerViewAdapter extends RecyclerView.Adapter<PublicRecycl
         public PublicViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             friendName = itemView.findViewById(R.id.recycler_friend_friendName);
-            friendEmail = itemView.findViewById(R.id.recycler_friend_friendEmail);
+//            friendEmail = itemView.findViewById(R.id.recycler_friend_friendEmail);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

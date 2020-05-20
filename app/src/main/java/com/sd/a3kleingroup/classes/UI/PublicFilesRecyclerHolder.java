@@ -42,9 +42,9 @@ public class PublicFilesRecyclerHolder extends RecyclerView.ViewHolder implement
     private dbPublicFiles myFile;
 
     public TextView txtbtnFileName;
-    public ImageButton btnHamburger;
-    public TextView txtOwner;
-    private TextView txtDate;
+    public TextView btnHamburger;
+//    public TextView txtOwner;
+//    private TextView txtDate;
     private dbUser friend;
 //    private Context ctx;
     CallbackGeneric<dbPublicFiles> onClick;
@@ -57,10 +57,10 @@ public class PublicFilesRecyclerHolder extends RecyclerView.ViewHolder implement
     public PublicFilesRecyclerHolder(@NonNull View itemView, CallbackGeneric<dbPublicFiles> onClick) {
         super(itemView);
         this.onClick = onClick;
-        btnHamburger = (ImageButton) itemView.findViewById(R.id.imgBtn_Hamburger);
+        btnHamburger = (TextView) itemView.findViewById(R.id.imgBtn_Hamburger);
         txtbtnFileName = (TextView) itemView.findViewById(R.id.txtbtn_filename);
-        txtOwner = (TextView) itemView.findViewById(R.id.txt_owner);
-        txtDate = itemView.findViewById(R.id.txt_date);
+//        txtOwner = (TextView) itemView.findViewById(R.id.txt_owner);
+//        txtDate = itemView.findViewById(R.id.txt_date);
 
         txtbtnFileName.setOnClickListener(this);
         btnHamburger.setOnClickListener(this);
@@ -70,10 +70,10 @@ public class PublicFilesRecyclerHolder extends RecyclerView.ViewHolder implement
     private void showUI() {
         Log.d("MY_HOLDER_", "Setting the filename text");
         txtbtnFileName.setText("Name: " + myFile.getFileName());
-        txtOwner.setText("Owner: " + (friend == null ? "...loading" : friend.getName() ));
+//        txtOwner.setText("Owner: " + (friend == null ? "...loading" : friend.getName() ));
 
         // make invisible for now.
-        txtDate.setVisibility(View.INVISIBLE);
+//        txtDate.setVisibility(View.INVISIBLE);
         btnHamburger.setVisibility(View.INVISIBLE);
 
     }

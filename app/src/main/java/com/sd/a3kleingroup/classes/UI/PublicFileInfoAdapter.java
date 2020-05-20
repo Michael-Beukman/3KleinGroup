@@ -9,6 +9,7 @@ Our current public_friend_recycler_items has 2 text views and a button
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,23 +37,34 @@ import java.util.ArrayList;
 public class PublicFileInfoAdapter extends RecyclerView.Adapter<PublicFileInfoAdapter.PubViewHolder>{
 
     Context context;
-    ArrayList<dbPublicFiles> files;
+    ArrayList<String> friends;
+    String LOG_TAG = "MY_PublicFileInfoAdapter";
 
-
-    public PublicFileInfoAdapter(Context con, ArrayList<dbPublicFiles> filesArrayList){
+    public PublicFileInfoAdapter(Context con, ArrayList<String> friends){
         this.context = con;
-        this.files = filesArrayList;
+        this.friends = friends;
     }
 
     public class PubViewHolder extends RecyclerView.ViewHolder {
-        TextView friendName;
-
-
-
+        TextView txtFriendName;
+        String friendName;
         public PubViewHolder(@NonNull View itemView) {
             super(itemView);
-            friendName = itemView.findViewById(R.id.recycler_friend_friendName);
+            Log.d(LOG_TAG, "HOLDER  creating " + friendName);
 
+            txtFriendName = itemView.findViewById(R.id.recycler_friend_friendName);
+        }
+
+        public void setFriendName(String friendName) {
+            this.friendName = friendName;
+            Log.d(LOG_TAG, "HOLDER  setting2 " + friendName);
+
+            updateUI();
+        }
+
+        private void updateUI(){
+            txtFriendName.setText(friendName);
+            Log.d(LOG_TAG, "HOLDER  setting " + friendName);
         }
     }
 
@@ -67,12 +79,12 @@ public class PublicFileInfoAdapter extends RecyclerView.Adapter<PublicFileInfoAd
 
     @Override
     public void onBindViewHolder(@NonNull PubViewHolder holder, int position) {
-        holder.friendName.setText(files.get(position).getFileName()); // TODO: 2020/05/20 public files needs to have a friends array...
+        holder.setFriendName(friends.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return files.size();
+        return friends.size();
     }
 
 }
