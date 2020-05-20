@@ -116,7 +116,7 @@ public class dbClassesTest {
     @Test
     public void testDBPublicFilePath(){
         String filePath = "filePath";
-        Assert.assertEquals(publicFiles.getFilePath(), filePath);
+        Assert.assertEquals(publicFiles.getFilepath(), filePath);
     }
     @Test
     public void testDBPublicFileEncryptionKey(){
