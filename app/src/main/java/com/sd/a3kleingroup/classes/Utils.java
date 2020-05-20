@@ -8,6 +8,7 @@ import com.sd.a3kleingroup.classes.callbacks.CallbackGeneric;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -79,5 +80,24 @@ public class Utils {
                 cb.onFailure(task.getException().getMessage(), MyError.ErrorCode.TASK_FAILED);
             }
         });
+    }
+
+    /**
+     * Converts the m to a string hashmap. Tries to cast each param as string. If that fails, use .toString().
+     * @param m
+     * @return
+     */
+    public HashMap<String, String> toStringHashMap(Map<String, Object> m){
+        HashMap<String, String> ans = new HashMap<>();
+        for (String key: m.keySet()){
+            Object val = m.get(key);
+            if (val == null) val = "";
+            try{
+                ans.put(key, (String)val);
+            }catch (Exception e){
+                ans.put(key, val.toString());
+            }
+        }
+        return ans;
     }
 }

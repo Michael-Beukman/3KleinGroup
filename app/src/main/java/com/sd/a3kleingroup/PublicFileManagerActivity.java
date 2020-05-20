@@ -104,7 +104,9 @@ public class PublicFileManagerActivity extends AppCompatActivity {
 
                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
 
-                           thisUserFiles.add(new dbPublicFiles(documentSnapshot));
+                        dbPublicFiles f = new dbPublicFiles(documentSnapshot);
+                        f.setID(documentSnapshot.getId());
+                        thisUserFiles.add(f);
                     }
                     Toast.makeText(PublicFileManagerActivity.this, "Success", Toast.LENGTH_SHORT).show();
                     buildRecyclerView();

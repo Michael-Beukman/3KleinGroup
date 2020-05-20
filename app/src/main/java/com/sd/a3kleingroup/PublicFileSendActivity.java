@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,7 +49,7 @@ public class PublicFileSendActivity extends FileChooseActivity {
 
     private dbPublicFiles thisFile; //so that have access to the constructor and the hash map for adding it to the firestore db
     String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    String TAG = "Public File Send Activity MY_";
+    String LOG_TAG = "Public File Send Activity MY_";
     private MyFile fileToSend = new MyFile();
     Uri downloadURL = null; // reset this to null after each upload and it's info no longer needed. That way we can tell if we got the URL
     dbPublicFiles fileToAdd = null; //keep null an upload was successful, when it is successful get the dbPublic file info and set it's parameters and then upload.
@@ -205,7 +206,18 @@ public class PublicFileSendActivity extends FileChooseActivity {
 
     public void databaseInfo(String downloadURL) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance(); //to add info
-        dbPublicFiles file = new dbPublicFiles("", fileToSend.getFilename()+"", filepath(fileToSend.getFilename(), userID)+"", downloadURL+"", userID+"");
+        String mimeType;
+        try {
+            mimeType = getContentResolver().getType(fileToSend.getUri());
+            Log.d(LOG_TAG, "Got the following mime type " + mimeType);
+
+        }catch (Exception e){
+            mimeType = "application/pdf";
+            Log.d(LOG_TAG, "Got the following mime type " + mimeType + " because of exception " + e.getMessage());
+        }
+
+        dbPublicFiles file = new dbPublicFiles("", fileToSend.getFilename()+"", filepath(fileToSend.getFilename(), userID)+"", downloadURL+"", userID+"", mimeType);
+        Log.d(LOG_TAG, "Uploading file"+ fileToSend.getFilename()+"- - " + file.getHashmap() );
         firebaseFirestore.collection("Public Files").add(file.getHashmap()).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {

@@ -52,6 +52,11 @@ public class dbPublicFiles extends dbFile{
         }
     }
 
+    public dbPublicFiles(Map<String, String> d){
+        this((String)d.getOrDefault("encryption_key", ""), (String)d.getOrDefault("file_name", ""),
+                (String)d.getOrDefault("file_path", ""), (String)d.getOrDefault("file_storage", ""), (String)d.getOrDefault("user_id", ""));
+    }
+
     @Override
     public Map<String, Object> getHashmap() {
         return new HashMap<String, Object>(){{

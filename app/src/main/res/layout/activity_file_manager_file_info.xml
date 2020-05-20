@@ -23,9 +23,27 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/file_manager_info_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="625dp"
         android:layout_below="@+id/imageView"
-         />
+        android:layout_marginTop="26dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/fmi_txtHeader"
+        android:layout_width="410dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_marginStart="-165dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="-165dp"
+        android:layout_marginBottom="-23dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/public_file_delete_file"
