@@ -16,12 +16,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.UI.PublicFileManagerAdapter;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 
 import java.util.ArrayList;
 
-public class PublicFileManagerActivity extends AppCompatActivity {
+public class PublicFileManagerActivity extends BaseActivity {
 
     /*goal of this activity:
     Get your files info from the firestore database
@@ -41,12 +42,13 @@ public class PublicFileManagerActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_file_manager_files);
         thisUserFiles = new ArrayList<>();
         checkUserExists();
-
+        doNavigation();
+        setChecked(4);
         
     }
 
