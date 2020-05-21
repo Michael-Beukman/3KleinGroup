@@ -5,6 +5,7 @@ import com.sd.a3kleingroup.classes.db.PublicFile;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
 import com.sd.a3kleingroup.classes.db.dbFriends;
+import com.sd.a3kleingroup.classes.db.dbPublicFileManager;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import com.sd.a3kleingroup.classes.db.dbUser;
 import com.sd.a3kleingroup.classes.db.dbUserFriends;
@@ -60,6 +61,18 @@ public class dbClassesTest {
             put("fileType", "images/jpeg");
 
         }},  f.getHashmap());
+
+        dbFile tmp = new dbFile(f.getHashmap());
+
+        dbFile tmp2 = new dbFile(null);
+
+        f.getEncryptionKey();
+        f.getFileName();
+        f.getFilepath();
+        f.getFileType();
+        f.getHashmap();
+        f.getStorageURL();
+        f.getUserID();
     }
 
     @Test
@@ -203,5 +216,12 @@ public class dbClassesTest {
                         put("temp name2", rID);
                         put("temp name3", sID);
                     }}, friend.getHashmap());
+    }
+
+    @Test
+    public void testManager(){
+        dbPublicFileManager f = new dbPublicFileManager("", "", "", "", "", null);
+        f.getViewers();
+        f.setViewers(null);
     }
 }
