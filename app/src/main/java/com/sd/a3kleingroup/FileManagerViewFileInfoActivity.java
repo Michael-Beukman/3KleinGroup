@@ -20,6 +20,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.sd.a3kleingroup.classes.BaseActivity;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.UI.PublicFileInfoAdapter;
 import com.sd.a3kleingroup.classes.db.dbPublicFiles;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class FileManagerViewFileInfoActivity extends AppCompatActivity {
+public class FileManagerViewFileInfoActivity extends BaseActivity {
 
     Button deletefile;
     RecyclerView recyclerView;
@@ -45,15 +46,16 @@ public class FileManagerViewFileInfoActivity extends AppCompatActivity {
     int numDeleted = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_manager_file_info);
         errorhandler = new MyError(FileManagerViewFileInfoActivity.this);
         setElements();
         getData();
         setEvents();
-
         getWhoViewedData();
+        doNavigation();
+        setChecked(4);
     }
 
 
