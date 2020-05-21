@@ -20,14 +20,14 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
     tree = ElementTree()
     tree.parse(filename)
     regexes=['.*/.*Activity.*', '.*/messaging/.*', '.*Holder.*', '.*/UI/.*', '.*File.*', '.*ViewFriendPublicFiles.*', '.*DialogFragment.*', '.*Callback.*']
-    to_ignore='.*MySentFiles.*'
+    to_ignore=['.*MySentFiles.*', '.*/db/.*', '.*FileModel.*']
 
     for p in tree.findall('package'):
              name = p.attrib['name']; print (name)
              for c in p.findall('class'):
                 #   print(c.attrib)
                   #p.remove(c)
-                  if re.match(to_ignore, c.attrib['name']): continue
+                  if any([re.match(ii, c.attrib['name']) for ii in to_ignore]): continue
                   for r in regexes:
                       if re.match(r, c.attrib['name']):
                           try:
@@ -38,7 +38,8 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
                           continue
              for s in p.findall('sourcefile'):
                 # print(s.attrib['name'])
-                if re.match(to_ignore, s.attrib['name']): continue
+                #if re.match(to_ignore, s.attrib['name']): continue
+                if any([re.match(ii, c.attrib['name']) for ii in to_ignore]): continue
                 for r in regexes:
                     if re.match(r, p.attrib['name'] + '/' + s.attrib['name']):
                         try:

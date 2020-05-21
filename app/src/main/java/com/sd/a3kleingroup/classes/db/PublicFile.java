@@ -1,4 +1,4 @@
-package com.sd.a3kleingroup.classes;
+package com.sd.a3kleingroup.classes.db;
 
 import android.net.Uri;
 

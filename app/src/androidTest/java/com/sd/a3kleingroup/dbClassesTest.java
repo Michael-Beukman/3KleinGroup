@@ -1,6 +1,7 @@
 package com.sd.a3kleingroup;
 
 import com.sd.a3kleingroup.classes.FriendRequest;
+import com.sd.a3kleingroup.classes.db.PublicFile;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
 import com.sd.a3kleingroup.classes.db.dbFile;
 import com.sd.a3kleingroup.classes.db.dbFriends;
@@ -98,6 +99,7 @@ public class dbClassesTest {
 
     //Test instance for other functions
     private dbPublicFiles publicFiles = new dbPublicFiles("encryptionKey","fileName",  "filePath","fileStorage",  "userID" );
+    private PublicFile publicFiles2 = new PublicFile("encryptionKey","fileName",  "filePath",null,  "userID");
     @Test
     public void testDBPublicUserID(){
         String userID = "userID";
@@ -123,6 +125,39 @@ public class dbClassesTest {
         String encryptionKey = "encryptionKey";
         Assert.assertEquals(publicFiles.getEncryptionKey(), encryptionKey);
     }
+
+
+    @Test
+    public void testPublicUserID(){
+        String userID = "userID";
+        Assert.assertEquals(publicFiles2.getUserid(), userID);
+    }
+    @Test
+    public void testPublicFileName(){
+        String fileName = "fileName";
+        Assert.assertEquals(publicFiles2.getFilename(), fileName);
+    }
+
+    @Test
+    public void testPublicFilePath(){
+        String filePath = "filePath";
+        Assert.assertEquals(publicFiles2.getFilepath(), filePath);
+    }
+    @Test
+    public void testPublicFileEncryptionKey(){
+        String encryptionKey = "encryptionKey";
+        Assert.assertEquals(publicFiles2.getEncryptionkey(), encryptionKey);
+
+
+        publicFiles2.setEncryptionkey("");
+        publicFiles2.setFilename("");
+        publicFiles2.setFilepath("");
+        publicFiles2.setFileuri(null);
+        publicFiles2.setUserid("");
+
+    }
+
+
 
     @Test
     public void testFriendRequest(){
@@ -153,7 +188,6 @@ public class dbClassesTest {
         );
 
     }
-
 
     @Test
     public void testDBUserFriends(){

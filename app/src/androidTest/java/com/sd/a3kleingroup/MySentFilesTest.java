@@ -21,6 +21,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sd.a3kleingroup.classes.Callback;
 import com.sd.a3kleingroup.classes.MyError;
 import com.sd.a3kleingroup.classes.SingleSentFile;
@@ -215,5 +217,26 @@ public class MySentFilesTest {
 
         Thread.sleep(TIME_TO_SLEEP);
 
+    }
+
+    @Test
+    public void testUI(){
+        activityScenarioRule.getScenario().onActivity(a ->{
+            View v= new View(a.getApplicationContext()); // a.findViewById(R.id.imgBtn_Hamburger);
+            Log.d("MY_TEST", "" + v);
+            a.showPopup(v);
+        });
+    }
+
+    @Test
+    public void binds(){
+        activityScenarioRule.getScenario().onActivity(a -> {
+            Query query = FirebaseFirestore.getInstance().collection("Agreements").whereEqualTo("ownerID", "eR1HwsAKAifArcER3CACMIzMxkF3");
+            query.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e == null) {
+                    MySentFiles.MyRecyclerViewAdapter tmp = a.new MyRecyclerViewAdapter(queryDocumentSnapshots);
+                }
+            });
+        });
     }
 }

@@ -83,4 +83,16 @@ public class UtilsTest {
         Thread.sleep(2000);
     }
 
+
+    @Test
+    public void testStringHashMap(){
+        Map<String, Object> m = new HashMap<String, Object>(){{
+            put("a", 1);
+            put("b", "c");
+        }};
+        HashMap<String, String>ans= Utils.getInstance().toStringHashMap(m);
+        Assert.assertEquals("1", ans.get("a"));
+        Assert.assertEquals("c", ans.get("b"));
+    }
+
 }
