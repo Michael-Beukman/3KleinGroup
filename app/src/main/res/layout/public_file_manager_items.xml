@@ -30,18 +30,7 @@
             android:textSize="20sp">
 
         </TextView>
-       <!-- <ImageView
-            android:id="@+id/recycler_delete_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_delete_red_24dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentEnd="true"
-            android:padding="3dp"
-            android:contentDescription="@string/public_file_manager_item_delete"
-            >
 
-        </ImageView> -->
 
         <ImageView
             android:id="@+id/recycler_view_image"
