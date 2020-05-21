@@ -39,7 +39,7 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
              for s in p.findall('sourcefile'):
                 # print(s.attrib['name'])
                 #if re.match(to_ignore, s.attrib['name']): continue
-                if any([re.match(ii, c.attrib['name']) for ii in to_ignore]): continue
+                if any([re.match(ii, p.attrib['name'] + '/' + s.attrib['name']) for ii in to_ignore]): continue
                 for r in regexes:
                     if re.match(r, p.attrib['name'] + '/' + s.attrib['name']):
                         try:
