@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,27 +13,21 @@
         android:background="@drawable/gradient_button_rounded"
         android:fontFamily="@font/robotrock"
         android:text="Choose File"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/sf_btnChooseFileFromReceived"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/sf_btnChooseFileFromReceived"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.61" />
+        android:layout_centerInParent="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/sf_btnSend"
+        android:layout_margin="10dp"/>
 
     <Button
         android:id="@+id/sf_btnSend"
         android:layout_width="191dp"
         android:layout_height="51dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="40dp"
         android:background="@drawable/gradient_button_rounded"
         android:fontFamily="@font/robotrock"
         android:text="Upload"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/sf_btnChooseFileFromReceived"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/sf_btnChooseFileFromReceived"
-        app:layout_constraintTop_toBottomOf="@+id/sf_btnChooseFileFromReceived"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_centerInParent="true"
+        android:layout_above="@id/bottom_navigation"/>
 
     <Button
         android:id="@+id/sf_btnChooseFileFromReceived"
@@ -42,9 +36,10 @@
         android:background="@drawable/gradient_button_rounded"
         android:fontFamily="@font/robotrock"
         android:text="Choose A Received File"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sf_btnChooseFile" />
+        android:layout_centerInParent="true"
+        android:layout_above="@id/sf_btnSend"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"/>
 
     <TextView
         android:id="@+id/sf_txtHeader"
@@ -52,21 +47,23 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/robotrock"
         android:text="Choose a File and user to send it to"
+        android:layout_marginTop="5dp"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:textAlignment="center"
+        />
 
     <ProgressBar
         android:id="@+id/sf_prgbProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="264dp"
         android:layout_height="18dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/sf_btnChooseFile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_above="@id/sf_btnSend"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="80dp"/>
+
 
     <TextView
         android:id="@+id/sf_txtProgressBar"
@@ -74,10 +71,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/robotrock"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/sf_prgbProgress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_above="@id/sf_prgbProgress"
+        android:layout_centerInParent="true"
         tools:text="Uploading..." />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -85,10 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sf_btnSend"
-        app:layout_constraintVertical_bias="0.971"
+        android:layout_alignParentBottom="true"
         app:menu="@menu/navigation"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -98,8 +90,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:hint="User Email Address"
-        app:layout_constraintBottom_toTopOf="@+id/sf_lblFilename"
-        app:layout_constraintTop_toBottomOf="@+id/sf_txtHeader"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/sf_txtHeader"
         tools:layout_editor_absoluteX="1dp">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -115,7 +107,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:hint="File Name"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout3"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/textInputLayout3"
         tools:layout_editor_absoluteX="1dp">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -125,4 +118,4 @@
             android:fontFamily="@font/robotrock" />
     </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
