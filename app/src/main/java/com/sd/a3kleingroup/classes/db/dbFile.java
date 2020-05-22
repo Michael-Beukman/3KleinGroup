@@ -93,7 +93,9 @@ public class dbFile implements dbObject{
         return encryptionKey;
     }
 
-    public String getFileType() {
-        return fileType;
+    public final String getFileType() {
+        if (fileType.equals(PDF_TYPE) || fileType.equals("image/jpeg"))
+            return fileType;
+        else return PDF_TYPE;
     }
 }

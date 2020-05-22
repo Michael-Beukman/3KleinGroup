@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,8 +19,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -33,12 +38,13 @@ import com.sd.a3kleingroup.classes.db.dbPublicFiles;
 import com.sd.a3kleingroup.classes.db.dbUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
 public class FriendProfileActivity extends BaseActivity implements UnfriendDialogFragment.UnfriendDialogListener {
-
+    MyError errorHandler;
     private dbUser friend;
     private String myID;
     private TextView txtName, txtEmail, txtNumPublic;
@@ -47,12 +53,13 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
     private FloatingActionButton fab;
     private FirebaseFirestore db;
     private ArrayList<dbPublicFiles> publicFiles;
-    private String TAG = "FriendProfile_TAG";
+    private String TAG = "FriendProfile_TAG_MY_";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_friend_profile);
         super.onCreate(savedInstanceState);
+        errorHandler = new MyError(FriendProfileActivity.this);
 
         friend = new dbUser(getIntent().getStringExtra("docID"), getIntent().getStringExtra("email"), getIntent().getStringExtra("name"),getIntent().getStringExtra("notificationToken"));
         myID = getIntent().getStringExtra("myID");
@@ -154,14 +161,13 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
         recyclerView = findViewById(R.id.recycler_view);
         blackNotificationBar(recyclerView);
         publicFiles = new ArrayList<>();
-        mAdapter = new FriendProfileActivity.RecyclerAdapter(this, publicFiles, new FriendProfileActivity.AdapterListener() {
-            //Callback for when specific public file is selected
-            @Override
-            public void onFileSelected(dbPublicFiles file) {
-                Log.d(TAG, "selected " + file.getFileName());
-                //TODO: add user to viewed of doc file.getID()?
-                downloadFile(file);
-            }
+        //Callback for when specific public file is selected
+        FriendProfileActivity self = this;
+        mAdapter = new FriendProfileActivity.RecyclerAdapter(this, publicFiles, file -> {
+            Log.d(TAG, "selected " + file.getFileName());
+            //TODO: add user to viewed of doc file.getID()?
+//            downloadFile(file);
+            self.onClickedFile(file);
         });
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -184,7 +190,9 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
         Callback cbPfile = new Callback() {
             @Override
             public void onSuccess(Map<String, Object> data, String message) {
-                dbPublicFiles f = new dbPublicFiles((String) data.get("encryption_key"), (String) data.get("file_name"), (String) data.get("file_path"), (String) data.get("file_path"), (String) data.get("file_storage"), (String) data.get("user_id"));
+//                dbPublicFiles f = new dbPublicFiles((String) data.get("encryption_key"), (String) data.get("file_name"), (String) data.get("file_path"), (String) data.get("file_path"), (String) data.get("file_storage"), (String) data.get("user_id"));
+                dbPublicFiles f = new dbPublicFiles((String) data.get("encryption_key"), (String) data.get("file_name"), (String) data.get("file_path"), (String) data.get("file_storage"), (String) data.get("user_id"), (String)(data.getOrDefault("fileType", dbPublicFiles.PDF_TYPE)));
+                Log.d(TAG, "HEY IN HERE " + f.getHashmap());
                 f.setID(message);
                 publicFiles.add(f);
                 mAdapter.notifyDataSetChanged();
@@ -221,7 +229,20 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
     //---------------------------------------------------------------------------------
     //--------Classes and Interfaces for RecyclerView defined Beyond this point--------
     //---------------------------------------------------------------------------------
+    private void onClickedFile(dbPublicFiles file){
+        Log.d(TAG, "In onclicked file");
+        Log.d(TAG, " The file is  " + file.getHashmap());
+        if (!file.getID().equals("")){
+            Log.d(LOG_TAG, "This file has a good ID, we will update whoViewed Now. " +file.getHashmap());
+            updateWhoViewed(file.getID());
 
+        }else{
+            Log.d(LOG_TAG, "This file has a bad ID, we cannot update whoViewed " +file.getHashmap());
+        }
+        this.downloadFile(file);
+//        Intent I = new Intent(getApplicationContext(), FriendListActivity.class);
+//        startActivity(I);
+    }
     public class RecyclerAdapter extends RecyclerView.Adapter<FriendProfileActivity.RecyclerAdapter.MyViewHolder> {
 
         private Context context;
@@ -241,10 +262,11 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
             public MyViewHolder(View view) {
                 super(view);
                 txt_filename = view.findViewById(R.id.txtbtn_filename);
-
-                view.setOnClickListener(new View.OnClickListener() {
+                Log.d(TAG, "Hey in here constructor " + txt_filename);
+                txt_filename.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Log.d(TAG, "Hey clicked ONE");
                         // send selected contact in callback
                         listener.onFileSelected(fileList.get(getAdapterPosition()));
                     }
@@ -275,4 +297,49 @@ public class FriendProfileActivity extends BaseActivity implements UnfriendDialo
     public interface AdapterListener {
         void onFileSelected(dbPublicFiles file);
     }
+
+    /**
+     * This updates the whoviewedPublicFiles array thing and adds the current user's name.
+     * @param id
+     */
+    private void updateWhoViewed(String id) {
+        DocumentReference ref = FirebaseFirestore.getInstance().collection("WhoViewedPublicFiles")
+                .document(id);
+        String userName = "unknown";
+        try {
+            userName  = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }catch (Exception e){
+
+        }
+        String finalUserName = userName;
+        ref.get().addOnCompleteListener(t->{
+            if (t.isSuccessful()){
+                DocumentSnapshot r = t.getResult();
+                if (r!=null && r.exists()){
+                    Log.d(LOG_TAG, "Document Who viewed exists, so we can update");
+                    ref.update("Users", FieldValue.arrayRemove(finalUserName)).addOnCompleteListener(task2 -> {
+                        // now we
+                        Log.d(LOG_TAG, "Removing " +finalUserName +" was "+(task2.isSuccessful() ? "successful" : "unsuccessful") );
+                        ref.update("Users", FieldValue.arrayUnion(finalUserName)).addOnCompleteListener(task3 -> {
+                            Log.d(LOG_TAG, "Adding " +finalUserName +" was "+(task3.isSuccessful() ? "successful" : "unsuccessful") );
+                        });
+                    });
+                }else{
+                    Log.d(LOG_TAG, "Document Who viewed doesnt exist, so we have to set");
+                    ArrayList<String> sss = new ArrayList<String>();
+                    sss.add(finalUserName);
+                    ref.set(new HashMap<String, Object>(){{
+                        put("Users", sss);
+                    }}).addOnCompleteListener(task3 -> {
+                        Log.d(LOG_TAG, "Setting " + finalUserName +" was "+(task3.isSuccessful() ? "successful" : "unsuccessful") );
+                    });
+                }
+            }else{
+                // too bad so sad
+                errorHandler.displayError("Could not update Who Viewed files.");
+
+            }
+        });
+    }
+
 }
