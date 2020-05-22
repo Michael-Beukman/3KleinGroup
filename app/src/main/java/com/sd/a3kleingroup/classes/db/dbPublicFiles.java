@@ -2,6 +2,7 @@ package com.sd.a3kleingroup.classes.db;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.IgnoreExtraProperties;
+import com.sd.a3kleingroup.classes.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,8 @@ public class dbPublicFiles extends dbFile{
     }
 
     public dbPublicFiles (DocumentSnapshot d){
-        this((String)d.get("encryption_key"), (String)d.get("file_name"), (String)d.get("file_path"), (String)d.get("file_storage"), (String)d.get("user_id"));
+            this(Utils.getInstance().toStringHashMap(d.getData()));
+//        this((String)d.get("encryption_key"), (String)d.get("file_name"), (String)d.get("file_path"), (String)d.get("file_storage"), (String)d.get("user_id"));
         try {
             Map<String, Object> m = d.getData();
             this.fileType = (String) m.getOrDefault("fileType", PDF_TYPE);

@@ -60,6 +60,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         Log.d("LOG_MyBaseActivity", String.valueOf(x));
         x.getToken();
         doNavigation();
+        if (LOG_TAG == null){
+            LOG_TAG="MY_BASE_ACTIVITY";
+        }
     }
 
     public void goToLogin(){
@@ -231,7 +234,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         tmpFile.toPath(),
                         StandardCopyOption.REPLACE_EXISTING);
                 //IOUtils.copyStream(stream, outputStream);
-
+                Log.d(LOG_TAG, "file type is "+ file.getFileType());
                 //Open file with external app
                 //For why FileProvider used, see: https://stackoverflow.com/questions/38200282/android-os-fileuriexposedexception-file-storage-emulated-0-test-txt-exposed
                 Uri path = FileProvider.getUriForFile(getBaseContext(), getBaseContext().getApplicationContext().getPackageName() + ".provider", tmpFile);
@@ -242,8 +245,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 tmpFile.deleteOnExit();
                 //outputStream.flush();
                 //outputStream.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                Log.d(LOG_TAG, "ERROR here " + e.getMessage());
             }
         }).addOnFailureListener(exception -> {
             // Handle any errors
