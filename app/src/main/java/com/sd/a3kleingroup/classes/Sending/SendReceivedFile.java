@@ -38,12 +38,12 @@ public class SendReceivedFile {
      * Actually does the deed and sends it.
      */
     public void send() {
-        Log.d("MY_SENDRECEIVED_FILE", "Actually sending the file");
         // All this does is basically copy the agreement, change the recipient and send it again.
         dbAgreement newAgreement = new dbAgreement(tripleToSend.agreement.getFileID(),          // the same file
                 userIDToSendTo,                             // a new user (recipient)
                 dbAgreement.getDateInPast(),                // valid until in past
                 tripleToSend.agreement.getUserSentID());    // same user that sent it basically.
+        Log.d("MY_SENDRECEIVED_FILE", "Actually sending the file " + newAgreement.getHashmap());
         db.collection("Agreements")
                 .add(newAgreement.getHashmap())
                 .addOnSuccessListener(task -> {

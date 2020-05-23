@@ -87,7 +87,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        LOG_TAG = "RecievFilesctivity_LOG";
+        LOG_TAG = "RecievFilesctivity_LOG_MY_";
         setContentView(R.layout.activity_receive_files);
         super.onCreate(savedInstanceState);
 
@@ -460,6 +460,7 @@ public class ReceiveFilesActivity extends BaseActivity {
         // Add a snapshot listener, so that it updates live
         query.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e == null) {
+                Log.d(LOG_TAG, "We have a query size " + queryDocumentSnapshots.size());
                 myAdapter = new ReceiveFilesActivity.RecyclerAdapter(ReceiveFilesActivity.this, queryDocumentSnapshots, textButtonListener, popUpListener);
                 mRecyclerView.setAdapter(myAdapter);
                 mRecyclerView.setLayoutManager(viewManager);
@@ -560,6 +561,7 @@ public class ReceiveFilesActivity extends BaseActivity {
              * This actually send the file to the other user
              */
             private void sendFile() {
+                Log.d(LOG_TAG, "Hey we're sending");
                 // first we convert a filemodel to a triple of file, agreement and user
                 GetAgreementsUsersFiles.FileUserAgreementTriple toSend = new GetAgreementsUsersFiles.FileUserAgreementTriple(
                         file.getFile(),
