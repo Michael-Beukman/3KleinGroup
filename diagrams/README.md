@@ -20,7 +20,6 @@
 
 ![SD%20All%20diagrams/Untitled.png](SD%20All%20diagrams/FrontEndStateDiagram.png)
 
-**TODO: Backend State Diagram?**
 
 ### Class Diagram
 
@@ -86,4 +85,4 @@ My Sent Files
 
 # Traceable (Functional and non functional)
 
-## TODO??????
+## Matthew Has this
