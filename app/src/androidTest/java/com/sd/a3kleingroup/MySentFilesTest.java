@@ -90,7 +90,7 @@ public class MySentFilesTest {
 
                 @Override
                 public void onFailure(String error, MyError.ErrorCode errorCode) {
-                    assertEquals(1, 0);
+                    assertEquals(1, 0); //fail();
                 }
             });
         });

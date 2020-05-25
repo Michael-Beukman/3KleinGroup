@@ -101,8 +101,10 @@ public class PublicFileSendActivity extends FileChooseActivity {
      */
     void setEvents() {
        uploadFileButton.setOnClickListener(v -> {
+           Log.d(LOG_TAG, "THE FILE IS " + fileToSend.getUri());
            if(fileToSend.getUri() != null){
                upload(fileToSend);
+               uploadFileButton.setEnabled(false);
            }
            else{
                Toast.makeText(this, "Please select a file", Toast.LENGTH_SHORT).show();
@@ -141,9 +143,17 @@ public class PublicFileSendActivity extends FileChooseActivity {
 
     public void upload(MyFile myFile){
         String name = fileName.getText().toString();
+        Log.d(LOG_TAG, "NAME IS " + name);
         progressBar.setVisibility(View.VISIBLE);
         progressText.setVisibility(View.VISIBLE);
-        final StorageReference ref = storageReference.child(userID).child(name); //check that this makes sense
+        if (name == null || name.equals("")){
+            name = "default";
+        }
+        String filePathFirebase = userID + "/" + name.replace('/', '_');
+//        fileRef = storageRef.child(filePathFirebase);
+
+//        final StorageReference ref = storageReference.child(userID).child(name); //check that this makes sense
+        final StorageReference ref = storageReference.child(filePathFirebase); //check that this makes sense
        UploadTask uploadTask = (UploadTask) ref.putFile(myFile.getUri()).addOnSuccessListener(taskSnapshot -> {
            //notify the user of success
 
@@ -182,7 +192,10 @@ public class PublicFileSendActivity extends FileChooseActivity {
             }
             else{
                 //other options
+                uploadFileButton.setEnabled(true);
+                fileToSend =  new MyFile();
             }
+
         });
     }
 
@@ -224,6 +237,8 @@ public class PublicFileSendActivity extends FileChooseActivity {
                 if(task.isSuccessful()){
                     Toast.makeText(PublicFileSendActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 }
+                uploadFileButton.setEnabled(true);
+                fileToSend =  new MyFile();
             }
         });
     }
@@ -233,6 +248,7 @@ public class PublicFileSendActivity extends FileChooseActivity {
         toReturn = toReturn.concat(changeName(filename));
         return toReturn;
     }
+
     public String changeName(String filename){
         String name = "";
         for(int i = 0 ; i < filename.length(); i++){
