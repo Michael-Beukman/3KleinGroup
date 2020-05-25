@@ -11,7 +11,6 @@
     - [Sequence Diagram](#sequence-diagram)
   - [Physical View](#physical-view)
 - [Traceable (Functional and non functional)](#traceable-functional-and-non-functional)
-  - [TODO??????](#todo)
 # Diagrams
 
 ## Logical View
