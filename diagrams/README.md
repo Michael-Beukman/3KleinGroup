@@ -11,7 +11,6 @@
     - [Sequence Diagram](#sequence-diagram)
   - [Physical View](#physical-view)
 - [Traceable (Functional and non functional)](#traceable-functional-and-non-functional)
-  - [TODO??????](#todo)
 # Diagrams
 
 ## Logical View
@@ -20,7 +19,6 @@
 
 ![SD%20All%20diagrams/Untitled.png](SD%20All%20diagrams/FrontEndStateDiagram.png)
 
-**TODO: Backend State Diagram?**
 
 ### Class Diagram
 
@@ -86,4 +84,4 @@ My Sent Files
 
 # Traceable (Functional and non functional)
 
-## TODO??????
+## Matthew Has this
