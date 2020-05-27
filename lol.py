@@ -79,7 +79,7 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
     # write again
     tree.write(filename)
     print("FINISHED XML FILE")
-    with open(filename, 'r', encoding='utf-8') as fff:
+    with open(filename, 'r') as fff:
         print(fff.read())
 
 change() #'app/build/reports/coverage/tmp/report.xml'
