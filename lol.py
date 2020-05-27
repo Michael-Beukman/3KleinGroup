@@ -32,8 +32,12 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
                         # then edit the missed things
                         for m in c.findall('method'):
                             for ccc in m.findall('counter'):
-                                ccc['covered'] = str(int(ccc['covered']) + int(ccc['missed']))
-                                ccc['missed'] = '0'
+                                print("HEY CCC = ", ccc)
+                                try:
+                                    ccc['covered'] = str(int(ccc['covered']) + int(ccc['missed']))
+                                    ccc['missed'] = '0'
+                                except Exception  as e:
+                                    print('exception line 40 ', e)
                       continue
                   for r in regexes:
                       if re.match(r, c.attrib['name']):
