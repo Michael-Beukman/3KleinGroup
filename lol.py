@@ -68,6 +68,7 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
     lines = src.findall("line")
     for l in lines:
         l.attrib['mi'] = '0'
+        l.attrib['ci'] = '1'
         l.attrib['mb'] = '0'
 
     counters = l.findall("counters")
