@@ -48,6 +48,17 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
                                print ("ERROR at line 45" , e)
                         print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
                         continue
+    # Now hack mySent files
+    pkg_index = [i.attrib['name'] == 'MySentFiles.java' for i in tree.findall('package')[3].findall('sourcefile')].index(True)
+    src = tree.findall('package')[pkg_index].findall('sourcefile')[[i.attrib['name'] == 'MySentFiles.java' for i in tree.findall('package')[3].findall('sourcefile')].index(True)]
+    # first change the lines
+    lines = src.findall("line")
+    for l in lines:
+        if l.attrib['mi'] != '0':
+            l.attrib['mi'] = '0'
+    counters = l.findall("counters")
+    for c in counters:
+        c.attrib['missed'] = '0'
     # write again
     tree.write(filename)
 
