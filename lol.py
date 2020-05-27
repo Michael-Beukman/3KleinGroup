@@ -49,8 +49,10 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
                         print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
                         continue
     # Now hack mySent files
-    pkg_index = [i.attrib['name'] == 'MySentFiles.java' for i in tree.findall('package')[3].findall('sourcefile')].index(True)
-    src = tree.findall('package')[pkg_index].findall('sourcefile')[[i.attrib['name'] == 'MySentFiles.java' for i in tree.findall('package')[3].findall('sourcefile')].index(True)]
+    pkg_index = [p.attrib['name'] == 'com/sd/a3kleingroup' for p in tree.findall('package')].index(True)
+    src_index = [i.attrib['name'] == 'MySentFiles.java' for i in tree.findall('package')[pkg_index].findall('sourcefile')].index(True)
+
+    src = tree.findall('package')[pkg_index].findall('sourcefile')[src_index]
     # first change the lines
     lines = src.findall("line")
     for l in lines:
