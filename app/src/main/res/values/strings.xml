@@ -33,8 +33,8 @@
     <string name="manage_files_title">Manage Files</string>
     <string name="public_file_manager_title">INFO</string>
     <string name="public_files_slogan">Keeping privacy in your hands</string>
-    <string name="public_files_info_one">All you need to know about Public Files \n\nSend files lets you choose files to upload \n\nReceive files shows you your friends and their files \n\nManage files lets you delete and view info for your files</string>
-    <string name="public_files_bin_soldier">H\n\nE\n\nY</string>
+    <string name="public_files_info_one">All you need to know about Public Files \n\nSend files lets you choose files to upload \n\nManage files lets you delete and view info for your files</string>
+    <string name="public_files_bin_soldier">H\n\nE</string>
 
 
     <string name="public_send_file_choose_file">Choose File</string>

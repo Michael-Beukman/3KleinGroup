@@ -16,14 +16,14 @@
         android:autofillHints="@string/public_file_send_hint"
         android:textStyle="italic"
         android:inputType="text"
-        android:minWidth="50dp"
+        android:minWidth="150dp"
         android:maxWidth="150dp"
         android:labelFor="@+id/public_file_send_file_name_edit_text"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@+id/public_file_send_file_name_edit_text"
+        android:layout_alignParentStart="true"
         android:layout_alignBottom="@+id/public_file_send_file_name_edit_text"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
