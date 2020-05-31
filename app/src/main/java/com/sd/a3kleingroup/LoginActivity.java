@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -43,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Button btnSignOut;
     private int RC_SIGN_IN = 1;
+    private int screenHeight;
+    private int screenWidth;
+
 
 
     @Override
@@ -50,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         signInButton = findViewById(R.id.sign_in_button);
+
         mAuth = FirebaseAuth.getInstance();
         btnSignOut = findViewById(R.id.sign_out_button);
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -77,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         // sign in initially
         signIn();
+
     }
 
     void signIn(){
@@ -162,4 +168,5 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
 }

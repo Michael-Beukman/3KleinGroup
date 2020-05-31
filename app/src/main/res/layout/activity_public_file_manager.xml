@@ -8,20 +8,20 @@
 
     <ImageView
         android:id="@+id/guy_dino"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/dino_image_small_width"
+        android:layout_height="@dimen/dino_image_small_height"
         android:background="@drawable/ic_guydino"
         android:contentDescription="@string/app_logo"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp">
+        android:layout_margin="@dimen/margin_tiny_distance">
 
     </ImageView>
 
     <Button
         android:id="@+id/public_manager_send_file_button"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/button_extra_large_dimensions_width"
+        android:layout_height="@dimen/button_medium_dimensions_height"
         android:background="@drawable/gradient_button_rounded"
         android:text="@string/public_file_manager_go_to_send_file"
         android:layout_centerInParent="true"
@@ -30,14 +30,14 @@
 
     <Button
         android:id="@+id/public_file_manager_manage_files_button"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/button_extra_large_dimensions_width"
+        android:layout_height="@dimen/button_medium_dimensions_height"
         android:background="@drawable/gradient_button_rounded"
         android:text="@string/public_file_manager_go_to_manage_files"
         android:layout_centerInParent="true"
         android:layout_below="@id/public_manager_send_file_button"
-        android:layout_marginTop="45dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/margin_medium_distance"
+        android:layout_marginBottom="@dimen/margin_small_distance"
         />
 
     <TextView
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/public_file_manager_title"
-        android:textSize="50sp"
+        android:textSize="@dimen/textSize_extra_large"
         android:textStyle="bold"
         android:fontFamily="@font/robotrock"
         android:layout_centerInParent="true"
@@ -57,26 +57,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/public_files_slogan"
-        android:textSize="12sp"
+        android:textSize="@dimen/textSize_medium"
         android:textStyle="italic"
         android:layout_centerInParent="true"
         android:layout_above="@id/bottom_navigation"
-        android:layout_margin="10dp"/>
+        android:layout_margin="@dimen/margin_small_distance"/>
 
     <TextView
         android:id="@+id/public_file_manager_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/robotrock"
-        android:lines="9"
+        android:lines="7"
         android:maxLines="8"
         android:text="@string/public_files_info_one"
-        android:textSize="12sp"
+        android:textSize="@dimen/textSize_small"
         android:textStyle="normal"
         android:textAlignment="center"
         android:layout_below="@id/public_file_manager_title"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="@dimen/margin_small_distance"
         />
 
     <TextView
@@ -86,8 +86,9 @@
         android:fontFamily="@font/binary_soldiers"
         android:lines="3"
         android:text="@string/public_files_bin_soldier"
-        android:textSize="50sp"
-        android:layout_marginTop="10dp"
+        android:textSize="@dimen/textSize_largest"
+        android:layout_marginEnd="@dimen/margin_extra_tiny_distance"
+        android:layout_marginTop="@dimen/margin_small_distance"
         android:layout_toStartOf="@id/public_file_manager_manage_files_button"
         android:layout_alignBottom="@id/public_file_manager_manage_files_button"
 
@@ -97,14 +98,14 @@
         android:id="@+id/public_file_soldier_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/margin_small_distance"
         android:layout_toEndOf="@id/public_manager_send_file_button"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="@dimen/margin_small_distance"
         android:layout_alignBottom="@id/public_file_manager_manage_files_button"
         android:fontFamily="@font/binary_soldiers"
         android:lines="3"
         android:text="@string/public_files_bin_soldier"
-        android:textSize="50sp" />
+        android:textSize="@dimen/textSize_largest" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

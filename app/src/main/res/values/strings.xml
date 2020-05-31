@@ -9,6 +9,21 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <string name="my_sent_files_title">My Sent Files</string>
+    <string name="my_sent_files_all">All</string>
+    <string name="my_sent_files_approved">Approved</string>
+    <string name="my_sent_files_pending">Pending</string>
+
+    <string name="receive_files_sort_by">Sort By</string>
+    <string name="receive_files_filename">File Name</string>
+    <string name="receive_files_username">User Email Address </string>
+    <string name="receive_files_file_and_user">Choose a File and user to send it to</string>
+    <string name="receive_files_send_receive_file">Choose A Received File</string>
+
+    <string name="content_profile_name">Name</string>
+    <string name="content_profile_email">Email</string>
+    <string name="content_profile_add_friend">Add Friend</string>
+
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
