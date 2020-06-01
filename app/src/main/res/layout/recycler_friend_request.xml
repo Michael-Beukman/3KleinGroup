@@ -9,8 +9,8 @@
     <RelativeLayout
         android:id="@+id/rltl"
         android:layout_width="match_parent"
-        android:layout_height="128dp"
-        android:layout_margin="10dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_tiny_distance"
         android:background="#E4434343">
 
         <TextView
@@ -20,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:text="@string/public_friend_recycler_item_name"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="@dimen/textSize_medium"
             android:textStyle="italic">
 
         </TextView>
@@ -32,7 +32,7 @@
             android:layout_below="@id/txt_name"
             android:text="@string/public_friend_recycler_item_email"
             android:textColor="@color/white"
-            android:textSize="15sp">
+            android:textSize="@dimen/textSize_small">
 
         </TextView>
 
@@ -42,12 +42,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_email"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="180dp"
-            android:layout_marginLeft="51dp"
-            android:layout_marginTop="22dp"
+            android:layout_marginStart="@dimen/margin_largest_distance"
+            android:layout_marginLeft="@dimen/margin_medium_distance"
+            android:layout_marginTop="@dimen/margin_small_distance"
             android:background="@drawable/gradient_button_rounded"
             android:backgroundTint="#FD9696"
-            android:text="Decline" />
+            android:text="@string/recycler_friend_request_Decline" />
 
         <Button
             android:id="@+id/btnAccept"
@@ -55,12 +55,12 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/btnDecline"
             android:layout_alignParentRight="false"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="@dimen/margin_small_distance"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/btnDecline"
             android:background="@drawable/gradient_button_rounded"
             android:backgroundTint="#B6E481"
-            android:text="Accept" />
+            android:text="@string/recycler_friend_request_accept" />
 
 
     </RelativeLayout>

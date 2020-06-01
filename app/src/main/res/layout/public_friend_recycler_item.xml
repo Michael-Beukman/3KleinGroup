@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/margin_tiny_distance"
         >
 
         <TextView
@@ -17,7 +17,7 @@
             android:layout_alignParentTop="true"
             android:text="@string/public_friend_recycler_item_name"
             android:textColor="@color/design_default_color_on_secondary"
-            android:textSize="20sp"
+            android:textSize="@dimen/textSize_medium"
             android:textStyle="italic">
 
         </TextView>

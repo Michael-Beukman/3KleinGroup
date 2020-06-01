@@ -24,6 +24,10 @@
     <string name="content_profile_email">Email</string>
     <string name="content_profile_add_friend">Add Friend</string>
 
+    <string name="msf_list_item_username">Username</string>
+    <string name="msf_list_item_owner">Owner</string>
+    <string name="msf_list_item_textview">TextView</string>
+
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
@@ -70,4 +74,9 @@
 
     <string name="cancel">Cancel</string>
     <string name="send_friend_request">Send Request</string>
+    <string name="recycler_friend_request_accept">Accept</string>
+    <string name="recycler_friend_request_Decline">Decline</string>
+    <string name="view_recycler_filename">FileName</string>
+    <string name="view_recycler_owner">FileName</string>
+    <string name="view_recycler_date">Date</string>
 </resources>

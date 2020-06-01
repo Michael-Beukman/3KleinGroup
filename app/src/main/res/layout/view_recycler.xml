@@ -21,9 +21,9 @@
         android:paddingStart="0dp"
         android:paddingRight="0dp"
         android:fontFamily="@font/robotrock"
-        android:text="FileName"
+        android:text="@string/view_recycler_filename"
         android:textColor="@color/white"
-        android:textSize="14sp"
+        android:textSize="@dimen/textSize_small"
         android:textStyle="bold" />
 
     <TextView
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/robotrock"
         android:layout_below="@id/txtbtn_filename"
-        android:text="Owner" />
+        android:text="@string/view_recycler_owner" />
 
     <TextView
         android:id="@+id/txt_date"
@@ -40,17 +40,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/txtbtn_filename"
         android:fontFamily="@font/robotrock"
-        android:layout_marginStart="60sp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="@dimen/margin_medium_distance"
+        android:layout_marginLeft="@dimen/margin_small_distance"
         android:layout_toRightOf="@id/txt_owner"
-        android:text="Date" />
+        android:text="@string/view_recycler_date" />
 
     <ImageButton
         android:id="@+id/imgBtn_Hamburger"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10sp"
+        android:layout_marginRight="@dimen/margin_tiny_distance"
         android:background="@drawable/circle_button"
         android:src="@drawable/ic_hamburger_24px"
         android:textColor="@color/date" />

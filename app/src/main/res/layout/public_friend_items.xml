@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/public_recieve_card_view"
     android:layout_width="match_parent"
-    android:layout_height="150sp"
+    android:layout_height="@dimen/text_large_dimensions"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardUseCompatPadding="true"
-    app:cardCornerRadius="8sp"
-    android:layout_margin="5sp">
+    app:cardCornerRadius="@dimen/margin_extra_tiny_distance"
+    android:layout_margin="@dimen/margin_extra_tiny_distance">
 
     <!--Pieces we want on our cards -->
     <!--Name of the file-->
