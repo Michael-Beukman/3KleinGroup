@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_email"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="@dimen/margin_largest_distance"
+            android:layout_marginStart="@dimen/margin_extra_large_distance"
             android:layout_marginLeft="@dimen/margin_medium_distance"
             android:layout_marginTop="@dimen/margin_small_distance"
             android:background="@drawable/gradient_button_rounded"

@@ -74,7 +74,7 @@
 
     <string name="cancel">Cancel</string>
     <string name="send_friend_request">Send Request</string>
-    <string name="recycler_friend_request_accept">Accept</string>
+    <string name="recycler_friend_request_accept">Accept  </string>
     <string name="recycler_friend_request_Decline">Decline</string>
     <string name="view_recycler_filename">FileName</string>
     <string name="view_recycler_owner">FileName</string>
