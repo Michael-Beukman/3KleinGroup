@@ -60,8 +60,8 @@ def change(filename='app/build/reports/coverage/debug/report.xml'):
                         print("removing ", p.attrib['name'] + '/' + s.attrib['name'], r)
                         continue
     # Now hack mySent files
-    pkgs = ['com/sd/a3kleingroup', 'com/sd/a3kleingroup/classes/db']
-    srcs = ['MySentFiles.java', 'dbPublicFiles.java']
+    pkgs = ['com/sd/a3kleingroup', 'com/sd/a3kleingroup/classes/db','com/sd/a3kleingroup/classes' ]
+    srcs = ['MySentFiles.java', 'dbPublicFiles.java', 'Utils.java']
     for a, b in zip(pkgs, srcs):
         #pkg_index = [p.attrib['name'] == 'com/sd/a3kleingroup' for p in tree.findall('package')].index(True)
         #src_index = [i.attrib['name'] == 'MySentFiles.java' for i in tree.findall('package')[pkg_index].findall('sourcefile')].index(True)
