@@ -52,5 +52,18 @@
         app:layout_constraintVertical_bias="0.0"
         android:textStyle="italic"/>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/firebase_animation_login"
+        android:layout_width="@dimen/dino_image_medium_height"
+        android:layout_height="@dimen/dino_image_medium_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_out_button"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="firebase.json"
+        app:lottie_loop="true" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 

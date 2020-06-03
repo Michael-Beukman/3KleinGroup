@@ -86,7 +86,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.0.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.0.0'
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
-
+    implementation 'com.airbnb.android:lottie:3.4.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
     implementation 'com.firebaseui:firebase-ui-firestore:6.1.0'
 //    implementation 'com.android.support:multidex:2.0.1'
