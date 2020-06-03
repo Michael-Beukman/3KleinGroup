@@ -122,6 +122,7 @@ public class FriendListActivity extends BaseActivity implements AddFriendDialogF
                     mAdapter.notifyDataSetChanged();
                 }
             }
+            
 
             @Override
             public void onFailure(String error, MyError.ErrorCode errorCode) {
