@@ -1,5 +1,7 @@
 package com.sd.a3kleingroup;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sd.a3kleingroup.classes.FriendRequest;
 import com.sd.a3kleingroup.classes.db.PublicFile;
 import com.sd.a3kleingroup.classes.db.dbAgreement;
@@ -223,5 +225,24 @@ public class dbClassesTest {
         dbPublicFileManager f = new dbPublicFileManager("", "", "", "", "", null);
         f.getViewers();
         f.setViewers(null);
+    }
+
+    @Test
+    public void tmpTestPublicFile() {
+        dbPublicFiles f = new dbPublicFiles(new HashMap<>());
+        f.setID("1");
+        Assert.assertEquals("1", f.getID());
+    }
+
+    @Test
+    public void testType(){
+        Map<String, Object> t  =new HashMap<String, Object>(){{
+            put("fileType", "image/jpeg");
+        }};
+        dbFile f = new dbFile(t);
+        Assert.assertEquals("image/jpeg",  f.getFileType());
+
+        PublicFile tmp = new PublicFile("", "", "", null, "");
+        Assert.assertNull(tmp.getFileuri());
     }
 }
