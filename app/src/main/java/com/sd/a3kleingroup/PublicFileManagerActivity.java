@@ -58,7 +58,7 @@ public class PublicFileManagerActivity extends BaseActivity {
         recyclerView.setAdapter(managerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Toast.makeText(this, "UI Done", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "UI Done", Toast.LENGTH_SHORT).show();
     }
     public void checkUserExists(){
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
@@ -98,7 +98,7 @@ public class PublicFileManagerActivity extends BaseActivity {
                         f.setID(documentSnapshot.getId());
                         thisUserFiles.add(f);
                     }
-                    Toast.makeText(PublicFileManagerActivity.this, "Success", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(PublicFileManagerActivity.this, "Success", Toast.LENGTH_SHORT).show();
                     buildRecyclerView();
                 }
                 else{

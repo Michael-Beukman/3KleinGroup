@@ -11,6 +11,7 @@
     - [Sequence Diagram](#sequence-diagram)
   - [Physical View](#physical-view)
 - [Traceable (Functional and non functional)](#traceable-functional-and-non-functional)
+- [Actor Diagram](#actor-diagram)
 # Diagrams
 
 ## Logical View
@@ -83,5 +84,7 @@ My Sent Files
 ![SD%20All%20diagrams/Untitled%2016.png](SD%20All%20diagrams/Untitled%2016.png)
 
 # Traceable (Functional and non functional)
+![TraceabilityReqs.png](TraceabilityReqs.png)
 
-## Matthew Has this
+# Actor Diagram
+![actorDiagram.png](actorDiagram.png)
