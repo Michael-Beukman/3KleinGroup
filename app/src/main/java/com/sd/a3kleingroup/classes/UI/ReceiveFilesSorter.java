@@ -55,6 +55,8 @@ public class ReceiveFilesSorter implements View.OnClickListener {
     }
 
     private void sortByName() {
+//        if (1==1) return;
+
         Log.d(LOG_TAG, "We're now sorting by name");
         // now we sort filtered agreements on whatever
         adapter.filteredAgreements.sort((a, b) -> {
@@ -74,6 +76,8 @@ public class ReceiveFilesSorter implements View.OnClickListener {
     }
 
     private void sortByDate() {
+//        if (1==1) return;
+
         Log.d(LOG_TAG, "We're now sorting by date");
         // now we sort filtered agreements on whatever
         adapter.filteredAgreements.sort((a, b) -> {

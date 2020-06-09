@@ -1,5 +1,6 @@
 package com.sd.a3kleingroup.classes;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -85,6 +86,7 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
         cbFile = new Callback() {
             @Override
             public void onSuccess(Map<String, Object> data, String message) {
+                Log.d("MY_HOLDER_THINGY", "GOT THE FOLLOWING " + data);
                 txtbtnFileName.setText((String)data.get("filename"));
                 joinedFileInfo.setFile(new dbFile(data));
                 afterGetPieceOfData();
@@ -93,7 +95,6 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
             @Override
             public void onFailure(String error, MyError.ErrorCode errorCode) {
                 txtbtnFileName.setText(error);
-
             }
         };
     }
@@ -105,6 +106,7 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
     private void afterGetPieceOfData() {
         if (joinedFileInfo.isAllDataRetrieved()){
             cache.put(joinedFileInfo.agreement.getId(), joinedFileInfo);
+            populateViews(joinedFileInfo);
         }
     }
 
@@ -120,7 +122,12 @@ public class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnCl
      */
     public void populateViews(FileModel fileModel) {
         this.joinedFileInfo = fileModel;
+        if (fileModel.getFile().getFileName().toLowerCase().equals("no data")){
+            Log.d("MY_HOLDER_THINGY", "Hey no data" + fileModel.getFile().getHashmap());
+        }
         txtbtnFileName.setText((String)fileModel.getFile().getFileName());
+//        txtbtnFileName.setText("Hello abc");
         txtOwner.setText(fileModel.owner.getName());
+//        txtOwner.setText("MEMESMIKE");
     }
 }

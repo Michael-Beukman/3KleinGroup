@@ -154,11 +154,11 @@ public abstract class BaseActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "Got data " + documentSnapshot.getData() + " " + collectionName + " " + docID);
             if (documentSnapshot.getData() == null) {
                 cb.onFailure("No data", MyError.ErrorCode.NOT_FOUND);
-                System.out.println("NEEE");
+//                System.out.println("NEEE");
 
             } else {
                 cb.onSuccess(documentSnapshot.getData(), docID);
-                System.out.println("NEEE");
+                System.out.println("NEEE data" + documentSnapshot.getData());
 
             }
         }).addOnFailureListener(new OnFailureListener() {

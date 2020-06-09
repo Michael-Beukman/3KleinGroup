@@ -125,6 +125,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            if (1==1) return;
             Log.d(LOG_TAG, "In filter " + charSequence.toString());
             String toFind = charSequence.toString().toLowerCase();
             if (myAdapter == null) return;
@@ -169,6 +170,7 @@ public class ReceiveFilesActivity extends BaseActivity {
             filteredAgreements = new ArrayList<>();
             for (DocumentSnapshot d : data.getDocuments()) {
                 dbAgreement toAdd = new dbAgreement((String) d.get("fileID"), (String) d.get("userID"), ((Timestamp) d.get("validUntil")).toDate(), (String) d.get("ownerID"));
+                Log.d(LOG_TAG, "GOT AGREEMENT REE " + toAdd.getHashmap());
                 // sets the Id, to make sure we have a reference to the agreement
                 toAdd.setID(d.getId());
                 OGagreements.add(toAdd);
@@ -203,7 +205,7 @@ public class ReceiveFilesActivity extends BaseActivity {
 
             holder.txtDate.setText(agreement.getValidUntil().toString());
 
-            if (!RecyclerHolder.cache.containsKey(agreement.getId())) {
+            if (true || !RecyclerHolder.cache.containsKey(agreement.getId())) {
                 // if the cache doesn't contain the data, i.e. we haven't gotten file/owner, get it.
                 // get Username
                 getAsync(USER_COLLECTION_NAME, agreement.getUserSentID(), holder.cbOwner);
@@ -213,7 +215,7 @@ public class ReceiveFilesActivity extends BaseActivity {
                 // we already have it.
                 holder.populateViews(RecyclerHolder.cache.get(agreement.getId()));
             }
-            Log.d(LOG_TAG, "Holder at position " + position);
+            Log.d(LOG_TAG, "Holder at position " + position + " " + agreement.getUserSentID() + " " + agreement.getFileID() + " " + agreement.getId());
         }
 
         @Override
@@ -238,6 +240,7 @@ public class ReceiveFilesActivity extends BaseActivity {
     /* FILE THINGS */
 
     private void checkPermission(FileModel file) {
+        Log.d(LOG_TAG, "File permissions is : " + file.getAgreement().getValidUntil().toString());
         //Check if permission expired
         if (file.getAgreement().getValidUntil().before(new Date())) {
             //permission expired, request new permission
@@ -306,6 +309,7 @@ public class ReceiveFilesActivity extends BaseActivity {
     }
 
     private void setUpRV() {
+//        if (1==1) return;
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null){
             user = new FirebaseUser() {
@@ -436,7 +440,9 @@ public class ReceiveFilesActivity extends BaseActivity {
                 }
             };
         }
-        Query query = db.collection("Agreements").whereEqualTo("userID", user.getUid());
+        Log.d(LOG_TAG, "USER ID =" + " " + user.getUid());
+        Query query = db.collection("Agreements")
+                .whereEqualTo("userID", user.getUid());
         mRecyclerView = findViewById(R.id.recycle);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager viewManager = new LinearLayoutManager(this);
